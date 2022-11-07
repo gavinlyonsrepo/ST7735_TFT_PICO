@@ -7,7 +7,6 @@ Table of contents
 
   * [Overview](#overview)
   * [TODO](#todo)
-  * [Installation](#installation)
   * [Test](#test)
   * [Software](#software)  
   * [Hardware](#hardware)
@@ -39,11 +38,6 @@ TODO
 1. 16 and 24 color bitmap support
 2. Software SPI support is included but currently very slow.
 
-Installation
-------------------------------
-
-TODO
-
 
 Test
 ----------------------------
@@ -67,9 +61,10 @@ where user can make adjustments to select for SPI type used, PCB type used and s
 
 
 0. USER OPTION 0 SPI_SPEED + TYPE 
-1. USER OPTION 1 SCREEN SECTION 
-2. USER OPTION 2 PCB_TYPE
-3. USER OPTION 3 SPI SPEED
+1. USER OPTION 1 GPIO
+2. USER OPTION 2 SCREEN SECTION 
+3. USER OPTION 3 PCB_TYPE
+
 
 **USER OPTION 0 SPI SPEED** 
 
@@ -77,7 +72,7 @@ Here the user can pass the SPI Bus freq in kiloHertz,
 The SPI interface(spi0 spi1 etc) and whether they want software SPI or hardware SPI
 
 
-**USER OPTION 1 SPI TYPE / GPIO**
+**USER OPTION 1 GPIO**
 
 The 5 GPIO pins used, the clodk and data lines must be the clock and data lines 
 of spi interface chosen in option 0 if using hardware SPI.
@@ -167,7 +162,6 @@ Connections as setup in main.cpp helloworld test file.
 1. NOTE connect LED backlight pin 1 thru a 150R/220R ohm resistor to 3.3/5V VCC.
 2. This is a 3.3V logic device do NOT connect the I/O logic lines to 5V logic device.
 3. You can connect VCC to 5V if there is a 3.3 volt regulator on back of TFT module.
-4. Pick any GPIO you want for SW SPI, for HW SPI: CS, reset and DC lines are flexible.
 
 Output
 -----------------------
