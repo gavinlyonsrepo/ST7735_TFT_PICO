@@ -153,9 +153,9 @@ protected:
 	int8_t _TFT_SCLK; 
 	int8_t _TFT_SDATA;  
 
-	bool _hardwareSPI = false;
-	spi_inst_t *spiInterface = spi0;
-	uint16_t _speedSPIKHz = 8000;
+	bool _hardwareSPI;
+	spi_inst_t *_pspiInterface;
+	uint16_t _speedSPIKHz;
 
 };
 

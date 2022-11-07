@@ -15,13 +15,13 @@ ST7735_TFT :: ST7735_TFT()
 // Desc : Init Hardware SPI
 void ST7735_TFT::TFTSPIInitialize(void)
 {
-	spi_init(spiInterface, _speedSPIKHz * 1000); // Initialize SPI port 
+	spi_init(_pspiInterface, _speedSPIKHz * 1000); // Initialize SPI port 
 	// Initialize SPI pins : clock and data
 	TFT_SDATA_SPI_FUNC;
 	TFT_SCLK_SPI_FUNC;
 
     // Set SPI format
-    spi_set_format( spiInterface,   // SPI instance
+    spi_set_format( _pspiInterface,   // SPI instance
                     8,      // Number of bits per transfer
                     SPI_CPOL_0,      // Polarity (CPOL)
                     SPI_CPHA_0,      // Phase (CPHA)
@@ -531,18 +531,20 @@ void ST7735_TFT  ::TFTInitPCBType(TFT_PCBtype_e pcbType)
 }
 
 // Func Desc : intialise SPI setup
-
-void ST7735_TFT  :: TFTInitSPIType(bool hardwarespi,  uint16_t speed_Khz,  spi_inst_t *spi_interface) 
+// Funtion overload used , function 1 hardware SPI 
+// Param1 SPI baudrate in Khz , 1000 = 1 Mhz
+// Param2 Spi interface, spi0 spi1 etc
+void ST7735_TFT  :: TFTInitSPIType(uint32_t speed_Khz,  spi_inst_t *spi_interface) 
 {
-	if (hardwarespi = true) // HW SPI
-	{
-		spi_inst_t *spiInterface = spi_interface;
-		_speedSPIKHz = speed_Khz;
-		_hardwareSPI = true;
-	} else // SW SPI 
-	{
-		_hardwareSPI = false;
-	}
+	 _pspiInterface = spi_interface;
+	_speedSPIKHz = speed_Khz;
+	_hardwareSPI = true;
 }
 
+// Func Desc : intialise SPI setup
+// Funtion overload used , function 2 software SPI 
+void ST7735_TFT  :: TFTInitSPIType() 
+{
+	_hardwareSPI = false;
+}
 //**************** EOF *****************

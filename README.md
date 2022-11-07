@@ -23,7 +23,7 @@ Overview
 3. Seven fonts
 4. Graphics + print class included.
 5. bi-color Bitmaps supported.
-6. Hardware SPI
+6. Hardware and software  SPI
 
 * Author: Gavin Lyons
 * Port of my Raspberry PI library version 1.5 at [github link.](https://github.com/gavinlyonsrepo/ST7735_TFT_RPI)
@@ -36,7 +36,6 @@ TODO
 ---------------------------
 
 1. 16 and 24 color bitmap support
-2. Software SPI support is included but currently very slow.
 
 
 Test
@@ -162,6 +161,7 @@ Connections as setup in main.cpp helloworld test file.
 1. NOTE connect LED backlight pin 1 thru a 150R/220R ohm resistor to 3.3/5V VCC.
 2. This is a 3.3V logic device do NOT connect the I/O logic lines to 5V logic device.
 3. You can connect VCC to 5V if there is a 3.3 volt regulator on back of TFT module.
+4. SW SPI pick any GPIO you like , HW SPI SCLK and SDA will be tied to spio interface.
 
 Output
 -----------------------

@@ -30,7 +30,7 @@ ST7735_TFT myTFT;
 void Setup(void);  // setup + user options
 void Test0(void);  // Print out all fonts 1-5
 void Test1A(void); // defined 16-bit Colors, text
-void Test1B(void); // print entire ASCII font 0 to 127, default font
+void Test1B(void); // print entire ASCII font 0 to 254, default font
 void Test1C(void); // print numbers int and float using draw functions
 void Test1D(void); // print numbers int and float using PRINT function
 void Test1E(void); // Print out font 6 & 7 using draw functions
@@ -44,7 +44,7 @@ void Test8(void);  // More shapes, media buttons graphic.
 void Test9(void);  // Rotate
 void Test10(void); // change modes test -> Invert, display on/off and Sleep.
 void Test11(void); // "clock demo" icons, small bi-color bitmaps, font 6 & 7
-void Test12(void); // 2 color bitmap
+void Test12(void); // 2 color bitmap full screen
 void EndTests(void);
 
 //  Section ::  MAIN loop
@@ -82,12 +82,19 @@ void Setup(void)
 	TFT_MILLISEC_DELAY(TEST_DELAY1);
 	
 //*************** USER OPTION 0 SPI_SPEED + TYPE ***********
-	uint16_t TFT_SCLK_FREQ =  8000 ; // Spi freq in KiloHertz , 1000 = 1Mhz
-	myTFT.TFTInitSPIType(true,  TFT_SCLK_FREQ, spi0); // hw spi
-	//myTFT.TFTInitSPIType(false, 0 , NULL); // sw spi
+	bool bhardwareSPI = true; // true for hardware spi, 
+	
+	if (bhardwareSPI == true) { // hw spi
+		uint32_t TFT_SCLK_FREQ =  8000 ; // Spi freq in KiloHertz , 1000 = 1Mhz
+		myTFT.TFTInitSPIType(TFT_SCLK_FREQ, spi0); 
+	} else { // sw spi
+		myTFT.TFTInitSPIType(); 
+	}
 //**********************************************************
 
 // ******** USER OPTION 1 GPIO *********
+// NOTE if using Hardware SPI clock and data pins will be tied to 
+// the chosen interface eg Spi0 CLK=18 DIN=19)
 	int8_t SDIN_TFT = 19; 
 	int8_t SCLK_TFT = 18; 
 	int8_t DC_TFT = 3;
@@ -98,7 +105,7 @@ void Setup(void)
 
 // ****** USER OPTION 2 Screen Setup ****** 
 	uint8_t OFFSET_COL = 0;  // 2, These offsets can be adjusted for any issues->
-	uint8_t OFFSET_ROW = 0; // 3, with manufacture tolerance/defects
+	uint8_t OFFSET_ROW = 0; // 3, with screen manufacture tolerance/defects
 	uint16_t TFT_WIDTH = 128;// Screen width in pixels
 	uint16_t TFT_HEIGHT = 128; // Screen height in pixels
 	myTFT.TFTInitScreenSize(OFFSET_COL, OFFSET_ROW , TFT_WIDTH , TFT_HEIGHT);
@@ -120,15 +127,15 @@ void Test0(void) {
 	myTFT.TFTfillScreen(ST7735_BLACK);
 	
 	myTFT.TFTFontNum(TFTFont_Default);
-	myTFT.TFTdrawText(0, 5, teststr1, ST7735_WHITE, ST7735_BLACK, 2);
+	myTFT.TFTdrawText(5, 5, teststr1, ST7735_WHITE, ST7735_BLACK, 2);
 	myTFT.TFTFontNum(TFTFont_Thick);
-	myTFT.TFTdrawText(0, 35, teststr2, ST7735_GREEN, ST7735_BLACK, 2);
+	myTFT.TFTdrawText(5, 35, teststr2, ST7735_GREEN, ST7735_BLACK, 2);
 	myTFT.TFTFontNum(TFTFont_Seven_Seg);
-	myTFT.TFTdrawText(0, 55, teststr3, ST7735_BLUE, ST7735_BLACK, 2);
+	myTFT.TFTdrawText(5, 55, teststr3, ST7735_BLUE, ST7735_BLACK, 2);
 	myTFT.TFTFontNum(TFTFont_Wide);
-	myTFT.TFTdrawText(0, 75, teststr4, ST7735_CYAN, ST7735_BLACK, 2);
+	myTFT.TFTdrawText(5, 75, teststr4, ST7735_CYAN, ST7735_BLACK, 2);
 	myTFT.TFTFontNum(TFTFont_Tiny);
-	myTFT.TFTdrawText(0, 100, teststr5, ST7735_RED, ST7735_BLACK, 2);
+	myTFT.TFTdrawText(5, 100, teststr5, ST7735_RED, ST7735_BLACK, 2);
 	TFT_MILLISEC_DELAY(TEST_DELAY5);
 	myTFT.TFTfillScreen(ST7735_BLACK);
 	myTFT.TFTFontNum(TFTFont_Default);
@@ -145,24 +152,29 @@ void Test1A(void) {
 	char teststr8[] = "GREY";
 	char teststr9[] = "TAN";
 	char teststr10[] = "BROWN";
-	myTFT.TFTdrawText(0, 5, teststr1, ST7735_WHITE, ST7735_BLACK, 1);
-	myTFT.TFTdrawText(0, 15, teststr2, ST7735_BLUE, ST7735_BLACK, 1);
-	myTFT.TFTdrawText(0, 25, teststr3, ST7735_RED, ST7735_BLACK, 1);
-	myTFT.TFTdrawText(0, 35, teststr4, ST7735_GREEN, ST7735_BLACK, 1);
-	myTFT.TFTdrawText(0, 45, teststr5, ST7735_CYAN, ST7735_BLACK, 1);
-	myTFT.TFTdrawText(0, 55, teststr6, ST7735_MAGENTA, ST7735_BLACK, 1);
-	myTFT.TFTdrawText(0, 65, teststr7, ST7735_YELLOW, ST7735_BLACK, 1);
-	myTFT.TFTdrawText(0, 75, teststr1, ST7735_WHITE, ST7735_BLACK, 1);
-	myTFT.TFTdrawText(0, 85, teststr8, ST7735_GREY, ST7735_BLACK, 1);
-	myTFT.TFTdrawText(0, 95, teststr9, ST7735_TAN, ST7735_BLACK, 1);
-	myTFT.TFTdrawText(0, 105, teststr10 , ST7735_BROWN, ST7735_BLACK, 1);
+	char teststr11[] = "PINK";
+	char teststr12[] = "ORANGE";
+	myTFT.TFTdrawText(5, 10, teststr1, ST7735_WHITE, ST7735_BLACK, 1);
+	myTFT.TFTdrawText(5, 25, teststr2, ST7735_BLUE, ST7735_BLACK, 1);
+	myTFT.TFTdrawText(5, 40, teststr3, ST7735_RED, ST7735_BLACK, 1);
+	myTFT.TFTdrawText(5, 55, teststr4, ST7735_GREEN, ST7735_BLACK, 1);
+	myTFT.TFTdrawText(5, 70, teststr5, ST7735_CYAN, ST7735_BLACK, 1);
+	myTFT.TFTdrawText(5, 85, teststr6, ST7735_MAGENTA, ST7735_BLACK, 1);
+	TFT_MILLISEC_DELAY(TEST_DELAY5);
+	myTFT.TFTfillScreen(ST7735_BLACK);
+	myTFT.TFTdrawText(5, 10, teststr7, ST7735_YELLOW, ST7735_BLACK, 1);
+	myTFT.TFTdrawText(5, 25, teststr8, ST7735_GREY, ST7735_BLACK, 1);
+	myTFT.TFTdrawText(5, 40, teststr9, ST7735_TAN, ST7735_BLACK, 1);
+	myTFT.TFTdrawText(5, 55, teststr10 , ST7735_BROWN, ST7735_BLACK, 1);
+	myTFT.TFTdrawText(5, 70, teststr11, ST7735_PINK, ST7735_BLACK, 1);
+	myTFT.TFTdrawText(5, 85, teststr12 , ST7735_ORANGE, ST7735_BLACK, 1);
 	TFT_MILLISEC_DELAY(TEST_DELAY5);
 	myTFT.TFTfillScreen(ST7735_BLACK);
 }
 
 void Test1B(void) {
 	uint8_t row = 5;
-	uint8_t col = 0;
+	uint8_t col = 5;
 	for (char i = 0; i < 126; i++) {
 		
 		myTFT.TFTdrawChar(col, row, i, ST7735_GREEN, ST7735_BLACK, 1);
@@ -174,6 +186,20 @@ void Test1B(void) {
 		TFT_MILLISEC_DELAY(20);
 	}
 
+	TFT_MILLISEC_DELAY(TEST_DELAY5);
+	myTFT.TFTfillScreen(ST7735_BLACK);
+	row = 5;
+	col = 5;
+	for (unsigned char j = 127; j < 254; j++) {
+		
+		myTFT.TFTdrawChar(col, row, j, ST7735_GREEN, ST7735_BLACK, 1);
+		col += 10;
+		if (col > 100) {
+			row += 10;
+			col = 0;
+		}
+		TFT_MILLISEC_DELAY(20);
+	}
 	TFT_MILLISEC_DELAY(TEST_DELAY5);
 	myTFT.TFTfillScreen(ST7735_BLACK);
 }

@@ -61,12 +61,19 @@ void Setup(void)
 	printf("TFT Start\r\n");
 	
 //*************** USER OPTION 0 SPI_SPEED + TYPE ***********
-	uint16_t TFT_SCLK_FREQ =  8000 ; // Spi freq in KiloHertz , 1000 = 1Mhz
-	myTFT.TFTInitSPIType(true,  TFT_SCLK_FREQ, spi0); // comment in for hw spi
-	//myTFT.TFTInitSPIType(false, 0 , NULL); // comment in for sw spi
+	bool bhardwareSPI = true; // true for hardware spi, 
+	
+	if (bhardwareSPI == true) { // hw spi
+		uint32_t TFT_SCLK_FREQ =  8000 ; // Spi freq in KiloHertz , 1000 = 1Mhz
+		myTFT.TFTInitSPIType(TFT_SCLK_FREQ, spi0); 
+	} else { // sw spi
+		myTFT.TFTInitSPIType(); 
+	}
 //**********************************************************
 
 // ******** USER OPTION 1 GPIO *********
+// NOTE if using Hardware SPI clock and data pins will be tied to 
+// the chosen interface eg Spi0 CLK=18 DIN=19)
 	int8_t SDIN_TFT = 19; 
 	int8_t SCLK_TFT = 18; 
 	int8_t DC_TFT = 3;

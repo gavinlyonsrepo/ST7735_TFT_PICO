@@ -91,13 +91,15 @@
 #define   ST7735_TAN     0xED01
 #define   ST7735_GREY    0x9CD1
 #define   ST7735_BROWN   0x6201
+#define   ST7735_PINK    0xF81F
+#define   ST7735_ORANGE  0xFC00
 
 // GPIO	
 #define	TFT_DC_INIT gpio_init(_TFT_DC)
 #define	TFT_RST_INIT gpio_init(_TFT_RST)
 #define	TFT_CS_INIT gpio_init(_TFT_CS)
 #define	TFT_SCLK_INIT gpio_init(_TFT_SCLK)
-#define TFT_SDATA_INIT gpio_init(_TFT_SDATA)
+#define	TFT_SDATA_INIT gpio_init(_TFT_SDATA)
 
 #define TFT_DC_SetHigh  gpio_put(_TFT_DC, true)
 #define TFT_DC_SetLow  gpio_put(_TFT_DC, false)
@@ -166,7 +168,8 @@ public:
 	void TFTSetupGPIO(int8_t, int8_t, int8_t, int8_t, int8_t);
 	void TFTInitScreenSize(uint8_t xOffset, uint8_t yOffset, uint16_t w, uint16_t h);
 	void TFTInitPCBType(TFT_PCBtype_e);
-	void TFTInitSPIType(bool SPItype = false, uint16_t hertz = 1000,  spi_inst_t *spi = spi0);
+	void TFTInitSPIType(uint32_t baudrate,  spi_inst_t *spi);
+	void TFTInitSPIType();
 	void TFTPowerDown(void);
 	
 	void TFTsetRotation(TFT_rotate_e r);

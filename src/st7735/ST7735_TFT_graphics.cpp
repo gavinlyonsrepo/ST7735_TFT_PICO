@@ -848,7 +848,7 @@ void ST7735_TFT_graphics::spiWrite(uint8_t spidata) {
 	{
 		spiWriteSoftware(spidata);
 	} else {
-		spi_write_blocking(spiInterface, &spidata, 1);
+		spi_write_blocking(_pspiInterface, &spidata, 1);
 	}
 }
 
@@ -878,7 +878,7 @@ void ST7735_TFT_graphics::spiWriteBuffer(uint8_t* spidata, uint32_t len) {
 			spiWriteSoftware(spidata[i]);
 		}
 	} else {
-		spi_write_blocking(spiInterface, spidata, len);
+		spi_write_blocking(_pspiInterface, spidata, len);
 	}
 }
 

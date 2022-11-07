@@ -45,12 +45,19 @@ void Setup(void)
 	TFT_MILLISEC_DELAY(TEST_DELAY1);
 	
 //*************** USER OPTION 0 SPI_SPEED + TYPE ***********
-	uint16_t TFT_SCLK_FREQ =  8000 ; // Spi freq in KiloHertz , 1000 = 1Mhz
-	myTFT.TFTInitSPIType(true,  TFT_SCLK_FREQ, spi0); // comment in for hw spi
-	//myTFT.TFTInitSPIType(false, 0 , NULL); // comment in for sw spi
+	bool bhardwareSPI = true; // true for hardware spi
+	
+	if (bhardwareSPI == true) { // hw spi
+		uint16_t TFT_SCLK_FREQ =  8000 ; // Spi freq in KiloHertz , 1000 = 1Mhz
+		myTFT.TFTInitSPIType(TFT_SCLK_FREQ, spi0); 
+	} else {
+		myTFT.TFTInitSPIType(); // sw spi
+	}
 //**********************************************************
 
 // ******** USER OPTION 1 GPIO *********
+// NOTE if using Hardware SPI clock and data pins will be tied to 
+// the chosen interface eg Spi0 CLK=18 DIN=19)
 	int8_t SDIN_TFT = 19; 
 	int8_t SCLK_TFT = 18; 
 	int8_t DC_TFT = 3;
@@ -75,7 +82,7 @@ void Setup(void)
 
 void Test0(void) {
 
-	char teststr1[] = "Hello World!";
+	char teststr1[] = "Hello World";
 	myTFT.TFTfillScreen(ST7735_BLACK);
 	myTFT.TFTFontNum(TFTFont_Default);
 	myTFT.TFTdrawText(5, 5, teststr1, ST7735_WHITE, ST7735_BLACK, 1);
