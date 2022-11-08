@@ -20,7 +20,7 @@ Overview
 0. Library for a TFT SPI LCD, ST7735 Driver
 1. Raspberry pi PICO RP2040 library.
 2. Inverse colour, rotate, sleep, idle  & verticaly scroll modes supported.
-3. Seven fonts
+3. Eight fonts
 4. Graphics + print class included.
 5. bi-color Bitmaps supported.
 6. Hardware and software  SPI
@@ -41,15 +41,16 @@ TODO
 Test
 ----------------------------
 
-There are 3 example files included , you pick the one you want 
+There are 4 example files included. User picks the one they want 
 by editing the CMakeLists.txt :: add_executable(${PROJECT_NAME}  section.
-There are 3 paths , comment in one path and one path only.
+There are 4 paths , comment in one path and one path only.
 
 | Filename  | Function  | Note |
 | --- | --- | --- |
-| ST7735_TFT_HELLOWORLD | Basic use case  | --- |
-| ST7735_TFT_TESTS | Text , graphics and bi-color bitmaps tests | --- |
-| ST7735_TFT_BMP | 24 and 16 bit color bitmaps tests | Not working,  TODO |
+| ST7735_TFT_HELLOWORLD | Basic use case , test0  | --- |
+| ST7735_TFT_TESTS | Text , graphics , icons tests, Test 1-11 | --- |
+| ST7735_TFT_BMP_ONE | bi colour bitmaps tests , Test 12 -14 | --- |
+| ST7735_TFT_BMP_TWO | 24 & 16 bit color bitmaps tests | Not working,  TODO |
 
 
 Software
@@ -67,7 +68,7 @@ where user can make adjustments to select for SPI type used, PCB type used and s
 
 **USER OPTION 0 SPI SPEED** 
 
-Here the user can pass the SPI Bus freq in kiloHertz,
+Here the user can pass the SPI Bus freq in kiloHertz, Currently set to 8 Mhz.
 The SPI interface(spi0 spi1 etc) and whether they want software SPI or hardware SPI
 
 
@@ -114,28 +115,29 @@ No built-in SD card support at present and backlight control is left to user.
 
 **Fonts**
 
-Seven fonts available : 
+Eight fonts available : 
 
-| Font num | Font name | Font size xbyy |  Note |
-| ------ | ------ | ------ | ------ |  
-| 1 | Default | 5x8 | Full Extended ASCII 0x00 - 0xFF |
-| 2 | Thick   | 7x8 | ASCII  0x20 - 0x5A  ,no lowercase letters |
-| 3 | Seven segment | 4x8 | ASCII  0x20 - 0x7A |
-| 4 | Wide | 8x8 | ASCII 0x20 - 0x5A , no lowercase letters |
-| 5 | Tiny | 3x8 | ASCII  0x20 - 0x7A |
-| 6 | Big Nums | 16x32 | ASCII 0x2E-0x3A , Numbers + : . only |
-| 7 | Med Nums | 16x16 | ASCII 0x2E-0x3A , Numbers + : . only |
+| # | Name | Char size WxH |  ASCII range |  Size in bytes |
+| ------ | ------ | ------ | ------ |   ------ |  
+| 1 | Default | 5x8 | Full Extended ASCII 0x00 - 0xFF | 1275 |
+| 2 | Thick   | 7x8 | ASCII  0x20 - 0x5A  ,no lowercase letters | 406 |
+| 3 | Seven segment | 4x8 | ASCII  0x20 - 0x7A |  364 |
+| 4 | Wide | 8x8 | ASCII 0x20 - 0x5A , no lowercase letters | 464 | 
+| 5 | Tiny | 3x8 | ASCII  0x20 - 0x7E | 285 |
+| 6 | HomeSpun  | 7x8 | ASCII  0x20 - 0x7E |  658 |
+| 7 | Big Nums | 16x32 | ASCII 0x2E-0x3A , Numbers + : . only | 704 |
+| 8 | Med Nums | 16x16 | ASCII 0x2E-0x3A , Numbers + : . only | 352 |
 
-The fonts 1-5 are byte high(at text size 1) scale-able fonts,
-The large numerical Fonts, 6 & 7 cannot be scaled.
+The fonts 1-6 are byte high(at text size 1) scale-able fonts,
+The large numerical Fonts, 7 & 8 cannot be scaled.
 
 **Bitmap**
 
-There are four functions to support drawing bitmaps
+There are four functions to support drawing bitmaps, Math assumes 128x128 pixel screen.
 
 | Function Name | Colour support | Pixel size |  Note |
 | ------ | ------ | ------ | ------ |
-| TFTdrawIcon | bi-colour | 8 x(0-127) , 128 bytes max  | Data vertically addressed |
+| TFTdrawIcon | bi-colour | 8 x(0-Max_y) , 128 bytes max  | Data vertically addressed |
 | TFTdrawBitmap | bi-colour | 128 by 128 , 2048 bytes max | Data horizontally  addressed |
 | TFTdrawBitmap16 | 16 bit color 565 BMP files | 128 by 128 = 32K max | TODO |
 | TFTdrawBitmap24  | 24 bit color BMP files | 128 by 128 = 48K max | TODO , Converted by software to 16-bit color  |
@@ -168,15 +170,11 @@ Output
 
 Output of some of the test routine's. Left to right, top to bottom.
 
-1. Different defined colors at default font size 1. Full 16 bit colour 565 available
+1. Bitmap (bi-color) A background and a foreground, . 128 X 128 pixels.
 2. Different sizes of default font. Size 2 3 4 & 5 shown.
-3. Different Fonts at font size 2, fonts 1-5. Are these fonts are scale-able
-4. Shapes
-5. More Shapes
-6. Bitmap (bi-color) A background and a foreground.
-7. Clock Demo showing icons, small bitmaps and font 6 "BigNums"
-8. 24-bit color bitmap test image , test14 , not working TODO
-9. 16-bit color bitmap test image, test15 , not working TODO
+3. Different Fonts at font size 2, fonts 1-6 All these fonts are scale-able
+4. Graphics.
+5. Clock Demo Test 11,  showing icons, and font 7 "BigNums"
 
-![ pic ](https://github.com/gavinlyonsrepo/pic_16F18346_projects/blob/master/images/st7735/9.jpg)
-![ pic1 ](https://github.com/gavinlyonsrepo/ST7735_TFT_RPI/blob/main/extra/images/4.jpg)
+![ pic ](https://github.com/gavinlyonsrepo/ST7735_TFT_PICO/blob/main/extra/doc/images/row1.jpg)
+![ pic1 ](https://github.com/gavinlyonsrepo/ST7735_TFT_PICO/blob/main/extra/doc/images/row2.jpg)

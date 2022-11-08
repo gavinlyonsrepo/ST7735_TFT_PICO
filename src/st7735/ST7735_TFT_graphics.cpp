@@ -370,7 +370,7 @@ void ST7735_TFT_graphics ::TFTfillTriangle(int16_t x0, int16_t y0, int16_t x1, i
 // Param 4: color 565 16-bit
 // Param 5: background color
 // Param 6: size. 1-x
-// Notes for font #1-5
+// Notes for font #1-6
 
 void ST7735_TFT_graphics ::TFTdrawChar(uint8_t x, uint8_t y, uint8_t c, uint16_t color, uint16_t bg, uint8_t size) {
 
@@ -399,6 +399,9 @@ void ST7735_TFT_graphics ::TFTdrawChar(uint8_t x, uint8_t y, uint8_t c, uint16_t
 			case TFTFont_Tiny:
 				 line = Font_Five[(c - _CurrentFontoffset ) * _CurrentFontWidth + i];
 			break;
+			case TFTFont_HomeSpun:
+				 line = Font_Six[(c - _CurrentFontoffset ) * _CurrentFontWidth + i];
+			break;
 		}
 		for (j = 0; j < 7; j++, line >>= 1) {
 			if (line & 0x01) {
@@ -425,7 +428,7 @@ void ST7735_TFT_graphics ::TFTsetTextWrap(bool w) {
 // Param 4: color 565 16-bit
 // Param 5: background color
 // Param 6: size 1-x
-// Notes for font #1-5
+// Notes for font #1-6
 
 void ST7735_TFT_graphics ::TFTdrawText(uint8_t x, uint8_t y, char *ptext, uint16_t color, uint16_t bg, uint8_t size) {
 	uint8_t _cursorX, _cursorY;
@@ -507,8 +510,8 @@ size_t ST7735_TFT_graphics ::write(uint8_t c)
 
 
 // Desc :  Set the font number
-// Param1: Param1: fontnumber 1-7 enum OLED_FONT_TYPE_e
-// 1=default 2=thick 3=seven segment 4=wide 5=tiny 6=bignums 7=mednums
+// Param1: Param1: fontnumber 1-8 enum OLED_FONT_TYPE_e
+// 1=default 2=thick 3=seven segment 4=wide 5=tiny 6=homespun 7=bignums 8=mednums
 
 void ST7735_TFT_graphics ::TFTFontNum(TFT_FONT_TYPE_e FontNumber) {
 
@@ -545,6 +548,11 @@ void ST7735_TFT_graphics ::TFTFontNum(TFT_FONT_TYPE_e FontNumber) {
 			_CurrentFontoffset =  TFTFont_offset_space;
 			_CurrentFontheight = TFTFont_height_8;
 		break;
+		case TFTFont_HomeSpun: // homespun 7 by 8 
+			_CurrentFontWidth = TFTFont_width_7;
+			_CurrentFontoffset =  TFTFont_offset_space;
+			_CurrentFontheight = TFTFont_height_8;
+		break;
 		case TFTFont_Bignum: // big nums 16 by 32 (NUMBERS + : only)
 			_CurrentFontWidth = TFTFont_width_16;
 			_CurrentFontoffset =   TFTFont_offset_zero;
@@ -566,7 +574,7 @@ void ST7735_TFT_graphics ::TFTFontNum(TFT_FONT_TYPE_e FontNumber) {
 
 // Desc: Draws an custom Icon of X by 8 size to screen , where X = 0 to 127
 // Param 1,2  X,Y screen co-ord
-// Param 3 0-127 possible values width of icon in pixels , height is fixed at 8 pixels
+// Param 3 0-MAX_Y possible values width of icon in pixels , height is fixed at 8 pixels
 // Param 4,5 icon colors ,is bi-color
 // Param 6: an array of unsigned chars containing icon data vertically addressed.
 
@@ -596,7 +604,7 @@ void ST7735_TFT_graphics ::TFTdrawIcon(uint8_t x, uint8_t y, uint8_t w, uint16_t
 // Param 3,4 0-127 possible values width and height of bitmap in pixels
 // Param 4,5 bitmap colors ,bitmap is bi-color
 // Param 6: an array of unsigned chars containing bitmap data horizontally addressed.
-// Note as of version 1.4 uses spiWriteBuffer method
+// Note  uses spiWriteBuffer method
 void ST7735_TFT_graphics ::TFTdrawBitmap(int16_t x, int16_t y, int16_t w, int16_t h, uint16_t color, uint16_t bgcolor, uint8_t *pBmp) {
 	int16_t byteWidth = (w + 7) / 8;
 	uint8_t byte = 0;
@@ -641,7 +649,7 @@ void ST7735_TFT_graphics ::TFTdrawBitmap(int16_t x, int16_t y, int16_t w, int16_
 // Param 3 A pointer to the databuffer containing Bitmap data
 // Param 4,5: width and height 0-127 possible values width and height of bitmap in pixels
 // Note 24 bit color converted to 16 bit color bv color 565 function.
-// Note as of version 1.4 uses spiWriteBuffer method
+// Note uses spiWriteBuffer method
 void ST7735_TFT_graphics ::TFTdrawBitmap24(uint8_t x, uint8_t y, uint8_t *pBmp, char w, char h)
 {
 	uint8_t i, j;
@@ -724,7 +732,7 @@ void ST7735_TFT_graphics ::TFTdrawBitmap16(uint8_t x, uint8_t y, uint8_t *pBmp, 
 // Param 3: The ASCII character
 // Param 4: color 565 16-bit
 // Param 5: background color
-// Notes for font 7,6 only
+// Notes for font 7,8 only
 
 void ST7735_TFT_graphics ::TFTdrawCharNumFont(uint8_t x, uint8_t y, uint8_t c, uint16_t color , uint16_t bg)
 {
@@ -736,10 +744,10 @@ void ST7735_TFT_graphics ::TFTdrawCharNumFont(uint8_t x, uint8_t y, uint8_t c, u
 	for (i = 0; i < _CurrentFontheight*2; i++)
 	{
 		if (_FontNumber == TFTFont_Bignum){
-			ctemp = Font_Six[c - _CurrentFontoffset][i];
+			ctemp = Font_Seven[c - _CurrentFontoffset][i];
 		}
 		else if (_FontNumber == TFTFont_Mednum){
-			ctemp = Font_Seven[c - _CurrentFontoffset][i];
+			ctemp = Font_Eight[c - _CurrentFontoffset][i];
 		}
 
 		for (j = 0; j < 8; j++)
@@ -769,7 +777,7 @@ void ST7735_TFT_graphics ::TFTdrawCharNumFont(uint8_t x, uint8_t y, uint8_t c, u
 // Param 3: pointer to string
 // Param 4: color 565 16-bit
 // Param 5: background color
-// Notes for font 7 6 only
+// Notes for font 7 8 only
 
 void ST7735_TFT_graphics ::TFTdrawTextNumFont(uint8_t x, uint8_t y, char *pText, uint16_t color, uint16_t bg)
 {

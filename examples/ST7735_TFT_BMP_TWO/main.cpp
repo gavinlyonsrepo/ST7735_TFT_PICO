@@ -27,8 +27,8 @@ bool bTestFPS = false; // Optional ,runs FPS test at end if true.
 //  Section ::  Function Headers 
 
 void Setup(void);  // setup + user options
-void Test14(void); // 24 color bitmap
-void Test15(void); // 16 color bitmap 
+void Test16(void); // 24 color bitmap
+void Test17(void); // 16 color bitmap 
 void TestFPS(void); // Frames per second 24 color bitmap test, optional
 void EndTests(void);
 
@@ -41,8 +41,8 @@ int main(void)
 {
 	
 	Setup();
-	Test14();
-	Test15();
+	Test16();
+	Test17();
 	//if (bTestFPS == true) TestFPS();
 	EndTests();
 
@@ -97,7 +97,7 @@ void Setup(void)
 }
 
 // All files Windows BITMAPINFOHEADER offset 54
-void Test14(void)
+void Test16(void)
 {
 	myTFT.TFTfillScreen(ST7735_BLACK);
 	char teststr1[] = "Bitmap 24";
@@ -153,7 +153,7 @@ void Test14(void)
 }
 
 
-void Test15(void)
+void Test17(void)
 {
 	myTFT.TFTfillScreen(ST7735_BLACK);
 	char teststr1[] = "Bitmap 16";

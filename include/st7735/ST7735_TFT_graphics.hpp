@@ -29,9 +29,10 @@ typedef enum
 	TFTFont_Seven_Seg = 3,
 	TFTFont_Wide = 4,
 	TFTFont_Tiny = 5,
-	TFTFont_Bignum = 6,
-	TFTFont_Mednum = 7,
-}TFT_FONT_TYPE_e; // Font type 1-7
+	TFTFont_HomeSpun = 6,
+	TFTFont_Bignum = 7,
+	TFTFont_Mednum = 8,
+}TFT_FONT_TYPE_e; // Font type 1-8
 
 typedef enum 
 {

@@ -16,7 +16,8 @@ pico_sdk_init()
 add_executable(${PROJECT_NAME} 
   #examples/ST7735_TFT_HELLOWORLD/main.cpp
   examples/ST7735_TFT_TESTS/main.cpp
-  #examples/ST7735_TFT_BMP/main.cpp
+  #examples/ST7735_TFT_BMP_ONE/main.cpp
+  #examples/ST7735_TFT_BMP_TWO/main.cpp
 )
 
 # Create map/bin/hex/uf2 files
