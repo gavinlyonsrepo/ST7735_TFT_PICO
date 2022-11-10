@@ -6,11 +6,11 @@ Table of contents
 ---------------------------
 
   * [Overview](#overview)
-  * [TODO](#todo)
   * [Test](#test)
   * [Software](#software)  
   * [Hardware](#hardware)
   * [Output](#output)
+  * [TODO](#todo)
 
 Overview
 --------------------------------------------
@@ -22,7 +22,7 @@ Overview
 2. Inverse colour, rotate, sleep, idle  & verticaly scroll modes supported.
 3. Eight fonts
 4. Graphics + print class included.
-5. bi-color Bitmaps supported.
+5. bi-color, 16 bit and 24 colour Bitmaps supported.
 6. Hardware and software  SPI
 
 * Author: Gavin Lyons
@@ -32,31 +32,25 @@ Overview
 	2. SDK C++, compiler G++ for arm-none-eabi
 	3. CMAKE , VScode
 
-TODO
----------------------------
-
-1. 16 and 24 color bitmap support
-
 
 Test
 ----------------------------
 
-There are 4 example files included. User picks the one they want 
+There are 3 example files included. User picks the one they want 
 by editing the CMakeLists.txt :: add_executable(${PROJECT_NAME}  section.
-There are 4 paths , comment in one path and one path only.
+There are 3 paths , comment in one path and one path only.
 
 | Filename  | Function  | Note |
 | --- | --- | --- |
-| ST7735_TFT_HELLOWORLD | Basic use case , test0  | --- |
 | ST7735_TFT_TESTS | Text , graphics , icons tests, Test 1-11 | --- |
-| ST7735_TFT_BMP_ONE | bi colour bitmaps tests , Test 12 -14 | --- |
-| ST7735_TFT_BMP_TWO | 24 & 16 bit color bitmaps tests | Not working,  TODO |
+| ST7735_TFT_BMP_DATA | bi colour 24 & 16 bitmaps tests ,Test 12 -16 | Bitmap data is stored in arrays on PICO |
+| ST7735_TFT_BMP_SDCARD|  SD card bitmaps tests | bitmap data read from SD card , Not working,  TODO |
 
 
 Software
 ----------------------
 
-In the main.cpp files. There are four sections in "Setup()" function 
+In the main.cpp example files. There are four sections in "Setup()" function 
 where user can make adjustments to select for SPI type used, PCB type used and screen size.
 
 
@@ -69,8 +63,9 @@ where user can make adjustments to select for SPI type used, PCB type used and s
 **USER OPTION 0 SPI SPEED** 
 
 Here the user can pass the SPI Bus freq in kiloHertz, Currently set to 8 Mhz.
-The SPI interface(spi0 spi1 etc) and whether they want software SPI or hardware SPI
-
+Max SPI speed on the PICO is 62.5Mhz. There is a file with SPI test results for the FPS tests in
+extra/doc folder. The SPI interface(spi0 spi1 etc). If users wants software just call this method 
+without any arguments. 
 
 **USER OPTION 1 GPIO**
 
@@ -110,7 +105,7 @@ These two are only type of ST7735 library tested on, but should work on other ty
 
 The test files and full screen bitmaps are set up for number 1.  so user will have to modify 
 "USER OPTIONS" in main.cpp and provide own (128X160)bitmap to fully test number 2.
-No built-in SD card support at present and backlight control is left to user.
+
 
 
 **Fonts**
@@ -133,16 +128,21 @@ The large numerical Fonts, 7 & 8 cannot be scaled.
 
 **Bitmap**
 
-There are four functions to support drawing bitmaps, Math assumes 128x128 pixel screen.
+There are 6 functions to support drawing bitmaps, 
 
-| Function Name | Colour support | Pixel size |  Note |
-| ------ | ------ | ------ | ------ |
-| TFTdrawIcon | bi-colour | 8 x(0-Max_y) , 128 bytes max  | Data vertically addressed |
-| TFTdrawBitmap | bi-colour | 128 by 128 , 2048 bytes max | Data horizontally  addressed |
-| TFTdrawBitmap16 | 16 bit color 565 BMP files | 128 by 128 = 32K max | TODO |
-| TFTdrawBitmap24  | 24 bit color BMP files | 128 by 128 = 48K max | TODO , Converted by software to 16-bit color  |
+| Num | Function Name | Colour support | bitmap size Max |  Note |
+| ------ | ------ | ------ | ------ | ------ |
+| 1 | TFTdrawIcon | bi-colour | (8 x (0-Max_y)) 128 bytes max  | Data vertically addressed |
+| 2 | TFTdrawBitmap | bi-colour | 2048 bytes  | Data horizontally  addressed |
+| 3 | TFTdrawBitmap16Data | 16 bit color 565  | 32768  | Data from array on PICO |
+| 4 | TFTdrawBitmap24Data  | 24 bit color  | 49152  | Data from Array on PICO, Converted by software to 16-bit color  |
+| 5 | TFTdrawBitmap16 | 16 bit color 565 BMP files |  32768  | TODO Data from SD card,   |
+| 6 | TFTdrawBitmap24  | 24 bit color BMP files | 49152  | TODO Data from SD card , Converted by software to 16-bit color  |
 
-Bitmap size in kiloBytes = (screenWidth * screenHeight * bitsPerPixel)/(1024 * 8)
+1. Bitmap size in kiloBytes = (screenWidth * screenHeight * bitsPerPixel)/(1024 * 8)
+2. Math in bitmap size column 2-5  assumes 128x128 pixel screen.
+3. The data array for 1 and 2 is created from image files using file data conversion tool [link](https://javl.github.io/image2cpp/)
+4. The data array for 3 and 4 is created from BMP files using file data conversion tool [link](https://notisrac.github.io/FileToCArray/)
 
 Hardware
 ----------------------
@@ -164,17 +164,26 @@ Connections as setup in main.cpp helloworld test file.
 2. This is a 3.3V logic device do NOT connect the I/O logic lines to 5V logic device.
 3. You can connect VCC to 5V if there is a 3.3 volt regulator on back of TFT module.
 4. SW SPI pick any GPIO you like , HW SPI SCLK and SDA will be tied to spio interface.
+5. Backlight on/off control is left to user.
 
 Output
 -----------------------
 
-Output of some of the test routine's. Left to right, top to bottom.
+Output of some of the test routine's. Left to right
 
-1. Bitmap (bi-color) A background and a foreground, . 128 X 128 pixels.
+1. Bitmap (bi-color) A background and a foreground, 128 X 128 pixels.
 2. Different sizes of default font. Size 2 3 4 & 5 shown.
 3. Different Fonts at font size 2, fonts 1-6 All these fonts are scale-able
 4. Graphics.
 5. Clock Demo Test 11,  showing icons, and font 7 "BigNums"
+6. 24 bit RGB test image displayed from a data array  ,  128 X 128 pixels.
+7. 16 bit 565 test image displayed from a data array , 128 X 128 pixels.
 
 ![ pic ](https://github.com/gavinlyonsrepo/ST7735_TFT_PICO/blob/main/extra/doc/images/row1.jpg)
-![ pic1 ](https://github.com/gavinlyonsrepo/ST7735_TFT_PICO/blob/main/extra/doc/images/row2.jpg)
+![ pic1 ](https://github.com/gavinlyonsrepo/ST7735_TFT_RPI/blob/main/extra/images/4.jpg)
+
+
+TODO
+--------------------------
+
+* SD card support for displaying BMP files. 

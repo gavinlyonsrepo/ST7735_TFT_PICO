@@ -482,10 +482,10 @@ void Test11(void)
 	myTFT.TFTdrawText(80, 20, strName, ST7735_BLUE, ST7735_BLACK, 1);
 	
 	// RED section lines
-	myTFT.TFTdrawFastHLine(0, 17, 120, ST7735_RED);
-	myTFT.TFTdrawFastHLine(0, 32, 120, ST7735_RED);
-	myTFT.TFTdrawFastHLine(0, 80, 120, ST7735_RED);
-	myTFT.TFTdrawFastHLine(0, 118, 120, ST7735_RED);
+	myTFT.TFTdrawFastHLine(0, 17, 127, ST7735_RED);
+	myTFT.TFTdrawFastHLine(0, 32, 127, ST7735_RED);
+	myTFT.TFTdrawFastHLine(0, 80, 127, ST7735_RED);
+	myTFT.TFTdrawFastHLine(0, 118, 127, ST7735_RED);
 	
 	myTFT.TFTFontNum(TFTFont_Bignum);
 	while(1)
@@ -508,9 +508,11 @@ void Test11(void)
 				}
 			}
 			// display Clock
+			myTFT.TFTFontNum(TFTFont_Bignum);
 			sprintf(strTime, "%02u:%02u:%02u", Hour , Min ,Sec);
 			myTFT.TFTdrawTextNumFont(0, 45, strTime, ST7735_GREEN, ST7735_BLACK);
 			// display counter
+			myTFT.TFTFontNum(TFTFont_Mednum);
 			sprintf(strCount, "%03d", count);
 			myTFT.TFTdrawTextNumFont(0, 85, strCount, ST7735_YELLOW, ST7735_RED);
 			count--;
@@ -549,7 +551,7 @@ void Test11B(void)
 		previousMillis  = currentMillis;
 		seconds++;
 		shapeColor = rand() % 60000;
-		if (count == 5000)return; // end if count gets to 5000
+		if (count >= 3000)return; // end if count gets to 3000
 	}
 	currentFramerate++;
 	count++;

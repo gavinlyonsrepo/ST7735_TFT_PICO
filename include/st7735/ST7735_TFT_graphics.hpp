@@ -105,14 +105,15 @@ class ST7735_TFT_graphics : public Print {
 	// Bitmap & Icon
 	void TFTdrawIcon(uint8_t x, uint8_t y, uint8_t w, uint16_t color, uint16_t bgcolor, const unsigned char character[]);
 	void TFTdrawBitmap(int16_t x, int16_t y, int16_t w, int16_t h, uint16_t color, uint16_t bgcolor, uint8_t *pBmp);
-	void TFTdrawBitmap24(uint8_t x, uint8_t y, uint8_t *pBmp, char w, char h);
-	void TFTdrawBitmap16(uint8_t x, uint8_t y, uint8_t *pBmp, char w, char h);
-	
+	void TFTdrawBitmap24(uint8_t x, uint8_t y, uint8_t *pBmp, uint8_t w, uint8_t h);
+	void TFTdrawBitmap24Data(uint8_t x, uint8_t y, uint8_t *pBmp, uint8_t w, uint8_t h);
+	void TFTdrawBitmap16(uint8_t x, uint8_t y, uint8_t *pBmp, uint8_t w, uint8_t h);
+	void TFTdrawBitmap16Data(uint8_t x, uint8_t y, uint8_t *pBmp, uint8_t w, uint8_t h);
 	
 protected:
 
 	void pushColor(uint16_t color);
-	int16_t Color565(int16_t ,int16_t , int16_t );
+	uint16_t Color565(uint16_t ,uint16_t , uint16_t );
 	void writeCommand(uint8_t);
 	void writeData(uint8_t);
 	void writeDataBuffer(uint8_t* data_, uint32_t len);
