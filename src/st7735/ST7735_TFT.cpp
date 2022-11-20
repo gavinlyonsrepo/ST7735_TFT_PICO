@@ -186,6 +186,10 @@ if (_hardwareSPI == false)
 // Desc: init routine for ST7735B controller
 
 void ST7735_TFT ::Bcmd() {
+	uint8_t seq6[] {0x09, 0x16, 0x09, 0x20, 0x21, 0x1B, 0x13, 0x19, 0x17, 0x15, 0x1E, 0x2B, 0x04, 0x05, 0x02, 0x0E}; 
+	uint8_t seq7[] {0x0B, 0x14, 0x08, 0x1E, 0x22, 0x1D, 0x18, 0x1E, 0x1B, 0x1A, 0x24, 0x2B, 0x06, 0x06, 0x02, 0x0F}; 
+	uint8_t seq8[] { 0x00, 0x02, 0x08, 0x81};
+	uint8_t seq9[] { 0x00, 0x01, 0x08, 0xA0};
 	writeCommand(ST7735_SWRESET);
 	TFT_MILLISEC_DELAY(50);
 	writeCommand(ST7735_SLPOUT);
@@ -222,22 +226,14 @@ void ST7735_TFT ::Bcmd() {
 	writeData(0x11);
 	writeData(0x15);
 	writeCommand(ST7735_GMCTRP1);
-	static uint8_t seq6[] {0x09, 0x16, 0x09, 0x20, 0x21, 0x1B, 0x13, 0x19, 0x17, 0x15, 0x1E, 0x2B, 0x04, 0x05, 0x02, 0x0E}; 
-	writeDataBuffer(seq6, sizeof(seq6));
+	spiWriteDataBuffer(seq6, sizeof(seq6));
 	writeCommand(ST7735_GMCTRN1);
-	static uint8_t seq7[] {0x0B, 0x14, 0x08, 0x1E, 0x22, 0x1D, 0x18, 0x1E, 0x1B, 0x1A, 0x24, 0x2B, 0x06, 0x06, 0x02, 0x0F}; 
-	writeDataBuffer(seq7, sizeof(seq7));
+	spiWriteDataBuffer(seq7, sizeof(seq7));
 	TFT_MILLISEC_DELAY(10);
 	writeCommand(ST7735_CASET);
-	writeData(0x00);
-	writeData(0x02);
-	writeData(0x08);
-	writeData(0x81);
+	spiWriteDataBuffer(seq8, sizeof(seq8));
 	writeCommand(ST7735_RASET);
-	writeData(0x00);
-	writeData(0x01);
-	writeData(0x08);
-	writeData(0xA0);
+	spiWriteDataBuffer(seq9, sizeof(seq9));
 	writeCommand(ST7735_NORON);
 	TFT_MILLISEC_DELAY(10);
 	writeCommand(ST7735_DISPON);
@@ -248,24 +244,23 @@ void ST7735_TFT ::Bcmd() {
 // Desc: init routine
 
 void ST7735_TFT ::Rcmd1() {
-	
+	uint8_t seq1[] { 0x01, 0x2C, 0x2D };
+	uint8_t seq2[] { 0x01, 0x2C, 0x2D, 0x01, 0x2C, 0x2D };
+	uint8_t seq3[] { 0xA2, 0x02, 0x84 }; 
 	writeCommand(ST7735_SWRESET);
 	TFT_MILLISEC_DELAY(150);
 	writeCommand(ST7735_SLPOUT);
 	TFT_MILLISEC_DELAY(500);
 	writeCommand(ST7735_FRMCTR1);
-	static uint8_t seq1[] { 0x01, 0x2C, 0x2D };
-	writeDataBuffer(seq1, sizeof(seq1));
+	spiWriteDataBuffer(seq1, sizeof(seq1));
 	writeCommand(ST7735_FRMCTR2);
-	writeDataBuffer(seq1, sizeof(seq1));
+	spiWriteDataBuffer(seq1, sizeof(seq1));
 	writeCommand(ST7735_FRMCTR3);
-	static uint8_t seq2[] { 0x01, 0x2C, 0x2D, 0x01, 0x2C, 0x2D }; 
-	writeDataBuffer(seq2, sizeof(seq2));
+	spiWriteDataBuffer(seq2, sizeof(seq2));
 	writeCommand(ST7735_INVCTR);
 	writeData(0x07);
 	writeCommand(ST7735_PWCTR1);
-	static uint8_t seq3[] { 0xA2, 0x02, 0x84 }; 
-	writeDataBuffer(seq3, sizeof(seq3));
+	spiWriteDataBuffer(seq3, sizeof(seq3));
 	writeCommand(ST7735_PWCTR2);
 	writeData(0xC5);
 	writeCommand(ST7735_PWCTR3);
@@ -289,27 +284,23 @@ void ST7735_TFT ::Rcmd1() {
 // Desc: init sub-routine
 
 void ST7735_TFT ::Rcmd2red() {
+	uint8_t seq1[] { 0x00, 0x00, 0x00, 0x7F};
+	uint8_t seq2[] { 0x00, 0x00, 0x00, 0x9F};
 	writeCommand(ST7735_CASET);
-	writeData(0x00);
-	writeData(0x00);
-	writeData(0x00);
-	writeData(0x7F);
+	spiWriteDataBuffer(seq1, sizeof(seq1));
 	writeCommand(ST7735_RASET);
-	writeData(0x00);
-	writeData(0x00);
-	writeData(0x00);
-	writeData(0x9F);
+	spiWriteDataBuffer(seq2, sizeof(seq2));
 }
 
 // Desc: init sub-routine
 
 void ST7735_TFT ::Rcmd3() {
+	uint8_t seq4[] {0x02, 0x1C, 0x07, 0x12, 0x37, 0x32, 0x29, 0x2D, 0x29, 0x25, 0x2B, 0x39, 0x00, 0x01, 0x03, 0x10}; 
+	uint8_t seq5[] {0x03, 0x1D, 0x07, 0x06, 0x2E, 0x2C, 0x29, 0x2D, 0x2E, 0x2E, 0x37, 0x3F, 0x00, 0x00, 0x02, 0x10}; 
 	writeCommand(ST7735_GMCTRP1);
-	static uint8_t seq4[] {0x02, 0x1C, 0x07, 0x12, 0x37, 0x32, 0x29, 0x2D, 0x29, 0x25, 0x2B, 0x39, 0x00, 0x01, 0x03, 0x10}; 
-	writeDataBuffer(seq4, sizeof(seq4));
+	spiWriteDataBuffer(seq4, sizeof(seq4));
 	writeCommand(ST7735_GMCTRN1);
-	static uint8_t seq5[] {0x03, 0x1D, 0x07, 0x06, 0x2E, 0x2C, 0x29, 0x2D, 0x2E, 0x2E, 0x37, 0x3F, 0x00, 0x00, 0x02, 0x10}; 
-	writeDataBuffer(seq5, sizeof(seq5));
+	spiWriteDataBuffer(seq5, sizeof(seq5));
 	writeCommand(ST7735_NORON);
 	TFT_MILLISEC_DELAY(10);
 	writeCommand(ST7735_DISPON);

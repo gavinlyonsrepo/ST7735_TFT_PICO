@@ -66,7 +66,7 @@ void Setup(void)
 	bool bhardwareSPI = true; // true for hardware spi, 
 	
 	if (bhardwareSPI == true) { // hw spi
-		uint32_t TFT_SCLK_FREQ = 60000 ; // Spi freq in KiloHertz , 1000 = 1Mhz , max 62500
+		uint32_t TFT_SCLK_FREQ = 8000 ; // Spi freq in KiloHertz , 1000 = 1Mhz , max 62500
 		myTFT.TFTInitSPIType(TFT_SCLK_FREQ, spi0); 
 	} else { // sw spi
 		myTFT.TFTInitSPIType(); 

@@ -19,7 +19,7 @@ Overview
 
 0. Library for a TFT SPI LCD, ST7735 Driver
 1. Raspberry pi PICO RP2040 library.
-2. Inverse colour, rotate, sleep, idle  & verticaly scroll modes supported.
+2. Inverse colour, rotate, sleep, idle  & vertical scroll modes supported.
 3. Eight fonts
 4. Graphics + print class included.
 5. bi-color, 16 bit and 24 colour Bitmaps supported.
@@ -44,7 +44,7 @@ There are 3 paths , comment in one path and one path only.
 | --- | --- | --- |
 | ST7735_TFT_TESTS | Text , graphics , icons tests, Test 1-11 | --- |
 | ST7735_TFT_BMP_DATA | bi colour 24 & 16 bitmaps tests ,Test 12 -16 | Bitmap data is stored in arrays on PICO |
-| ST7735_TFT_BMP_SDCARD|  SD card bitmaps tests | bitmap data read from SD card , Not working,  TODO |
+| ST7735_TFT_BMP_SDCARD|  SD card bitmaps tests | TODO, not working |
 
 
 Software
@@ -64,12 +64,12 @@ where user can make adjustments to select for SPI type used, PCB type used and s
 
 Here the user can pass the SPI Bus freq in kiloHertz, Currently set to 8 Mhz.
 Max SPI speed on the PICO is 62.5Mhz. There is a file with SPI test results for the FPS tests in
-extra/doc folder. The SPI interface(spi0 spi1 etc). If users wants software just call this method 
+extra/doc folder. The SPI interface(spi0 spi1 etc). If users wants software SPI just call this method 
 without any arguments. 
 
 **USER OPTION 1 GPIO**
 
-The 5 GPIO pins used, the clodk and data lines must be the clock and data lines 
+The 5 GPIO pins used, the clock and data lines must be the clock and data lines 
 of spi interface chosen in option 0 if using hardware SPI.
 
 **USER OPTION 2 Screen size  + Offsets**
@@ -103,9 +103,7 @@ These two are only type of ST7735 library tested on, but should work on other ty
 1. TFT SPI LCD, ST7735 Driver, RED PCB v1.1, 1.44 , 128 x 128 pixels, "ST7735R Red Tab" 
 2. TFT SPI LCD, ST7735 Driver, RED PCB v1.2, 1.8 , 128 x 160 pixels, "ST7735S Black Tab" 
 
-The test files and full screen bitmaps are set up for number 1.  so user will have to modify 
-"USER OPTIONS" in main.cpp and provide own (128X160)bitmap to fully test number 2.
-
+The test files and full screen bitmaps are set up for number 1. 
 
 
 **Fonts**
@@ -136,8 +134,8 @@ There are 6 functions to support drawing bitmaps,
 | 2 | TFTdrawBitmap | bi-colour | 2048 bytes  | Data horizontally  addressed |
 | 3 | TFTdrawBitmap16Data | 16 bit color 565  | 32768  | Data from array on PICO |
 | 4 | TFTdrawBitmap24Data  | 24 bit color  | 49152  | Data from Array on PICO, Converted by software to 16-bit color  |
-| 5 | TFTdrawBitmap16 | 16 bit color 565 BMP files |  32768  | TODO Data from SD card,   |
-| 6 | TFTdrawBitmap24  | 24 bit color BMP files | 49152  | TODO Data from SD card , Converted by software to 16-bit color  |
+| 5 | TFTdrawBitmap16 | 16 bit color 565 BMP files |  32768  | TODO not working , Data from SD card|
+| 6 | TFTdrawBitmap24  | 24 bit color BMP files | 49152  | TODO not working ,  Data from SD card  |
 
 1. Bitmap size in kiloBytes = (screenWidth * screenHeight * bitsPerPixel)/(1024 * 8)
 2. Math in bitmap size column 2-5  assumes 128x128 pixel screen.

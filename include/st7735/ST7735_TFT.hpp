@@ -91,7 +91,7 @@
 #define   ST7735_TAN     0xED01
 #define   ST7735_GREY    0x9CD1
 #define   ST7735_BROWN   0x6201
-#define   ST7735_PINK    0xF81F
+#define   ST7735_DGREEN    0x01c0
 #define   ST7735_ORANGE  0xFC00
 
 // GPIO	

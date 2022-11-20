@@ -156,7 +156,7 @@ void Test1A(void) {
 	char teststr8[] = "GREY";
 	char teststr9[] = "TAN";
 	char teststr10[] = "BROWN";
-	char teststr11[] = "PINK";
+	char teststr11[] = "Dark GREEN";
 	char teststr12[] = "ORANGE";
 	myTFT.TFTdrawText(5, 10, teststr1, ST7735_WHITE, ST7735_BLACK, 1);
 	myTFT.TFTdrawText(5, 25, teststr2, ST7735_BLUE, ST7735_BLACK, 1);
@@ -164,14 +164,12 @@ void Test1A(void) {
 	myTFT.TFTdrawText(5, 55, teststr4, ST7735_GREEN, ST7735_BLACK, 1);
 	myTFT.TFTdrawText(5, 70, teststr5, ST7735_CYAN, ST7735_BLACK, 1);
 	myTFT.TFTdrawText(5, 85, teststr6, ST7735_MAGENTA, ST7735_BLACK, 1);
-	TFT_MILLISEC_DELAY(TEST_DELAY5);
-	myTFT.TFTfillScreen(ST7735_BLACK);
-	myTFT.TFTdrawText(5, 10, teststr7, ST7735_YELLOW, ST7735_BLACK, 1);
-	myTFT.TFTdrawText(5, 25, teststr8, ST7735_GREY, ST7735_BLACK, 1);
-	myTFT.TFTdrawText(5, 40, teststr9, ST7735_TAN, ST7735_BLACK, 1);
-	myTFT.TFTdrawText(5, 55, teststr10 , ST7735_BROWN, ST7735_BLACK, 1);
-	myTFT.TFTdrawText(5, 70, teststr11, ST7735_PINK, ST7735_BLACK, 1);
-	myTFT.TFTdrawText(5, 85, teststr12 , ST7735_ORANGE, ST7735_BLACK, 1);
+	myTFT.TFTdrawText(55, 10, teststr7, ST7735_YELLOW, ST7735_BLACK, 1);
+	myTFT.TFTdrawText(55, 25, teststr8, ST7735_GREY, ST7735_BLACK, 1);
+	myTFT.TFTdrawText(55, 40, teststr9, ST7735_TAN, ST7735_BLACK, 1);
+	myTFT.TFTdrawText(55, 55, teststr10 , ST7735_BROWN, ST7735_BLACK, 1);
+	myTFT.TFTdrawText(55, 70, teststr11, ST7735_DGREEN, ST7735_BLACK, 1);
+	myTFT.TFTdrawText(55, 85, teststr12 , ST7735_ORANGE, ST7735_BLACK, 1);
 	TFT_MILLISEC_DELAY(TEST_DELAY5);
 	myTFT.TFTfillScreen(ST7735_BLACK);
 }
@@ -364,7 +362,7 @@ void Test7(void)
 		myTFT.TFTVerticalScroll(pos + TOP_FIXED);
 		pos++;
 		// check pos if necessary: must be < tftTFT_HEIGHT - TOP_FIXED - BOTTOM_FIXED
-		TFT_MILLISEC_DELAY(15);  
+		TFT_MILLISEC_DELAY(5);  
 	}
 	TFT_MILLISEC_DELAY(TEST_DELAY1);
 	}
