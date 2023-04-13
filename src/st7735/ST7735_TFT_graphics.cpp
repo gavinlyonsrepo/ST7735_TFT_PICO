@@ -515,10 +515,6 @@ void ST7735_TFT_graphics ::TFTFontNum(TFT_FONT_TYPE_e FontNumber) {
 
 	_FontNumber = FontNumber;
 
-	TFT_Font_width_e setfontwidth;
-	TFT_Font_offset_e setoffset;
-	TFT_Font_height_e setfontheight;
-
 	switch (_FontNumber)
 	{
 		case TFTFont_Default:  // Norm default 5 by 8
@@ -562,9 +558,9 @@ void ST7735_TFT_graphics ::TFTFontNum(TFT_FONT_TYPE_e FontNumber) {
 			_CurrentFontheight = TFTFont_height_16;
 		break;
 		default:
-			_CurrentFontWidth = (setfontwidth = TFTFont_width_5);
-			_CurrentFontoffset =  (setoffset = TFTFont_offset_none);
-			_CurrentFontheight = (setfontheight=TFTFont_height_8);
+			_CurrentFontWidth = TFTFont_width_5;
+			_CurrentFontoffset =  TFTFont_offset_none;
+			_CurrentFontheight = TFTFont_height_8;
 			_FontNumber = TFTFont_Default;
 		break;
 	}
@@ -638,44 +634,6 @@ void ST7735_TFT_graphics ::TFTdrawBitmap(int16_t x, int16_t y, int16_t w, int16_
 	free(buffer);
 }
 
-// Desc: Draws an 24 bit color bitmap to screen from a bitmap file
-// Param 1,2  X,Y screen co-ord
-// Param 3 A pointer to the databuffer containing Bitmap data
-// Param 4,5: width and height of bitmap in pixels
-// Note 24 bit color converted to 16 bit color bv color 565 function.
-void ST7735_TFT_graphics ::TFTdrawBitmap24(uint8_t x, uint8_t y, uint8_t *pBmp, uint8_t  w, uint8_t  h)
-{
-	uint8_t i, j;
-	uint16_t color;
-	uint32_t rgb, ptr;
-
-	// Check bounds
-	if ((x >= _widthTFT) || (y >= _heightTFT)) return;
-	if ((x + w - 1) >= _widthTFT) w = _widthTFT - x;
-	if ((y + h - 1) >= _heightTFT) h = _heightTFT - y;
-	
-	// Create bitmap buffer
-	uint8_t* buffer = (uint8_t*)malloc(w * h * 2);
-	if (buffer == NULL)  return;  // check Malloc success
-	ptr = 0;
-	for(j = 0; j < h; j++)
-	{
-		for(i = 0; i < w ; i ++)
-		{
-			// Translate RBG24 to RGB565 bitmap 
-			rgb = *(unsigned int*)(pBmp + i * 3 + (h-1-j) * 3 * w);
-			color = Color565(((rgb >> 16) & 0xFF), ((rgb >> 8) & 0xFF), (rgb & 0xFF));
-			buffer[ptr++] = color >> 8;
-			buffer[ptr++] = color;
-		}
-	}
-
-	// Set window and write buffer
-	TFTsetAddrWindow(x, y, x + w - 1, y + h - 1);
-	spiWriteDataBuffer(buffer, h*w*sizeof(uint16_t));
-
-	free(buffer);
-}
 
 // Desc: Draws an 24 bit color bitmap to screen from a data array
 // Param 1,2  X,Y screen co-ord
@@ -720,41 +678,6 @@ void ST7735_TFT_graphics ::TFTdrawBitmap24Data(uint8_t x, uint8_t y, uint8_t *pB
 }
 
 
-// Desc: Draws an 16 bit color bitmap to screen from a bitmap file
-// Param 1,2  X,Y screen co-ord
-// Param 3 A pointer to the data array containing Bitmap data
-// Param 4,5: width  and height of bitmap in pixels
-void ST7735_TFT_graphics ::TFTdrawBitmap16(uint8_t x, uint8_t y, uint8_t *pBmp, uint8_t w, uint8_t h) {
-	uint8_t i, j;
-	uint16_t color;
-	uint32_t ptr;
-	
-	// Check bounds
-	if ((x >= _widthTFT) || (y >= _heightTFT)) return;
-	if ((x + w - 1) >= _widthTFT) w = _widthTFT - x;
-	if ((y + h - 1) >= _heightTFT) h = _heightTFT - y;
-	
-	// Create bitmap buffer
-	uint8_t* buffer = (uint8_t*)malloc(w * h * 2);
-	if (buffer == NULL)  return;  // check Malloc success
-	ptr = 0;
-	
-	for(j = 0; j < h; j++)
-	{
-		for(i = 0; i < w; i ++)
-		{
-			color = *(unsigned int*)(pBmp + i * 2 + (h-1-j) * 2 * w);
-			buffer[ptr++] = color >> 8;
-			buffer[ptr++] = color & 0x00FF;
-		}
-	}
-	
-	// Set window and write buffer
-	TFTsetAddrWindow(x, y, x + w - 1, y + h - 1);
-	spiWriteDataBuffer(buffer, h*w*sizeof(uint16_t));
-
-	free(buffer);
-}
 
 // Desc: Draws an 16 bit color bitmap to screen from a data Array
 // Param 1,2  X,Y screen co-ord

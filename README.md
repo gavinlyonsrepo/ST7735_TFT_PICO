@@ -10,7 +10,6 @@ Table of contents
   * [Software](#software)  
   * [Hardware](#hardware)
   * [Output](#output)
-  * [TODO](#todo)
 
 Overview
 --------------------------------------------
@@ -36,15 +35,14 @@ Overview
 Test
 ----------------------------
 
-There are 3 example files included. User picks the one they want 
+There are 2 example files included. User picks the one they want 
 by editing the CMakeLists.txt :: add_executable(${PROJECT_NAME}  section.
-There are 3 paths , comment in one path and one path only.
+There are 2 paths , comment in one path and one path only.
 
 | Filename  | Function  | Note |
 | --- | --- | --- |
 | ST7735_TFT_TESTS | Text , graphics , icons tests, Test 1-11 | --- |
 | ST7735_TFT_BMP_DATA | bi colour 24 & 16 bitmaps tests ,Test 12 -16 | Bitmap data is stored in arrays on PICO |
-| ST7735_TFT_BMP_SDCARD|  SD card bitmaps tests | TODO, not working |
 
 
 Software
@@ -126,16 +124,14 @@ The large numerical Fonts, 7 & 8 cannot be scaled.
 
 **Bitmap**
 
-There are 6 functions to support drawing bitmaps, 
+There are 4 functions to support drawing bitmaps, 
 
 | Num | Function Name | Colour support | bitmap size Max |  Note |
 | ------ | ------ | ------ | ------ | ------ |
 | 1 | TFTdrawIcon | bi-colour | (8 x (0-Max_y)) 128 bytes max  | Data vertically addressed |
 | 2 | TFTdrawBitmap | bi-colour | 2048 bytes  | Data horizontally  addressed |
 | 3 | TFTdrawBitmap16Data | 16 bit color 565  | 32768  | Data from array on PICO |
-| 4 | TFTdrawBitmap24Data  | 24 bit color  | 49152  | Data from Array on PICO, Converted by software to 16-bit color  |
-| 5 | TFTdrawBitmap16 | 16 bit color 565 BMP files |  32768  | TODO not working , Data from SD card|
-| 6 | TFTdrawBitmap24  | 24 bit color BMP files | 49152  | TODO not working ,  Data from SD card  |
+| 4 | TFTdrawBitmap24Data  | 24 bit color  | 49152  | Data from array on PICO, Converted by software to 16-bit color  |
 
 1. Bitmap size in kiloBytes = (screenWidth * screenHeight * bitsPerPixel)/(1024 * 8)
 2. Math in bitmap size column 2-5  assumes 128x128 pixel screen.
@@ -180,8 +176,3 @@ Output of some of the test routine's. Left to right
 ![ pic ](https://github.com/gavinlyonsrepo/ST7735_TFT_PICO/blob/main/extra/doc/images/row1.jpg)
 ![ pic1 ](https://github.com/gavinlyonsrepo/ST7735_TFT_RPI/blob/main/extra/images/4.jpg)
 
-
-TODO
---------------------------
-
-* SD card support for displaying BMP files. 
