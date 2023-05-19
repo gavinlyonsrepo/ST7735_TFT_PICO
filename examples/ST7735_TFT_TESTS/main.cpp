@@ -1,13 +1,31 @@
-/*
- * Project Name: ST7735_TFT_PICO
- * File: main.cpp
- * Description: library test file for test 0-12, text, graphics, bi-color bitmap.
- * Author: Gavin Lyons.
- * Created: November 2022
- * Description: See URL for full details.
- * NOTE: USER OPTIONS 0-3 in SETUP function
- * URL: https://github.com/gavinlyonsrepo/ST7735_TFT_PICO
- */
+/*!
+	@file     main.cpp
+	@author   Gavin Lyons
+	@brief Example cpp file for ST7735_TFT_PICO library.
+			Tests 1-11. Graphics,text, fonts & function testing.
+	@note  See USER OPTIONS 0-3 in SETUP function
+
+	@test
+
+	-# Test1  print out  fonts 1-6
+	-# Test1A defined 16-bit Colors, text
+	-# Test1B print entire ASCII font 0 to 254, default font
+	-# Test1C print numbers int and float using draw functions
+	-# Test1D print class methods
+	-# Test1E print out font 7 & 8 using draw functions
+	-# Test2  font sizes (2-5) + character draw using draw functions
+	-# Test3  pixels and lines
+	-# Test4  rectangles 
+	-# Test5  Circle
+	-# Test6  Triangles 
+	-# Test7  scroll
+	-# Test8  More shapes, media buttons graphic.
+	-# Test9  Rotate
+	-# Test10 change modes test -> Invert, display on/off and Sleep.
+	-# Test11 "clock demo" , icons, , font 7
+	-# TestFPS FPS optional test -> set bool bTestFPS
+
+*/
 
 // Section ::  libraries 
 #include "pico/time.h"
@@ -24,7 +42,7 @@
 
 // Section :: Globals 
 ST7735_TFT myTFT;
-bool bTestFPS = false;
+bool bTestFPS = false; /**< turn on frame rate per second test , set true for ON */
 
 //  Section ::  Function Headers 
 
@@ -33,7 +51,7 @@ void Test1(void);  // Print out  fonts 1-6
 void Test1A(void); // defined 16-bit Colors, text
 void Test1B(void); // print entire ASCII font 0 to 254, default font
 void Test1C(void); // print numbers int and float using draw functions
-void Test1D(void); // PRINT function
+void Test1D(void); // print class methods
 void Test1E(void); // Print out font 7 & 8 using draw functions
 void Test2(void);  // font sizes (2-5) + character draw using draw functions
 void Test3(void);  // pixels and lines
@@ -45,7 +63,7 @@ void Test8(void);  // More shapes, media buttons graphic.
 void Test9(void);  // Rotate
 void Test10(void); // change modes test -> Invert, display on/off and Sleep.
 void Test11(void); // "clock demo" , icons, , font 7
-void Test11B(void); // FPS
+void TestFPS(void); // FPSturn on frame rate test if true
 void EndTests(void);
 
 //  Section ::  MAIN loop
@@ -69,7 +87,7 @@ int main(void)
 	Test9();
 	Test10();
 	Test11();
-	if (bTestFPS == true)  Test11B();
+	if (bTestFPS == true)  TestFPS();
 	EndTests();
 	return 0;
 }
@@ -77,6 +95,9 @@ int main(void)
 
 //  Section ::  Function Space 
 
+/*!
+	@brief setup + user options
+*/
 void Setup(void)
 {
 
@@ -113,10 +134,13 @@ void Setup(void)
 // ******************************************
 
 // ******** USER OPTION 3 PCB_TYPE  **************************
-	myTFT.TFTInitPCBType(TFT_ST7735R_Red); // pass enum,4 choices,see README
+	myTFT.TFTInitPCBType(myTFT.TFT_ST7735R_Red); // pass enum,4 choices,see README
 //**********************************************************
 }
 
+/*!
+	@brief print out fonts 1-6
+*/
 void Test1(void) {
 
 	char teststr1[] = "Default 1";
@@ -128,23 +152,26 @@ void Test1(void) {
 	
 	myTFT.TFTfillScreen(ST7735_BLACK);
 	
-	myTFT.TFTFontNum(TFTFont_Default);
+	myTFT.TFTFontNum(myTFT.TFTFont_Default);
 	myTFT.TFTdrawText(5, 5, teststr1, ST7735_WHITE, ST7735_BLACK, 2);
-	myTFT.TFTFontNum(TFTFont_Thick);
+	myTFT.TFTFontNum(myTFT.TFTFont_Thick);
 	myTFT.TFTdrawText(5, 25, teststr2, ST7735_GREEN, ST7735_BLACK, 2);
-	myTFT.TFTFontNum(TFTFont_Seven_Seg);
+	myTFT.TFTFontNum(myTFT.TFTFont_Seven_Seg);
 	myTFT.TFTdrawText(5, 45, teststr3, ST7735_BLUE, ST7735_BLACK, 2);
-	myTFT.TFTFontNum(TFTFont_Wide);
+	myTFT.TFTFontNum(myTFT.TFTFont_Wide);
 	myTFT.TFTdrawText(5, 65, teststr4, ST7735_CYAN, ST7735_BLACK, 2);
-	myTFT.TFTFontNum(TFTFont_Tiny);
+	myTFT.TFTFontNum(myTFT.TFTFont_Tiny);
 	myTFT.TFTdrawText(5, 85, teststr5, ST7735_RED, ST7735_BLACK, 2);
-	myTFT.TFTFontNum(TFTFont_HomeSpun);
+	myTFT.TFTFontNum(myTFT.TFTFont_HomeSpun);
 	myTFT.TFTdrawText(5, 105, teststr6, ST7735_YELLOW, ST7735_BLACK, 2);
 	TFT_MILLISEC_DELAY(TEST_DELAY5);
 	myTFT.TFTfillScreen(ST7735_BLACK);
-	myTFT.TFTFontNum(TFTFont_Default);
+	myTFT.TFTFontNum(myTFT.TFTFont_Default);
 }
 
+/*!
+	@brief  Defined 16-bit Colors, text
+*/
 void Test1A(void) {
 	char teststr1[] = "WHITE";
 	char teststr2[] = "BLUE";
@@ -174,6 +201,9 @@ void Test1A(void) {
 	myTFT.TFTfillScreen(ST7735_BLACK);
 }
 
+/*!
+	@brief   print entire ASCII font 0 to 254, default font
+*/
 void Test1B(void) {
 	uint8_t row = 5;
 	uint8_t col = 5;
@@ -204,12 +234,14 @@ void Test1B(void) {
 	myTFT.TFTfillScreen(ST7735_BLACK);
 }
 
-
+/*!
+	@brief  print numbers int and float using draw functions
+*/
 void Test1C(void)
 {
 	int myInt=931;
 	char myStr[5];
-	myTFT.TFTFontNum(TFTFont_Seven_Seg);
+	myTFT.TFTFontNum(myTFT.TFTFont_Seven_Seg);
 	sprintf(myStr, "%d", myInt);
 	myTFT.TFTdrawText(5, 5, myStr, ST7735_BLUE, ST7735_BLACK, 3);
 
@@ -223,17 +255,19 @@ void Test1C(void)
 		
 }
 
-
+/*!
+	@brief  print class methods
+*/
 void Test1D(void){
 
 	uint8_t numPos = 47;
 
 	myTFT.setTextSize(1);  // Test a string with print 
 	myTFT.TFTsetCursor(10,10);
-	myTFT.TFTFontNum(TFTFont_Default);
+	myTFT.TFTFontNum(myTFT.TFTFont_Default);
 	myTFT.print("Hello ");
 	
-	myTFT.TFTFontNum(TFTFont_Thick);
+	myTFT.TFTFontNum(myTFT.TFTFont_Thick);
 	myTFT.TFTsetCursor(50,10); // Test a int with print 
 	myTFT.print(1243);
 	
@@ -242,27 +276,27 @@ void Test1D(void){
 	myTFT.setTextColor(ST7735_RED, ST7735_YELLOW);
 	myTFT.TFTfillRectangle(5, 25, 120, 20, ST7735_YELLOW);
 	myTFT.TFTsetCursor(5,25);
-	myTFT.TFTFontNum(TFTFont_Seven_Seg);
+	myTFT.TFTFontNum(myTFT.TFTFont_Seven_Seg);
 	myTFT.print(-492);
 	
 	myTFT.TFTsetCursor(65,25); // Test a float 
-	myTFT.TFTFontNum(TFTFont_Wide);
+	myTFT.TFTFontNum(myTFT.TFTFont_Wide);
 	myTFT.print(3.1745 , 1); // print 3.2
 	
 	myTFT.TFTsetCursor(10,55); // Test float bignum font
-	myTFT.TFTFontNum(TFTFont_Bignum);
+	myTFT.TFTFontNum(myTFT.TFTFont_Bignum);
 	myTFT.print(5.16);
 	
 	myTFT.TFTsetCursor(10,95); // Test float  mednum font
 	myTFT.setTextColor(ST7735_WHITE, ST7735_BLACK);
-	myTFT.TFTFontNum(TFTFont_Mednum);
+	myTFT.TFTFontNum(myTFT.TFTFont_Mednum);
 	myTFT.print(76.88);
 	
 	TFT_MILLISEC_DELAY(TEST_DELAY5);
 	myTFT.TFTfillScreen(ST7735_BLACK);
 
 	// Test print with DEC BIN OCT HEX 
-	myTFT.TFTFontNum(TFTFont_HomeSpun);
+	myTFT.TFTFontNum(myTFT.TFTFont_HomeSpun);
 	myTFT.TFTsetCursor(5,5); 
 	myTFT.print(numPos , DEC); // 47
 	myTFT.TFTsetCursor(5,25); 
@@ -276,17 +310,20 @@ void Test1D(void){
 	myTFT.TFTfillScreen(ST7735_BLACK);
 }
 
+/*!
+	@brief  print out font 7 & 8 using draw functions
+*/
 void Test1E(void)
 {
 	// Note fonts 7 and 8 are numbers only + : 
 	char teststr1[] = "12:81";
 	char teststr2[] = "72:83";
 	
-	myTFT.TFTFontNum(TFTFont_Bignum);
+	myTFT.TFTFontNum(myTFT.TFTFont_Bignum);
 	myTFT.TFTdrawCharNumFont(0, 0, '6',  ST7735_RED, ST7735_BLACK);
 	myTFT.TFTdrawTextNumFont(0, 40, teststr1, ST7735_YELLOW, ST7735_RED);
 	
-	myTFT.TFTFontNum(TFTFont_Mednum);
+	myTFT.TFTFontNum(myTFT.TFTFont_Mednum);
 	myTFT.TFTdrawCharNumFont(0, 75, '7',  ST7735_WHITE, ST7735_BLACK);
 	myTFT.TFTdrawTextNumFont(0, 100, teststr2, ST7735_GREEN, ST7735_RED);
 	
@@ -294,8 +331,11 @@ void Test1E(void)
 	myTFT.TFTfillScreen(ST7735_BLACK);
 }
 
+/*!
+	@brief  font sizes (2-5) + character draw using draw functions
+*/
 void Test2(void) {
-	myTFT.TFTFontNum(TFTFont_Default);
+	myTFT.TFTFontNum(myTFT.TFTFont_Default);
 	char teststr1[] = "Size2";
 	myTFT.TFTdrawText(0, 5, teststr1, ST7735_WHITE, ST7735_BLACK, 2);
 	myTFT.TFTdrawChar(0, 25, '3', ST7735_WHITE, ST7735_BLACK, 3);
@@ -306,6 +346,9 @@ void Test2(void) {
 	myTFT.TFTfillScreen(ST7735_BLACK);
 }
 
+/*!
+	@brief   pixels and lines
+*/
 void Test3(void)  
 {
 	myTFT.TFTdrawPixel(85, 5, ST7735_WHITE);
@@ -319,6 +362,9 @@ void Test3(void)
 	myTFT.TFTfillScreen(ST7735_BLACK);
 }
 
+/*!
+	@brief  rectangles
+*/
 void Test4(void) {
 	myTFT.TFTdrawRectWH(5, 5, 20, 20, ST7735_RED);
 	myTFT.TFTfillRectangle(45, 5, 20, 20, ST7735_YELLOW);
@@ -330,11 +376,17 @@ void Test4(void) {
 	myTFT.TFTfillScreen(ST7735_BLACK);
 }
 
+/*!
+	@brief  circles
+*/
 void Test5(void) {
 	myTFT.TFTdrawCircle(40, 20, 15, ST7735_GREEN);
 	myTFT.TFTfillCircle(80, 20, 15, ST7735_YELLOW);
 }
 
+/*!
+	@brief  triangles
+*/
 void Test6(void) {
 	myTFT.TFTdrawTriangle(5, 80, 50, 40, 95, 80, ST7735_CYAN);
 	myTFT.TFTfillTriangle(55, 120, 100, 90, 127, 120, ST7735_RED);
@@ -343,7 +395,9 @@ void Test6(void) {
 	myTFT.TFTfillScreen(ST7735_BLACK);
 }
 
-
+/*!
+	@brief  Vertical Scroll test
+*/
 void Test7(void) 
 {
 	const uint8_t LINES = 10, LINE_SIZE = 10, LINE_OFFSET = 3, TOP_FIXED = 0, BOTTOM_FIXED = 0;
@@ -366,10 +420,13 @@ void Test7(void)
 	}
 	TFT_MILLISEC_DELAY(TEST_DELAY1);
 	}
-	myTFT.TFTchangeMode(TFT_Normal_mode); 
+	myTFT.TFTchangeMode(myTFT.TFT_Normal_mode); 
 	myTFT.TFTfillScreen(ST7735_BLACK);
 }
 
+/*!
+	@brief  More shapes, media buttons graphic.
+*/
 void Test8() 
 {
 	char teststr1[] = "Press Play";
@@ -387,6 +444,9 @@ void Test8()
 	TFT_MILLISEC_DELAY(TEST_DELAY1);
 }
 
+/*!
+	@brief  Rotate
+*/
 void Test9()
 {
 	char teststr0[] = "Rotate 0"; //normal
@@ -395,51 +455,57 @@ void Test9()
 	char teststr3[] = "Rotate 270"; // 270
 	
 	myTFT.TFTfillScreen(ST7735_BLACK);
-	myTFT.TFTsetRotation(TFT_Degrees_0);
+	myTFT.TFTsetRotation(myTFT.TFT_Degrees_0);
 	myTFT.TFTdrawText(20, 20, teststr0, ST7735_GREEN, ST7735_BLACK, 1);
 	TFT_MILLISEC_DELAY(TEST_DELAY2);
 	
 	myTFT.TFTfillScreen(ST7735_BLACK);
-	myTFT.TFTsetRotation(TFT_Degrees_90);
+	myTFT.TFTsetRotation(myTFT.TFT_Degrees_90);
 	myTFT.TFTdrawText(20, 20, teststr1, ST7735_GREEN, ST7735_BLACK, 1);
 	TFT_MILLISEC_DELAY(TEST_DELAY2);
 	
 	myTFT.TFTfillScreen(ST7735_BLACK);
-	myTFT.TFTsetRotation(TFT_Degrees_180);
+	myTFT.TFTsetRotation(myTFT.TFT_Degrees_180);
 	myTFT.TFTdrawText(20, 20, teststr2, ST7735_GREEN, ST7735_BLACK, 1);
 	TFT_MILLISEC_DELAY(TEST_DELAY2);
 	
 	myTFT.TFTfillScreen(ST7735_BLACK);
-	myTFT.TFTsetRotation(TFT_Degrees_270);
+	myTFT.TFTsetRotation(myTFT.TFT_Degrees_270);
 	myTFT.TFTdrawText(20, 20, teststr3, ST7735_GREEN, ST7735_BLACK, 1);
 	TFT_MILLISEC_DELAY(TEST_DELAY2);
 	
-	myTFT.TFTsetRotation(TFT_Degrees_0);
-	myTFT.TFTchangeMode(TFT_Normal_mode);
+	myTFT.TFTsetRotation(myTFT.TFT_Degrees_0);
+	myTFT.TFTchangeMode(myTFT.TFT_Normal_mode);
 	myTFT.TFTfillScreen(ST7735_BLACK);
 }
 
+/*!
+	@brief  change modes test -> Invert, display on/off and Sleep.
+*/
 void Test10()
 {
 	char teststr1[] = "Mode test";
 	myTFT.TFTfillRoundRect(25, 10, 78, 60, 8, ST7735_YELLOW);
 	myTFT.TFTdrawText(30, 80, teststr1, ST7735_WHITE, ST7735_RED, 1);
 	TFT_MILLISEC_DELAY(TEST_DELAY2);
-	myTFT.TFTchangeMode(TFT_Normal_mode);
+	myTFT.TFTchangeMode(myTFT.TFT_Normal_mode);
 	 TFT_MILLISEC_DELAY(TEST_DELAY2);
-	 myTFT.TFTchangeMode(TFT_Invert_mode);
+	 myTFT.TFTchangeMode(myTFT.TFT_Invert_mode);
 	 TFT_MILLISEC_DELAY(TEST_DELAY2);
-	 myTFT.TFTchangeMode(TFT_Normal_mode);
+	 myTFT.TFTchangeMode(myTFT.TFT_Normal_mode);
 	 TFT_MILLISEC_DELAY(TEST_DELAY2);
-	 myTFT.TFTchangeMode(TFT_Display_off_mode);
+	 myTFT.TFTchangeMode(myTFT.TFT_Display_off_mode);
 	 TFT_MILLISEC_DELAY(TEST_DELAY2);
-	 myTFT.TFTchangeMode(TFT_Display_on_mode);
+	 myTFT.TFTchangeMode(myTFT.TFT_Display_on_mode);
 	 TFT_MILLISEC_DELAY(TEST_DELAY2);
-	 myTFT.TFTchangeMode(TFT_Sleep_mode);
+	 myTFT.TFTchangeMode(myTFT.TFT_Sleep_mode);
 	 TFT_MILLISEC_DELAY(TEST_DELAY2);
-	 myTFT.TFTchangeMode(TFT_Normal_mode);
+	 myTFT.TFTchangeMode(myTFT.TFT_Normal_mode);
 }
 
+/*!
+	@brief   "clock demo" , icons, , font 7
+*/
 void Test11(void)
 {
 	myTFT.TFTfillScreen(ST7735_BLACK);
@@ -485,7 +551,7 @@ void Test11(void)
 	myTFT.TFTdrawFastHLine(0, 80, 127, ST7735_RED);
 	myTFT.TFTdrawFastHLine(0, 118, 127, ST7735_RED);
 	
-	myTFT.TFTFontNum(TFTFont_Bignum);
+	myTFT.TFTFontNum(myTFT.TFTFont_Bignum);
 	while(1)
 	{
 		unsigned long currentMillis = to_ms_since_boot(get_absolute_time());
@@ -506,11 +572,11 @@ void Test11(void)
 				}
 			}
 			// display Clock
-			myTFT.TFTFontNum(TFTFont_Bignum);
+			myTFT.TFTFontNum(myTFT.TFTFont_Bignum);
 			sprintf(strTime, "%02u:%02u:%02u", Hour , Min ,Sec);
 			myTFT.TFTdrawTextNumFont(0, 45, strTime, ST7735_GREEN, ST7735_BLACK);
 			// display counter
-			myTFT.TFTFontNum(TFTFont_Mednum);
+			myTFT.TFTFontNum(myTFT.TFTFont_Mednum);
 			sprintf(strCount, "%03d", count);
 			myTFT.TFTdrawTextNumFont(0, 85, strCount, ST7735_YELLOW, ST7735_RED);
 			count--;
@@ -522,11 +588,13 @@ void Test11(void)
 		
 	TFT_MILLISEC_DELAY(TEST_DELAY2);
 	myTFT.TFTfillScreen(ST7735_BLACK);
-	myTFT.TFTFontNum(TFTFont_Default);
+	myTFT.TFTFontNum(myTFT.TFTFont_Default);
 } //end of test 11
 
-
-void Test11B(void)
+/*!
+	@brief   Frame rate per second test, FPS test. Optionally specify -> set bool bTestFPS
+*/
+void TestFPS(void)
 {
 	// Values to count frame rate per second
 	long previousMillis  = 0;
@@ -578,6 +646,9 @@ void Test11B(void)
 	}
 }
 
+/*!
+	@brief  Stop testing and shutdown the TFT
+*/
 void EndTests(void)
 {
 	char teststr1[] = "Tests over";

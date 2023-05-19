@@ -27,6 +27,8 @@ target_sources(pico_st7735 INTERFACE
   ${CMAKE_CURRENT_LIST_DIR}/src/st7735/ST7735_TFT.cpp
   ${CMAKE_CURRENT_LIST_DIR}/src/st7735/ST7735_TFT_graphics.cpp
   ${CMAKE_CURRENT_LIST_DIR}/src/st7735/ST7735_TFT_Print.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/src/st7735/ST7735_TFT_Font.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/src/st7735/ST7735_TFT_Bitmap_Data.cpp
 )
 
 target_include_directories(pico_st7735 INTERFACE ${CMAKE_CURRENT_LIST_DIR}/include)

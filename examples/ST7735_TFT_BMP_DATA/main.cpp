@@ -1,18 +1,24 @@
-/*
- * Project Name: ST7735_TFT_PICO
- * File: main.cpp
- * Description: library test file  test 12 14 15 16 and FPS
- * test bitmap bicolor and 16 and 24 bit colour from data array 
- * Description: See URL for full details.
- * NOTE :: USER OPTIONS 0-3 in SETUP function
- * URL: https://github.com/gavinlyonsrepo/ST7735_TFT_PICO
- */
+/*!
+	@file     main.cpp
+	@author   Gavin Lyons
+	@brief Example cpp file for ST7735_TFT_PICO library.
+			Tests 12-16. bitmap tests
+	@note  See USER OPTIONS 0-3 in SETUP function
 
+	@test
+
+	-# Test 12 bi-color small image
+	-# Test 14 bi-color full screen image 128x128
+	-# Test 15 16 bit color image from a data array
+	-# Test 16  24 bit color image data from a data array
+	-# Test FPS FPS optional test -> set bool bTestFPS
+
+*/
 // Section ::  libraries 
 #include "pico/stdlib.h"
 #include "hardware/spi.h"
 #include "st7735/ST7735_TFT.hpp"
-#include "st7735/ST7735_Bitmap_Data.hpp"
+#include "st7735/ST7735_TFT_Bitmap_Data.hpp"
 
 // Section :: Defines   
 //  Test timing related defines 
@@ -22,7 +28,7 @@
 
 // Section :: Globals 
 ST7735_TFT myTFT;
-bool bTestFPS  = false;
+bool bTestFPS  = false; /**< turn on frame rate per second test , set true for ON */
 
 //  Section ::  Function Headers 
 
@@ -54,6 +60,9 @@ int main(void)
 
 //  Section ::  Function Space 
 
+/*!
+	@brief  setup + user options
+*/
 void Setup(void)
 {
 
@@ -75,7 +84,7 @@ void Setup(void)
 
 // ******** USER OPTION 1 GPIO *********
 // NOTE if using Hardware SPI clock and data pins will be tied to 
-// the chosen interface eg Spi0 CLK=18 DIN=19)
+// the chosen interface (eg Spi0 CLK=18 DIN=19)
 	int8_t SDIN_TFT = 19; 
 	int8_t SCLK_TFT = 18; 
 	int8_t DC_TFT = 3;
@@ -93,64 +102,74 @@ void Setup(void)
 // ******************************************
 
 // ******** USER OPTION 3 PCB_TYPE  **************************
-	myTFT.TFTInitPCBType(TFT_ST7735R_Red); // pass enum,4 choices,see README
+	myTFT.TFTInitPCBType(myTFT.TFT_ST7735R_Red); // pass enum,4 choices,see README
 //**********************************************************
 	
 }
 
-// bi-color bitmap small size 
+/*!
+	@brief  test 12 bi-color small image 20x24
+*/
 void Test12(void)
 {
 
 	myTFT.TFTfillScreen(ST7735_BLACK);
 	char teststr1[] = "Test 12";
 	myTFT.TFTdrawText(5, 5, teststr1, ST7735_WHITE, ST7735_BLACK, 1);
-	// smallImage is cast as it is defined as const.
-	myTFT.TFTdrawBitmap(80, 20, 20 , 20, ST7735_CYAN , ST7735_BLACK, (uint8_t*)smallImage);
-	myTFT.TFTdrawBitmap(20, 40, 20 , 20, ST7735_RED, ST7735_BLACK, (uint8_t*)smallImage);
-	myTFT.TFTdrawBitmap(30, 70, 20 , 20, ST7735_YELLOW, ST7735_RED, (uint8_t*)smallImage);
+	myTFT.TFTdrawBitmap(80, 20, 20 , 24, ST7735_CYAN , ST7735_BLACK, (uint8_t*)pSmallImage);
+	myTFT.TFTdrawBitmap(20, 40, 20 , 24, ST7735_RED, ST7735_BLACK, (uint8_t*)pSmallImage);
+	myTFT.TFTdrawBitmap(30, 70, 20 , 24, ST7735_YELLOW, ST7735_RED, (uint8_t*)pSmallImage);
 	TFT_MILLISEC_DELAY(TEST_DELAY5);
 	myTFT.TFTfillScreen(ST7735_BLACK);
 
 }
 
-
+/*!
+	@brief  Test14 bi-color full screen image 128x128
+*/
 void Test14(void)
 {
 	char teststr1[] = "Test 14";
 	myTFT.TFTdrawText(5, 5, teststr1, ST7735_WHITE, ST7735_BLACK, 1);
 	TFT_MILLISEC_DELAY(TEST_DELAY1);
 	
-	myTFT.TFTdrawBitmap(0, 0, 128 , 128, ST7735_WHITE , ST7735_GREEN, backupMenuBitmap);
+	myTFT.TFTdrawBitmap(0, 0, 128 , 128, ST7735_WHITE , ST7735_GREEN, (uint8_t*)pBackupMenuBitmap);
 	TFT_MILLISEC_DELAY(TEST_DELAY5);
 	myTFT.TFTfillScreen(ST7735_BLACK);
 	
 }
 
+/*!
+	@brief  Test15 16 bit color image from a data array
+*/
 void Test15(void)
 {
 	char teststr1[] = "Test 15";
 	myTFT.TFTdrawText(5, 5, teststr1, ST7735_WHITE, ST7735_BLACK, 1);
 	TFT_MILLISEC_DELAY(TEST_DELAY1);
 
-	myTFT.TFTdrawBitmap16Data(0, 0, (uint8_t*)motorImage, 128, 128);
+	myTFT.TFTdrawBitmap16Data(0, 0, (uint8_t*)pMotorImage, 128, 128);
 	TFT_MILLISEC_DELAY(TEST_DELAY5);
 	myTFT.TFTfillScreen(ST7735_BLACK);
 }
 
-
+/*!
+	@brief  Test16 24 bit color image data from a data array
+*/
 void Test16(void)
 {
 	char teststr1[] = "Test 16";
 	myTFT.TFTdrawText(5, 5, teststr1, ST7735_WHITE, ST7735_BLACK, 1);
 	TFT_MILLISEC_DELAY(TEST_DELAY1);
 
-	myTFT.TFTdrawBitmap24Data(0, 0, (uint8_t*)fruitBowl, 128, 128);
+	myTFT.TFTdrawBitmap24Data(0, 0, (uint8_t*)pFruitBowlImage, 128, 128);
 	TFT_MILLISEC_DELAY(TEST_DELAY5);
 	myTFT.TFTfillScreen(ST7735_BLACK);
 }
 
-
+/*!
+	@brief  TestFPS FPS optional test -> set bool bTestFPS
+*/
 void TestFPS(void)
 {
 	// Values to count frame rate per second
@@ -183,7 +202,7 @@ void TestFPS(void)
 	
 	//  ** Code to test ** 
 	//myTFT.TFTdrawBitmap(0, 0, 128 , 128, ST7735_WHITE , ST7735_GREEN, backupMenuBitmap);
-	myTFT.TFTdrawBitmap16Data(0, 0, (uint8_t*)motorImage, 128, 128);
+	myTFT.TFTdrawBitmap16Data(0, 0, (uint8_t*)pMotorImage, 128, 128);
 	//myTFT.TFTdrawBitmap24Data(0, 0, (uint8_t*)fruitBowl, 128, 128);
 	//  **
 	} // end of while 
@@ -194,6 +213,9 @@ void TestFPS(void)
 	printf("FPS :: %u \n", fps );
 }
 
+/*!
+	@brief  Stop testing and shutdown the TFT
+*/
 void EndTests(void)
 {
 	char teststr1[] = "Tests over";
