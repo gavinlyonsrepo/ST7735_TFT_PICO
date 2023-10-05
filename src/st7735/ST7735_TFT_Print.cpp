@@ -196,5 +196,5 @@ size_t Print::print(const std::string &s) {
 }
 
 size_t Print::println(const std::string &s) {
-    return println(s);
+    return write(s.c_str(), s.length());
 }
