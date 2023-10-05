@@ -575,11 +575,11 @@ void Test11(void)
 			}
 			// display Clock
 			myTFT.TFTFontNum(myTFT.TFTFont_Bignum);
-			sprintf(strTime, "%02u:%02u:%02u", Hour , Min ,Sec);
+			snprintf(strTime, sizeof(strTime), "%02u:%02u:%02u", Hour , Min ,Sec);
 			myTFT.TFTdrawTextNumFont(0, 45, strTime, ST7735_GREEN, ST7735_BLACK);
 			// display counter
 			myTFT.TFTFontNum(myTFT.TFTFont_Mednum);
-			sprintf(strCount, "%03d", count);
+			snprintf(strCount, sizeof(strCount), "%03d", count);
 			myTFT.TFTdrawTextNumFont(0, 85, strCount, ST7735_YELLOW, ST7735_RED);
 			count--;
 		} // if every second
