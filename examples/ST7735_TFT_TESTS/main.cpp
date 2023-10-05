@@ -568,7 +568,9 @@ void Test11(void)
 				{
 					Hour++;
 					Min = 0;
-					if (Hour == 24)Hour, Min , Sec = 0;
+					if (Hour == 24) {
+						Hour = 0;
+					}
 				}
 			}
 			// display Clock
