@@ -12,6 +12,8 @@ set(CMAKE_CXX_STANDARD 17)
 # Creates a pico-sdk subdirectory in our project for the libraries
 pico_sdk_init()
 
+add_compile_options(-Wall)
+
 # Tell CMake where to find the executable source file
 add_executable(${PROJECT_NAME} 
   examples/ST7735_TFT_TESTS/main.cpp
