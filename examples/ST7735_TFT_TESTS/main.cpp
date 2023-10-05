@@ -575,11 +575,30 @@ void Test11(void)
 			}
 			// display Clock
 			myTFT.TFTFontNum(myTFT.TFTFont_Bignum);
+
+// We just proved that `Hour`, `Min`, and `Sec` are all in their
+// expected range (0-23 for Hour, 0-59 for Min and Sec).  Therefore
+// the 2-character minimum field width specified by the "%02u" format
+// below will not be exceeded.  Disable the format-truncation warning
+// for this line of code only.
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wformat-truncation"
 			snprintf(strTime, sizeof(strTime), "%02u:%02u:%02u", Hour , Min ,Sec);
+#pragma GCC diagnostic pop
+
 			myTFT.TFTdrawTextNumFont(0, 45, strTime, ST7735_GREEN, ST7735_BLACK);
 			// display counter
 			myTFT.TFTFontNum(myTFT.TFTFont_Mednum);
+
+// `count` is in the range 0-20.  Therefore the 2-character minimum
+// field width specified by the "%03d" format below will not be
+// exceeded.  Disable the format-truncation warning for this line of
+// code only.
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wformat-truncation"
 			snprintf(strCount, sizeof(strCount), "%03d", count);
+#pragma GCC diagnostic pop
+
 			myTFT.TFTdrawTextNumFont(0, 85, strCount, ST7735_YELLOW, ST7735_RED);
 			count--;
 		} // if every second
