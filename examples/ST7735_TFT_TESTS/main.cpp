@@ -35,10 +35,10 @@
 
 // Section :: Defines   
 //  Test timing related defines 
-#define TEST_DELAY1 1000
-#define TEST_DELAY2 2000
-#define TEST_DELAY5 5000
-#define CLOCK_DISPLAY_TIME 20
+#define TEST_DELAY1 1000 // mS
+#define TEST_DELAY2 2000 // mS
+#define TEST_DELAY5 5000 // mS
+#define CLOCK_DISPLAY_TIME 20 // seconds
 
 // Section :: Globals 
 ST7735_TFT myTFT;
@@ -308,6 +308,18 @@ void Test1D(void){
 
 	TFT_MILLISEC_DELAY(TEST_DELAY5);
 	myTFT.TFTfillScreen(ST7735_BLACK);
+
+	// Test print a string object with print
+	std::string timeInfo = "12:45";
+	myTFT.TFTsetCursor(5, 5);
+	myTFT.print(timeInfo);
+	// print a new line with println 
+	//myTFT.TFTsetCursor(0,40);
+	//myTFT.println(timeInfo); // print a new line feed
+	//myTFT.print(timeInfo);
+
+	TFT_MILLISEC_DELAY(TEST_DELAY5);
+	myTFT.TFTfillScreen(ST7735_BLACK);
 }
 
 /*!
@@ -330,6 +342,7 @@ void Test1E(void)
 	TFT_MILLISEC_DELAY(TEST_DELAY5);
 	myTFT.TFTfillScreen(ST7735_BLACK);
 }
+
 
 /*!
 	@brief  font sizes (2-5) + character draw using draw functions

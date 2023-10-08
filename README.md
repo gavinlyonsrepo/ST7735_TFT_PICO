@@ -138,7 +138,7 @@ There are 4 functions to support drawing bitmaps,
 
 ## Hardware
 
-Connections as setup in main.cpp helloworld test file.
+Connections as setup in main.cpp  test file.
 
 | TFT PinNum | Pindesc |  HW SPI |
 | --- | --- | --- | 
