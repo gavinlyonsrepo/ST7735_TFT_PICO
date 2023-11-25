@@ -2,7 +2,9 @@
 	@file     main.cpp
 	@author   Gavin Lyons
 	@brief Example cpp file for ST7735_TFT_PICO library.
-			Tests 1-11. Graphics,text, fonts & function testing.
+			Tests 1-12. Graphics,text, fonts & function testing.
+			Test 12 and FPS are optional and off by default, 
+			see boolean variables in globals section.
 	@note  See USER OPTIONS 0-3 in SETUP function
 
 	@test
@@ -23,7 +25,8 @@
 	-# Test9  Rotate
 	-# Test10 change modes test -> Invert, display on/off and Sleep.
 	-# Test11 "clock demo" , icons, , font 7
-	-# TestFPS FPS optional test -> set bool bTestFPS
+	-# Test12 OPTIONAL, fonts 9&10 large text fonts -> set bool bTestFonts9_10
+	-# TestFPS OPTIONAL FPS test -> set bool bTestFPS
 
 */
 
@@ -43,6 +46,7 @@
 // Section :: Globals 
 ST7735_TFT myTFT;
 bool bTestFPS = false; /**< turn on frame rate per second test , set true for ON */
+bool bTestFonts9_10 = false; /**< turn on test for fonts 9 & 10, set true for  on*/
 
 //  Section ::  Function Headers 
 
@@ -63,7 +67,8 @@ void Test8(void);  // More shapes, media buttons graphic.
 void Test9(void);  // Rotate
 void Test10(void); // change modes test -> Invert, display on/off and Sleep.
 void Test11(void); // "clock demo" , icons, , font 7
-void TestFPS(void); // FPSturn on frame rate test if true
+void Test12(void); // test fonts 9 and 10, optionally large fonts 
+void TestFPS(void); // FPS, frame rate per second
 void EndTests(void);
 
 //  Section ::  MAIN loop
@@ -87,6 +92,7 @@ int main(void)
 	Test9();
 	Test10();
 	Test11();
+	if (bTestFonts9_10 == true) Test12();
 	if (bTestFPS == true)  TestFPS();
 	EndTests();
 	return 0;
@@ -274,7 +280,8 @@ void Test1D(void){
 	// Test a int with print inverted size 2
 	myTFT.setTextSize(2);
 	myTFT.setTextColor(ST7735_RED, ST7735_YELLOW);
-	myTFT.TFTfillRectangle(5, 25, 120, 20, ST7735_YELLOW);
+	//Background must be same color as inverted background or otherwise there will be gaps between characters
+	myTFT.TFTfillRectangle(5, 24, 120, 17, ST7735_YELLOW);
 	myTFT.TFTsetCursor(5,25);
 	myTFT.TFTFontNum(myTFT.TFTFont_Seven_Seg);
 	myTFT.print(-492);
@@ -311,12 +318,13 @@ void Test1D(void){
 
 	// Test print a string object with print
 	std::string timeInfo = "12:45";
+	std::string newLine = "new l";
 	myTFT.TFTsetCursor(5, 5);
 	myTFT.print(timeInfo);
 	// print a new line with println 
-	//myTFT.TFTsetCursor(0,40);
-	//myTFT.println(timeInfo); // print a new line feed
-	//myTFT.print(timeInfo);
+	myTFT.TFTsetCursor(5,40);
+	myTFT.println(newLine); // print a new line feed with println
+	myTFT.print(newLine);
 
 	TFT_MILLISEC_DELAY(TEST_DELAY5);
 	myTFT.TFTfillScreen(ST7735_BLACK);
@@ -626,10 +634,54 @@ void Test11(void)
 } //end of test 11
 
 /*!
+	@brief   "font 9 & 10 optional large text fonts" set bTestFonts9_10 to true to run
+*/
+void Test12(void)
+{
+	myTFT.TFTfillScreen(ST7735_BLACK);
+	TFT_MILLISEC_DELAY(TEST_DELAY1);
+
+	// Arial round tests
+	myTFT.TFTFontNum(myTFT.TFTFont_ArialRound);
+	// Test 12 A print using drawtextnumFont method 
+	char teststr1[] = "Hello";
+	myTFT.TFTdrawTextNumFont(15, 5, teststr1, ST7735_RED, ST7735_YELLOW);
+	// Test 12 B print using print method 
+	myTFT.setTextColor(ST7735_RED, ST7735_YELLOW);
+	myTFT.TFTsetCursor(15,29);
+	myTFT.println("World");
+	myTFT.println(" -3.14!");
+	myTFT.println(" Arial");
+	myTFT.println(" Round");
+
+	TFT_MILLISEC_DELAY(TEST_DELAY5);
+	myTFT.TFTfillScreen(ST7735_BLACK);
+	TFT_MILLISEC_DELAY(TEST_DELAY1);
+
+	// Arial bold test
+	myTFT.TFTFontNum(myTFT.TFTFont_ArialBold);
+	// Test 12 C print using drawtextnumFont method 
+	char teststr10[] = "Hello";
+	myTFT.TFTdrawTextNumFont(15, 5, teststr10, ST7735_GREEN, ST7735_BLACK);
+	// Test 12 D print using print method 
+	myTFT.setTextColor(ST7735_GREEN, ST7735_BLACK);
+	myTFT.TFTsetCursor(15,22);
+	myTFT.println("World");
+	myTFT.println(" -3.18!");
+	myTFT.println(" Arial");
+	myTFT.println(" Bold");
+
+	TFT_MILLISEC_DELAY(TEST_DELAY5);
+	myTFT.TFTfillScreen(ST7735_BLACK);
+	TFT_MILLISEC_DELAY(TEST_DELAY1);
+}
+
+/*!
 	@brief   Frame rate per second test, FPS test. Optionally specify -> set bool bTestFPS
 */
 void TestFPS(void)
 {
+	myTFT.TFTFontNum(myTFT.TFTFont_Default);
 	// Values to count frame rate per second
 	long previousMillis  = 0;
 	long lastFramerate = 0;
@@ -686,6 +738,7 @@ void TestFPS(void)
 void EndTests(void)
 {
 	char teststr1[] = "Tests over";
+	myTFT.TFTFontNum(myTFT.TFTFont_Default);
 	myTFT.TFTfillScreen(ST7735_BLACK);
 	myTFT.TFTdrawText(5, 50, teststr1, ST7735_GREEN, ST7735_BLACK, 2);
 	TFT_MILLISEC_DELAY(TEST_DELAY5);

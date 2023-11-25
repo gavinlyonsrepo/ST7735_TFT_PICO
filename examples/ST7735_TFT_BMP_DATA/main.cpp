@@ -2,12 +2,12 @@
 	@file     main.cpp
 	@author   Gavin Lyons
 	@brief Example cpp file for ST7735_TFT_PICO library.
-			Tests 12-16. bitmap tests
+			Tests 13-16. bitmap tests
 	@note  See USER OPTIONS 0-3 in SETUP function
 
 	@test
 
-	-# Test 12 bi-color small image
+	-# Test 13 bi-color small image
 	-# Test 14 bi-color full screen image 128x128
 	-# Test 15 16 bit color image from a data array
 	-# Test 16  24 bit color image data from a data array
@@ -33,7 +33,7 @@ bool bTestFPS  = false; /**< turn on frame rate per second test , set true for O
 //  Section ::  Function Headers 
 
 void Setup(void);  // setup + user options
-void Test12(void); // bi-color small image
+void Test13(void); // bi-color small image
 void Test14(void); // bi-color full screen image 128x128
 void Test15(void); // 16 bit color image from a data array
 void Test16(void); // 24 bit color image data from a data array
@@ -47,7 +47,7 @@ int main(void)
 	
 	Setup();
 	stdio_init_all(); // Initialize chosen serial port for FPS results
-	Test12();
+	Test13();
 	Test14();
 	Test15();
 	Test16();
@@ -108,9 +108,9 @@ void Setup(void)
 }
 
 /*!
-	@brief  test 12 bi-color small image 20x24
+	@brief  test 13 bi-color small image 20x24
 */
-void Test12(void)
+void Test13(void)
 {
 
 	myTFT.TFTfillScreen(ST7735_BLACK);

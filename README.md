@@ -24,29 +24,32 @@
 0. Library for a TFT SPI LCD, ST7735 Driver
 1. Raspberry pi PICO RP2040 library.
 2. Inverse colour, rotate, sleep, idle  & vertical scroll modes supported.
-3. Eight fonts
+3. 10 fonts included
 4. Graphics + print class included.
 5. bi-color, 16 bit and 24 colour Bitmaps supported.
 6. Hardware and software  SPI
 
 * Author: Gavin Lyons
 * Port of my Raspberry PI library version 1.5 at [github link.](https://github.com/gavinlyonsrepo/ST7735_TFT_RPI)
-* Developed on
+* Developed on Toolchain:
 	1. Raspberry pi PICO RP2040
-	2. SDK C++, compiler G++ for arm-none-eabi
-	3. CMAKE , VScode
+	2. SDK(1.4.0) C++
+	3. compiler G++ for arm-none-eabi((15:10.3-2021.07-4) 
+	4. CMAKE(VERSION 3.12) , VScode(1.84.2
+	5. Linux Mint 21.2
 
 
 ## Test
 
-There are 2 example files included. User picks the one they want 
+There are 3 example files included. User picks the one they want 
 by editing the CMakeLists.txt :: add_executable(${PROJECT_NAME}  section.
-There are 2 paths , comment in one path and one path only.
+There are 3 paths , comment in one path and one path only.
 
 | Filename  | Function  | Note |
 | --- | --- | --- |
-| ST7735_TFT_TESTS | Text , graphics , icons tests, Test 1-11 | --- |
-| ST7735_TFT_BMP_DATA | bi colour 24 & 16 bitmaps tests ,Test 12 -16 | Bitmap data is stored in arrays on PICO |
+| ST7735_TFT_TESTS | Hello world basic use case Test 0 | --- |
+| ST7735_TFT_HELLO | Text , graphics , icons tests, Test 1-12 + FPS test | --- |
+| ST7735_TFT_BMP_DATA | bi colour 24 & 16 bitmaps tests ,Test 13 -16 + FPS test | Bitmap data is stored in arrays on PICO |
 
 
 ## Software
@@ -104,7 +107,7 @@ Default is "TFT_ST7735R_Red".  If you select the wrong one if may still work but
 
 ### Fonts
 
-Eight fonts available : 
+10 fonts available : 
 
 | # | Name | Char size WxH |  ASCII range |  Size in bytes |
 | ------ | ------ | ------ | ------ |   ------ |  
@@ -116,9 +119,13 @@ Eight fonts available :
 | 6 | HomeSpun  | 7x8 | ASCII  0x20 - 0x7E |  658 |
 | 7 | Big Nums | 16x32 | ASCII 0x2E-0x3A , Numbers + : . only | 704 |
 | 8 | Med Nums | 16x16 | ASCII 0x2E-0x3A , Numbers + : . only | 352 |
+| 9 | Arial round| 16x24 | ASCII 0x20 - 0x7E | 4608 |
+| 10 | Arial bold | 16x16 | ASCII 0x20 - 0x7E | 3072 |
 
-The fonts 1-6 are byte high(at text size 1) scale-able fonts,
-The large numerical Fonts, 7 & 8 cannot be scaled.
+Notes:
+1. The fonts 1-6 are byte high(at text size 1) scale-able fonts. 
+2. Fonts, 7 -10 cannot be scaled.
+3. Fonts 9 & 10 are optional to enable them comment _TFT_OPTIONAL_FONTS in the  font.hpp file.
 
 ### Bitmap
 

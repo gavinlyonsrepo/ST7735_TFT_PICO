@@ -618,17 +618,14 @@ void ST7735_TFT_graphics ::TFTdrawText(uint8_t x, uint8_t y, char *ptext, uint16
 */
 size_t ST7735_TFT_graphics ::write(uint8_t c)
 {
-	if (_FontNumber < TFTFont_Bignum)
+	if (_FontNumber < TFTFont_Bignum) // for fonts 1-6
 	{
 		if (c == '\n')
 		{
 			_cursorY += _textSize * _CurrentFontheight;
 			_cursorX = 0;
 		}
-		else if (c == '\r')
-		{
-			// skip
-		}
+		else if (c == '\r'){}// skip
 		else
 		{
 			TFTdrawChar(_cursorX, _cursorY, c, _textcolor, _textbgcolor, _textSize);
@@ -640,24 +637,19 @@ size_t ST7735_TFT_graphics ::write(uint8_t c)
 			}
 		}
 	}
-	else if (_FontNumber == TFTFont_Bignum || _FontNumber == TFTFont_Mednum)
+	else // for font numbers 7-10
 	{
-		uint8_t radius = 3;
-		if (_FontNumber == TFTFont_Mednum)
-			radius = 2;
-
 		if (c == '\n')
 		{
 			_cursorY += _CurrentFontheight;
 			_cursorX = 0;
 		}
-		else if (c == '\r')
-		{
-			// Skip
-		}
-		else if (c == '.')
+		else if (c == '\r'){}// Skip
+		else if (c == '.' && (_FontNumber == TFTFont_Bignum || _FontNumber == TFTFont_Mednum))
 		{
 			// draw a circle for decimal & point skip a space.
+			uint8_t radius = 3;
+			if (_FontNumber == TFTFont_Mednum) radius = 2;
 			TFTfillRect(_cursorX, _cursorY, _CurrentFontWidth, _CurrentFontheight, _textbgcolor);
 			TFTfillCircle(_cursorX + (_CurrentFontWidth / 2), _cursorY + (_CurrentFontheight - 6), radius, _textcolor);
 			_cursorX += (_CurrentFontWidth);
@@ -683,8 +675,8 @@ size_t ST7735_TFT_graphics ::write(uint8_t c)
 
 /*!
 	@brief   Set the font type
-	@param FontNumber 1-8 enum OLED_FONT_TYPE_e
-	@note 1=default 2=thick 3=seven segment 4=wide 5=tiny 6=homespun 7=bignums 8=mednums
+	@param FontNumber 1-10 enum OLED_FONT_TYPE_e
+	@note 1=default 2=thick 3=seven segment 4=wide 5=tiny 6=homespun 7=bignums 8=mednums 9=Arial Round 10=Arial Bold
 */
 void ST7735_TFT_graphics ::TFTFontNum(TFT_Font_Type_e FontNumber)
 {
@@ -733,12 +725,22 @@ void ST7735_TFT_graphics ::TFTFontNum(TFT_Font_Type_e FontNumber)
 		_CurrentFontoffset = TFTFont_offset_zero;
 		_CurrentFontheight = TFTFont_height_16;
 		break;
+	case TFTFont_ArialRound: // Arial round 16 by 24 
+		_CurrentFontWidth = TFTFont_width_16;
+		_CurrentFontoffset = TFTFont_offset_space;
+		_CurrentFontheight = TFTFont_height_24;
+	break;
+	case TFTFont_ArialBold: // Arial bold  16 by 16
+		_CurrentFontWidth = TFTFont_width_16;
+		_CurrentFontoffset = TFTFont_offset_space;
+		_CurrentFontheight = TFTFont_height_16;
+	break;
 	default:
 		_CurrentFontWidth = TFTFont_width_5;
 		_CurrentFontoffset = TFTFont_offset_none;
 		_CurrentFontheight = TFTFont_height_8;
 		_FontNumber = TFTFont_Default;
-		break;
+	break;
 	}
 }
 
@@ -923,29 +925,30 @@ void ST7735_TFT_graphics ::TFTdrawBitmap16Data(uint8_t x, uint8_t y, uint8_t *pB
 	@param c The ASCII character
 	@param color 565 16-bit
 	@param bg background color
-	@note for font 7,8 only
+	@note for font 7 - 10 
 */
 void ST7735_TFT_graphics ::TFTdrawCharNumFont(uint8_t x, uint8_t y, uint8_t c, uint16_t color, uint16_t bg)
 {
 	if (_FontNumber < TFTFont_Bignum)
 	{
 		return;
-	} //  for font 7-8 only
+	} //  for font 7-10 only
 
 	uint8_t i, j;
 	uint8_t ctemp = 0, y0 = y;
 
 	for (i = 0; i < _CurrentFontheight * 2; i++)
 	{
-		if (_FontNumber == TFTFont_Bignum)
+		switch (_FontNumber)
 		{
-			ctemp = pFontBigNumptr[c - _CurrentFontoffset][i];
+			case TFTFont_Bignum: ctemp = pFontBigNumptr[c - _CurrentFontoffset][i]; break; 
+			case TFTFont_Mednum: ctemp = pFontMedNumptr[c - _CurrentFontoffset][i]; break;
+			#ifdef _TFT_OPTIONAL_FONTS
+			case TFTFont_ArialRound: ctemp = pFontArial16x24ptr[c - _CurrentFontoffset][i]; break;
+			case TFTFont_ArialBold: ctemp = pFontArial16x16ptr[c - _CurrentFontoffset][i]; break;
+			#endif
+			default : return; break;
 		}
-		else if (_FontNumber == TFTFont_Mednum)
-		{
-			ctemp = pFontMedNumptr[c - _CurrentFontoffset][i];
-		}
-
 		for (j = 0; j < 8; j++)
 		{
 			if (ctemp & 0x80)
@@ -976,7 +979,7 @@ void ST7735_TFT_graphics ::TFTdrawCharNumFont(uint8_t x, uint8_t y, uint8_t c, u
 	@param pText pointer to string of ASCII character's
 	@param color 565 16-bit
 	@param bg background color
-	@note for font 7,8 only
+	@note for font 7-10 
 */
 void ST7735_TFT_graphics ::TFTdrawTextNumFont(uint8_t x, uint8_t y, char *pText, uint16_t color, uint16_t bg)
 {

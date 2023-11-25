@@ -17,7 +17,8 @@ add_compile_options(-Wall)
 
 # Tell CMake where to find the executable source file
 add_executable(${PROJECT_NAME} 
-  examples/ST7735_TFT_TESTS/main.cpp
+  examples/ST7735_TFT_HELLO/main.cpp
+  #examples/ST7735_TFT_TESTS/main.cpp
   #examples/ST7735_TFT_BMP_DATA/main.cpp
 )
 
