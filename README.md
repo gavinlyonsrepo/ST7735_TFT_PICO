@@ -35,7 +35,7 @@
 	1. Raspberry pi PICO RP2040
 	2. SDK(1.4.0) C++
 	3. compiler G++ for arm-none-eabi((15:10.3-2021.07-4) 
-	4. CMAKE(VERSION 3.12) , VScode(1.84.2
+	4. CMAKE(VERSION 3.12) , VScode(1.84.2)
 	5. Linux Mint 21.2
 
 
@@ -47,8 +47,8 @@ There are 3 paths , comment in one path and one path only.
 
 | Filename  | Function  | Note |
 | --- | --- | --- |
-| ST7735_TFT_TESTS | Hello world basic use case Test 0 | --- |
-| ST7735_TFT_HELLO | Text , graphics , icons tests, Test 1-12 + FPS test | --- |
+| ST7735_TFT_HELLO | Hello world basic use case Test 0 | --- |
+| ST7735_TFT_TESTS | Text , graphics , icons tests, Test 1-12 + FPS test | --- |
 | ST7735_TFT_BMP_DATA | bi colour 24 & 16 bitmaps tests ,Test 13 -16 + FPS test | Bitmap data is stored in arrays on PICO |
 
 
@@ -125,7 +125,7 @@ Default is "TFT_ST7735R_Red".  If you select the wrong one if may still work but
 Notes:
 1. The fonts 1-6 are byte high(at text size 1) scale-able fonts. 
 2. Fonts, 7 -10 cannot be scaled.
-3. Fonts 9 & 10 are optional to enable them comment _TFT_OPTIONAL_FONTS in the  font.hpp file.
+3. As they relativity large, Fonts 9 & 10 are optional to enable them comment _TFT_OPTIONAL_FONTS in the  font.hpp file.
 
 ### Bitmap
 
