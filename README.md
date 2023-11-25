@@ -123,9 +123,9 @@ Default is "TFT_ST7735R_Red".  If you select the wrong one if may still work but
 | 10 | Arial bold | 16x16 | ASCII 0x20 - 0x7E | 3072 |
 
 Notes:
-1. The fonts 1-6 are byte high(at text size 1) scale-able fonts. 
+1. Fonts 1-6 are byte high(at text size 1) scale-able fonts. 
 2. Fonts, 7 -10 cannot be scaled.
-3. As they relativity large, Fonts 9 & 10 are optional to enable them comment _TFT_OPTIONAL_FONTS in the  font.hpp file.
+3. As they are relativity large, Fonts 9 & 10 are optional, to enable them comment _TFT_OPTIONAL_FONTS in, in the  font.hpp file.
 
 ### Bitmap
 
