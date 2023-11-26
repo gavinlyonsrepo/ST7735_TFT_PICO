@@ -11,7 +11,7 @@
 	-# Test 14 bi-color full screen image 128x128
 	-# Test 15 16 bit color image from a data array
 	-# Test 16  24 bit color image data from a data array
-	-# Test FPS FPS optional test -> set bool bTestFPS
+	-# Test FPS FPS optional test -> set bool bTestFPS ,  results to serial port
 
 */
 // Section ::  libraries 
@@ -37,7 +37,7 @@ void Test13(void); // bi-color small image
 void Test14(void); // bi-color full screen image 128x128
 void Test15(void); // 16 bit color image from a data array
 void Test16(void); // 24 bit color image data from a data array
-void TestFPS(void); // FPS test optional 
+void TestFPS(void); // FPS test optional , results to serial port
 void EndTests(void);
 
 //  Section ::  MAIN 
@@ -46,7 +46,6 @@ int main(void)
 {
 	
 	Setup();
-	stdio_init_all(); // Initialize chosen serial port for FPS results
 	Test13();
 	Test14();
 	Test15();
@@ -114,7 +113,7 @@ void Test13(void)
 {
 
 	myTFT.TFTfillScreen(ST7735_BLACK);
-	char teststr1[] = "Test 12";
+	char teststr1[] = "Test 13";
 	myTFT.TFTdrawText(5, 5, teststr1, ST7735_WHITE, ST7735_BLACK, 1);
 	myTFT.TFTdrawBitmap(80, 20, 20 , 24, ST7735_CYAN , ST7735_BLACK, (uint8_t*)pSmallImage);
 	myTFT.TFTdrawBitmap(20, 40, 20 , 24, ST7735_RED, ST7735_BLACK, (uint8_t*)pSmallImage);
@@ -168,7 +167,7 @@ void Test16(void)
 }
 
 /*!
-	@brief  TestFPS FPS optional test -> set bool bTestFPS
+	@brief  TestFPS FPS optional test -> set bool bTestFPS ,results to serial port
 */
 void TestFPS(void)
 {

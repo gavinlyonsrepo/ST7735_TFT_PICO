@@ -46,7 +46,9 @@
 // Section :: Globals 
 ST7735_TFT myTFT;
 bool bTestFPS = false; /**< turn on frame rate per second test , set true for ON */
-bool bTestFonts9_10 = false; /**< turn on test for fonts 9 & 10, set true for  on*/
+/**< turn on test for fonts 9 & 10, set true for on, also 
+_TFT_OPTIONAL_FONTS(font.hpp) must be commented in */
+bool bTestFonts9_10 = false; 
 
 //  Section ::  Function Headers 
 
