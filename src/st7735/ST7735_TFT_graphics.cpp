@@ -1123,22 +1123,41 @@ void ST7735_TFT_graphics::spiWriteDataBuffer(uint8_t *spiData, uint32_t len)
 	TFT_CS_SetHigh;
 }
 
+/*!
+	@brief Set the Cursor Position on screen
+	@param x the x co-ord of the cursor position 
+	@param y the y co-ord of the cursor position 
+*/
 void ST7735_TFT_graphics::TFTsetCursor(int16_t x, int16_t y)
 {
 	_cursorX = x;
 	_cursorY = y;
 }
 
+/*!
+	@brief Set the size of text, fonts 1-6
+	@param s size of text. 1 2 3 etc
+*/
 void ST7735_TFT_graphics::setTextSize(uint8_t s)
 {
 	_textSize = (s > 0) ? s : 1;
 }
 
+/*!
+	@brief Set text color 
+	@param c  text color , Color definitions 16-Bit Color Values R5G6B5
+*/
 void ST7735_TFT_graphics::setTextColor(uint16_t c)
 {
 	_textcolor = _textbgcolor = c;
 }
 
+
+/*!
+	@brief Set text color foreground and background 
+	@param c text foreground color , Color definitions 16-Bit Color Values R5G6B5
+	@param b text background color , Color definitions 16-Bit Color Values R5G6B5
+*/
 void ST7735_TFT_graphics::setTextColor(uint16_t c, uint16_t b)
 {
 	_textcolor = c;
