@@ -24,7 +24,7 @@
 0. Library for a TFT SPI LCD, ST7735 Driver
 1. Raspberry pi PICO RP2040 library.
 2. Inverse colour, rotate, sleep, idle  & vertical scroll modes supported.
-3. 10 fonts included
+3. 12 fonts included
 4. Graphics + print class included.
 5. bi-color, 16 bit and 24 colour Bitmaps supported.
 6. Hardware and software  SPI
@@ -41,15 +41,17 @@
 
 ## Test
 
-There are 3 example files included. User picks the one they want 
+There are  example files included. User picks the one they want 
 by editing the CMakeLists.txt :: add_executable(${PROJECT_NAME}  section.
-There are 3 paths , comment in one path and one path only.
+Comment in one path and one path only.
 
 | Filename  | Function  | Note |
 | --- | --- | --- |
-| ST7735_TFT_HELLO | Hello world basic use case Test 0 | --- |
-| ST7735_TFT_TESTS | Text , graphics , icons tests, Test 1-12 + FPS test | --- |
-| ST7735_TFT_BMP_DATA | bi colour 24 & 16 bitmaps tests ,Test 13 -16 + FPS test | Bitmap data is stored in arrays on PICO |
+| ST7735_TFT_HELLO | Hello world  | --- |
+| ST7735_TFT_TESTS | Text  + fonts | --- |
+| ST7735_TFT_GRAPHICS| Graphics | --- |
+| ST7735_TFT_FUNCTIONS_FPS| Functions(like rotate scroll) + FPS test 702| --- |
+| ST7735_TFT_BMP_DATA | bi colour, 24 & 16 bitmaps tests +  FPS test 701| Bitmap data is stored in arrays on PICO |
 
 
 ## Software
@@ -76,9 +78,12 @@ where user can make adjustments to select for SPI type used, PCB type used and s
 *USER OPTION 0 SPI SPEED* 
 
 Here the user can pass the SPI Bus freq in kiloHertz, Currently set to 8 Mhz.
-Max SPI speed on the PICO is 62.5Mhz. There is a file with SPI test results for the FPS tests in
-extra/doc folder. The SPI interface(spi0 spi1 etc). If users wants software SPI just call this method 
-without any arguments. 
+Max SPI speed on the PICO is 62.5Mhz. There is a file with SPI test results for the FPS tests in extra/doc folder. "nd parameter is the SPI interface(spi0 spi1 etc). 
+
+If users wants software SPI just call this method 
+with just one argument for the optional GPIO software uS delay,
+which by default is zero. Setting this higher can be used to slow down Software SPI 
+which may be beneficial in  some setups.   
 
 *USER OPTION 1 GPIO*
 
@@ -107,25 +112,42 @@ Default is "TFT_ST7735R_Red".  If you select the wrong one if may still work but
 
 ### Fonts
 
-10 fonts available : 
+Font data table:
 
-| # | Name | Char size WxH |  ASCII range |  Size in bytes |
-| ------ | ------ | ------ | ------ |   ------ |  
-| 1 | Default | 5x8 | Full Extended ASCII 0x00 - 0xFF | 1275 |
-| 2 | Thick   | 7x8 | ASCII  0x20 - 0x5A  ,no lowercase letters | 406 |
-| 3 | Seven segment | 4x8 | ASCII  0x20 - 0x7A |  364 |
-| 4 | Wide | 8x8 | ASCII 0x20 - 0x5A , no lowercase letters | 464 | 
-| 5 | Tiny | 3x8 | ASCII  0x20 - 0x7E | 285 |
-| 6 | HomeSpun  | 7x8 | ASCII  0x20 - 0x7E |  658 |
-| 7 | Big Nums | 16x32 | ASCII 0x2E-0x3A , Numbers + : . only | 704 |
-| 8 | Med Nums | 16x16 | ASCII 0x2E-0x3A , Numbers + : . only | 352 |
-| 9 | Arial round| 16x24 | ASCII 0x20 - 0x7E | 4608 |
-| 10 | Arial bold | 16x16 | ASCII 0x20 - 0x7E | 3072 |
+| num | enum name | Char size XbyY | ASCII range | Size bytes | Size Scale-able |
+| ------ | ------ | ------ | ------ |  ------ | ----- |
+| 1 | $_Default | 5x8 |0-0xFF, Full Extended|1275 |Y|
+| 2 | $_Thick   | 7x8 |0x20-0x5A, no lowercase letters |406|Y|
+| 3 | $_SevenSeg  | 4x8 |0x20-0x7A |360|Y|
+| 4 | $_Wide | 8x8 |0x20-0x5A, no lowercase letters|464|Y|
+| 5 | $_Tiny | 3x8 |0x20-0x7E |285|Y|
+| 6 | $_Homespun  | 7x8 |0x20-0x7E |658|Y|
+| 7 | $_Bignum | 16x32 |0x2D-0x3A ,0-10 - . / : |896|N|
+| 8 | $_Mednum | 16x16 |0x2D-0x3A ,0-10 - . / :|448|N|
+| 9 | $_ArialRound| 16x24 | 0x20-0x7E |4608|N|
+| 10 | $_ArialBold | 16x16 |0x20-0x7E |3072|N|
+| 11 | $_Mia| 8x16 | 0x20-0x7E |1520|N|
+| 12 | $_Dedica | 6x12 |0x20-0x7E |1152|N|
 
-Notes:
-1. Fonts 1-6 are byte high(at text size 1) scale-able fonts. 
-2. Fonts, 7 -10 cannot be scaled.
-3. As they are relativity large, Fonts 9 & 10 are optional, to enable them comment _TFT_OPTIONAL_FONTS in, in the  font.hpp file.
+1. $ = TFTFont
+2. A print class is available to print out many data types.
+3. Fonts 1-6 are byte high(at text size 1) scale-able fonts, columns of padding added by SW.
+4. Font 7-8 are large numerical fonts and cannot be scaled(just one size).
+5. Fonts 9-12 Alphanumeric fonts and cannot be scaled(just one size)
+These fonts are optional and can be removed from program
+by commenting out the relevant TFT_OPTIONAL_FONT_X define in the  ST7735_TFT_Font.hpp file
+
+Font Methods:
+
+| Font num | Method | Size parameter | Notes |
+| ------ | ------ | ------ |  ------ |
+| 1-6 | drawChar|Y| draws single  character |
+| 1-6 | drawText |Y| draws character array |
+| 7-12 | drawChar|N| draws single  character |
+| 7-12 | drawText|N| draws character array |
+| 1-12 | print |~| Polymorphic print class which will print out many data types |
+
+These  functions return a number in event of an error, such as wrong font chosen , ASCII character outside chosen fonts range, character out of screen bounds and invalid character array pointer object. See API docs for details
 
 ### Bitmap
 
@@ -142,6 +164,8 @@ There are 4 functions to support drawing bitmaps,
 2. Math in bitmap size column 2-5  assumes 128x128 pixel screen.
 3. The data array for 1 and 2 is created from image files using file data conversion tool [link](https://javl.github.io/image2cpp/)
 4. The data array for 3 and 4 is created from BMP files using file data conversion tool [link](https://notisrac.github.io/FileToCArray/)
+
+These functions will return error codes in event of an error, see  API docs for details.
 
 ## Hardware
 
@@ -175,7 +199,9 @@ Output of some of the test routine's. Left to right
 5. Clock Demo Test 11,  showing icons, and font 7 "BigNums"
 6. 24 bit RGB test image displayed from a data array  ,  128 X 128 pixels.
 7. 16 bit 565 test image displayed from a data array , 128 X 128 pixels.
+8. Fonts 7-12 
 
 ![ pic ](https://github.com/gavinlyonsrepo/ST7735_TFT_PICO/blob/main/extra/doc/images/row1.jpg)
 ![ pic1 ](https://github.com/gavinlyonsrepo/ST7735_TFT_RPI/blob/main/extra/images/4.jpg)
+![ p2](https://github.com/gavinlyonsrepo/ST7735_TFT_RPI/blob/main/extra/images/5.jpg)
 

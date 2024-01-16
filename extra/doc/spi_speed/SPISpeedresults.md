@@ -1,4 +1,12 @@
-# SPi Speed test results 
+# SPI Speed test results 
+
+**JAN 2024 v1.7.1**
+
+1. 702 Functions + FPS Test :: HW SPI  8MHZ :: 28 fps 
+2. 702 Functions + FPS Test :: SW SPI :: 18fps
+1. 701 Bitmap + FPS Test :: HW SPI  8MHZ :: 22 fps 
+2. 701 Bitmap + FPS Test :: SW SPI ::  9 fps 
+
 
 **November 8 2022**
 

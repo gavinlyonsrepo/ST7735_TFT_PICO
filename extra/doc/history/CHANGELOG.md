@@ -14,3 +14,7 @@
 	* Hello world example added.
 	* Font's number 9 & 10 added.
 
+* Version 1.7.1 Jan 2024
+	* Added fonts 11 & 12
+	* Enhanced error handling on text and bitmap functions.
+	* Increased Fonts 7&8 to 14 characters from 11.

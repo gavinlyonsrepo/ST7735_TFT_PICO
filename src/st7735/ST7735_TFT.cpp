@@ -1,8 +1,8 @@
 /*!
 	@file     ST7735_TFT.cpp
 	@author   Gavin Lyons
-	@brief    Source file for ST7735_TFT_PICO library. Contains driver methods for ST7735_TFT display 
-
+	@brief    Source file for ST7735_TFT_PICO library. 
+			Contains driver methods for ST7735_TFT display 
 	@note  See URL for full details.https://github.com/gavinlyonsrepo/ST7735_TFT_PICO
 		
 */
@@ -12,9 +12,7 @@
 /*!
 	@brief Constructor for class ST7735_TFT
 */
-ST7735_TFT :: ST7735_TFT()
-{
-}
+ST7735_TFT :: ST7735_TFT(){}
 
 /*!
 	@brief : Init Hardware SPI
@@ -37,6 +35,7 @@ void ST7735_TFT::TFTSPIInitialize(void)
 
 /*!
 	@brief: Call when powering down TFT
+	@note  Will switch off SPI 
 */
 void ST7735_TFT ::TFTPowerDown(void)
 {
@@ -46,6 +45,8 @@ void ST7735_TFT ::TFTPowerDown(void)
 	TFT_SCLK_SetLow;
 	TFT_SDATA_SetLow;
 	TFT_CS_SetLow;
+	if (_hardwareSPI == true) 
+		spi_deinit(_pspiInterface);
 }
 
 /*!
@@ -454,9 +455,9 @@ void ST7735_TFT ::TFTchangeMode(TFT_modes_e mode) {
 */
 void ST7735_TFT ::TFTsetRotation(TFT_rotate_e mode) {
 	uint8_t madctl = 0;
-
-	_rotation = mode % 4;
-	switch (_rotation) {
+	uint8_t rotation;
+	rotation = mode % 4;
+	switch (rotation) {
 		case TFT_Degrees_0 :
 			if (TFT_PCBtype == TFT_ST7735S_Black ){
 				madctl = ST7735_MADCTL_MX | ST7735_MADCTL_MY | ST7735_MADCTL_RGB;
@@ -546,12 +547,12 @@ void ST7735_TFT  ::TFTInitPCBType(TFT_PCBtype_e pcbType)
 }
 
 /*!
-	@brief intialise SPI setup
+	@brief intialise HW SPI setup
 	@param speed_Khz SPI baudrate in Khz , 1000 = 1 Mhz
-	@param *spi_interface Spi interface, spi0 spi1 etc
+	@param spi_interface Spi interface, spi0 spi1 etc
 	@note method overload used , method 1 hardware SPI 
 */
-void ST7735_TFT  :: TFTInitSPIType(uint32_t speed_Khz,  spi_inst_t *spi_interface) 
+void ST7735_TFT  :: TFTInitSPIType(uint32_t speed_Khz,  spi_inst_t* spi_interface) 
 {
 	 _pspiInterface = spi_interface;
 	_speedSPIKHz = speed_Khz;
@@ -559,11 +560,31 @@ void ST7735_TFT  :: TFTInitSPIType(uint32_t speed_Khz,  spi_inst_t *spi_interfac
 }
 
 /*!
-	@brief intialise SPI set
+	@brief intialise SW SPI set
+	@param CommDelay SW SPI GPIO delay
 	@note method overload used , method 2 software SPI 
 */
-void ST7735_TFT  :: TFTInitSPIType() 
+void ST7735_TFT ::TFTInitSPIType(uint16_t CommDelay) 
 {
+	TFTSwSpiGpioDelaySet(CommDelay);
 	_hardwareSPI = false;
 }
+
+/*!
+	@brief Library version number getter
+	@return The lib version number eg 171 = 1.7.1
+*/
+uint16_t ST7735_TFT::TFTLibVerNumGet(void) {return _LibVersionNum;}
+
+/*!
+	@brief Freq delay used in SW SPI getter, uS delay used in SW SPI method
+	@return The  GPIO communications delay in uS
+*/
+uint16_t ST7735_TFT::TFTSwSpiGpioDelayGet(void){return _SWSPIGPIODelay;}
+
+/*!
+	@brief Freq delay used in SW SPI setter, uS delay used in SW SPI method
+	@param CommDelay The GPIO communications delay in uS
+*/
+void  ST7735_TFT::TFTSwSpiGpioDelaySet(uint16_t CommDelay){_SWSPIGPIODelay = CommDelay;}
 //**************** EOF *****************

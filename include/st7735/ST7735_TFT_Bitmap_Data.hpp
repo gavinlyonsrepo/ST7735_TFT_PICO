@@ -19,7 +19,7 @@
 #include "pico/stdlib.h"
 
 extern const uint8_t * pBackupMenuBitmap;  /**< Pointer to bitmap data which is in cpp file */
-extern const uint8_t * pSmallImage;       /**< Pointer to bitmap data which is in cpp file */
+extern const uint8_t * pSunTextImage;       /**< Pointer to bitmap data which is in cpp file */
 extern const uint8_t * pMotorImage;       /**< Pointer to bitmap data which is in cpp file */
 extern const uint8_t * pFruitBowlImage;   /**< Pointer to bitmap data which is in cpp file */
 

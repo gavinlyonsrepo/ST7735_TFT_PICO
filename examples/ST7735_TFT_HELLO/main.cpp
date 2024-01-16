@@ -2,12 +2,11 @@
 	@file     main.cpp
 	@author   Gavin Lyons
 	@brief Example cpp file for ST7735_TFT_PICO library.
-			Tests 0 Hello World
+			Tests  Hello World
 	@note  See USER OPTIONS 0-3 in SETUP function
 
 	@test
-
-	-# Test0 Print out Hello world  
+		-# Test0 Print out Hello world  
 
 */
 
@@ -39,7 +38,6 @@ int main(void)
 	Setup();
 	Test0();
 	EndTests();
-	return 0;
 }
 // *** End OF MAIN **
 
@@ -50,20 +48,21 @@ int main(void)
 */
 void Setup(void)
 {
-
+	stdio_init_all(); // optional for error messages , Initialize chosen serial port, default 38400 baud
 	TFT_MILLISEC_DELAY(TEST_DELAY1);
+	printf("TFT :: Start\r\n");
 	
 //*************** USER OPTION 0 SPI_SPEED + TYPE ***********
-	bool bhardwareSPI = true; // true for hardware spi, 
+	bool bhardwareSPI = true; // true for hardware spi, false for software
 	
 	if (bhardwareSPI == true) { // hw spi
 		uint32_t TFT_SCLK_FREQ =  8000 ; // Spi freq in KiloHertz , 1000 = 1Mhz
 		myTFT.TFTInitSPIType(TFT_SCLK_FREQ, spi0); 
 	} else { // sw spi
-		myTFT.TFTInitSPIType(); 
+		uint16_t SWSPICommDelay = 0; // optional SW SPI GPIO delay in uS
+		myTFT.TFTInitSPIType(SWSPICommDelay);
 	}
-//**********************************************************
-
+//*********************************************************
 // ******** USER OPTION 1 GPIO *********
 // NOTE if using Hardware SPI clock and data pins will be tied to 
 // the chosen interface eg Spi0 CLK=18 DIN=19)
@@ -112,6 +111,7 @@ void Test0(void) {
 void EndTests(void)
 {
 	myTFT.TFTPowerDown(); 
+	printf("TFT :: Tests Over");
 }
 
 // *************** EOF ****************
