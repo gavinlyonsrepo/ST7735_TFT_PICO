@@ -5,9 +5,9 @@
 			  This file handles the graphic methods
 */
 
-#include "../include/st7735/ST7735_TFT_graphics.hpp"
-#include "../include/st7735/ST7735_TFT.hpp"
-#include "../include/st7735/ST7735_TFT_Font.hpp"
+#include "../../include/st7735/ST7735_TFT_graphics.hpp"
+#include "../../include/st7735/ST7735_TFT.hpp"
+#include "../../include/st7735/ST7735_TFT_Font.hpp"
 
 /*!
 	@brief Construct a new st7735 tft graphics::st7735 tft graphics object

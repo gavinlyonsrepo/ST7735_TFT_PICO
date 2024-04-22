@@ -7,7 +7,7 @@
 		
 */
 
-#include "../include/st7735/ST7735_TFT.hpp"
+#include "../../include/st7735/ST7735_TFT.hpp"
  
 /*!
 	@brief Constructor for class ST7735_TFT

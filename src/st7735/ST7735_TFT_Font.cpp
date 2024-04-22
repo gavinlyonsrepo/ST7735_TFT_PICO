@@ -7,7 +7,7 @@
 	@note 	   Fonts 9 -12 optional , comment in define in header file _TFT_OPTIONAL_FONT_X to enable 
 */
 
-#include "../include/st7735/ST7735_TFT_Font.hpp"
+#include "../../include/st7735/ST7735_TFT_Font.hpp"
 
 // "default" 5 by 8 font pixel ASCII font 
 // Standard ASCII 5x7 font 
