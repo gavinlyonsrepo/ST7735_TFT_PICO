@@ -7,7 +7,7 @@
 	@note  See USER OPTIONS 0-3 in SETUP function
 
 	@test
-		-# Test301 Color
+		-# Test301  Color
 		-# Test302  scroll
 		-# Test303  Rotate
 		-# Test304 change modes test -> Invert, display on/off and Sleep.

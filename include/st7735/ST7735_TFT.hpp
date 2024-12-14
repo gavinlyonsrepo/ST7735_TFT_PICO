@@ -97,6 +97,8 @@
 #define ST7735_BROWN 0x6201
 #define ST7735_DGREEN 0x01c0
 #define ST7735_ORANGE 0xFC00
+#define ST7735_LBLUE 0x7E5F
+#define ST7735_BEIGE 0xB5D2
 
 // GPIO	Abstractions , for portability purposes
 #define TFT_DC_INIT gpio_init(_TFT_DC)

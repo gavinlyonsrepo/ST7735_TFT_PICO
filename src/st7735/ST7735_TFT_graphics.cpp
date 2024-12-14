@@ -1059,7 +1059,7 @@ uint8_t ST7735_TFT_graphics ::TFTdrawBitmap16Data(uint8_t x, uint8_t y, uint8_t 
 	// 1. Check for null pointer
 	if (pBmp == nullptr)
 	{
-		printf("Error TFTdrawBitmap24 1: Bitmap array is nullptr\r\n");
+		printf("Error TFTdrawBitmap16 1: Bitmap array is nullptr\r\n");
 		return 1;
 	}
 	// Check bounds
@@ -1429,4 +1429,73 @@ void ST7735_TFT_graphics::setTextColor(uint16_t c, uint16_t b)
 	_textbgcolor = b;
 }
 
+/*!
+	@brief: Draws an 16 bit color bitmap to screen from a data array
+	@param x X coordinate
+	@param y Y coordinate
+	@param pBmp pointer to data array
+	@param w width of the bitmap in pixels
+	@param h height of the bitmap in pixels
+	@param backgroundColor the background color of sprite (16 bit 565) this will be made transparent
+	@note Experimental 
+	@return
+		-# 0=success
+		-# 1=invalid pointer object
+		-# 2=Co-ordinates out of bounds
+		-# 3=malloc memory allocation failure 
+*/
+uint8_t ST7735_TFT_graphics::TFTdrawSpriteData(uint8_t x, uint8_t y, uint8_t *pBmp, uint8_t w, uint8_t h, uint16_t backgroundColor)
+{
+	uint8_t i, j;
+	uint32_t ptr = 0;
+	uint16_t colour = 0;
+	// 1. Check for null pointer
+	if (pBmp == nullptr)
+	{
+		printf("Error TFTdrawSprite 1: Bitmap array is nullptr\r\n");
+		return 1;
+	}
+	// Check bounds
+	if ((x >= _widthTFT) || (y >= _heightTFT))
+	{
+		printf("Error TFTdrawSprite 2: Out of screen bounds\r\n");
+		return 2;
+	}
+	if ((x + w - 1) >= _widthTFT)
+		w = _widthTFT - x;
+	if ((y + h - 1) >= _heightTFT)
+		h = _heightTFT - y;
+
+	// Create bitmap buffer
+	uint8_t *buffer = (uint8_t *)malloc(w * h * 2);
+	if (buffer == nullptr) // check malloc
+	{
+		printf("Error TFTdrawSprite 3 :MALLOC could not assign memory\r\n");
+		return 3;
+	}
+	for (j = 0; j < h; j++)
+	{
+		for (i = 0; i < w; i++)
+		{
+			// Read a 16-bit colour from the bitmap data
+			colour = (pBmp[0] << 8) | pBmp[1];
+			if (colour != backgroundColor)
+			{
+				buffer[ptr++] = (*pBmp++);
+				buffer[ptr++] = (*pBmp++);
+			}else
+			{
+				ptr  += 2;
+				pBmp += 2;
+			}
+			
+		}
+	}
+	// Set window and write buffer
+	TFTsetAddrWindow(x, y, x + w - 1, y + h - 1);
+	spiWriteDataBuffer(buffer, h * w * sizeof(uint16_t));
+
+	free(buffer);
+	return 0;
+}
 //**************** EOF *****************

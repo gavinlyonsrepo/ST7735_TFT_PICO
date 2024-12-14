@@ -53,6 +53,6 @@
 **November 10 2022**
 
 1. testFPS function ::  ST7735_TFT_BMP_DATA file
-2. test :: myTFT.TFTdrawBitmap(0, 0, 128 , 128, ST7735_WHITE , ST7735_GREEN, backupMenuBitmap);
+2. test :: myTFT.TFTdrawBitmap(0, 0, 128 , 128, ST7735_WHITE , ST7735_GREEN, ArrowImage);
 3. 20 MHZ HW SPI
 4. 43 FPS

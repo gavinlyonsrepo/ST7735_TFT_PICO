@@ -55,6 +55,7 @@ public:
 		TFTFont_Dedica = 12		/**< dedica font */
 	};
 
+
 	virtual size_t write(uint8_t);
 	void TFTsetAddrWindow(uint8_t, uint8_t, uint8_t, uint8_t);
 	void TFTfillScreen(uint16_t color);
@@ -95,6 +96,7 @@ public:
 	uint8_t TFTdrawBitmap(int16_t x, int16_t y, int16_t w, int16_t h, uint16_t color, uint16_t bgcolor, uint8_t *pBmp, uint16_t sizeOfBitmap);
 	uint8_t TFTdrawBitmap24Data(uint8_t x, uint8_t y, uint8_t *pBmp, uint8_t w, uint8_t h);
 	uint8_t TFTdrawBitmap16Data(uint8_t x, uint8_t y, uint8_t *pBmp, uint8_t w, uint8_t h);
+	uint8_t TFTdrawSpriteData(uint8_t x, uint8_t y, uint8_t *pBmp, uint8_t w, uint8_t h, uint16_t backgroundColor);
 
 protected:
 	void pushColor(uint16_t color);

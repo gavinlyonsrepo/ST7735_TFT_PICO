@@ -6,6 +6,7 @@
 	@note  See USER OPTIONS 0-3 in SETUP function
 
 	@test
+		-# Test 400 Sprite 
 		-# Test 401 "clock demo" , icons, , font 7
 		-# Test 402 bi-color small image
 		-# Test 403 bi-color full screen image 128x128
@@ -34,6 +35,7 @@ ST7735_TFT myTFT;
 //  Section ::  Function Headers
 
 void Setup(void);	// setup + user options
+void Test400(void); // sprite
 void Test401(void); // "clock demo" , icons, , font 7
 void Test402(void); // bi-color small image
 void Test403(void); // bi-color full screen image 128x128
@@ -47,6 +49,7 @@ void EndTests(void);
 int main(void)
 {
 	Setup();
+	Test400();
 	Test401();
 	Test402();
 	Test403();
@@ -104,7 +107,24 @@ void Setup(void)
 
 	// ******** USER OPTION 3 PCB_TYPE  **************************
 	myTFT.TFTInitPCBType(myTFT.TFT_ST7735R_Red); // pass enum,4 choices,see README
-												 //**********************************************************
+   //**********************************************************
+}
+
+/*!
+	@brief  "sprite demo" 32 x32 with LBLUE background
+*/
+void Test400(void)
+{
+	myTFT.TFTfillScreen(ST7735_GREEN);
+
+	// Test 400-A test 16-bit color Sprite 
+	// Draw as sprite, without background , 32 X 32 .bakcground color = ST7375_LBLUE
+	myTFT.TFTdrawSpriteData(10, 10, (uint8_t *)pSpriteTest16, 32, 32, ST7735_LBLUE);
+	TFT_MILLISEC_DELAY(TEST_DELAY5);
+
+	myTFT.TFTdrawSpriteData(60, 10, (uint8_t *)pSpriteTest16, 32, 32, ST7735_LBLUE);
+	TFT_MILLISEC_DELAY(TEST_DELAY5);
+	myTFT.TFTfillScreen(ST7735_BLACK);
 }
 
 /*!
@@ -226,7 +246,7 @@ void Test403(void)
 	myTFT.TFTdrawText(5, 5, teststr1, ST7735_WHITE, ST7735_BLACK, 1);
 	TFT_MILLISEC_DELAY(TEST_DELAY2);
 
-	myTFT.TFTdrawBitmap(0, 0, 128, 128, ST7735_WHITE, ST7735_GREEN, (uint8_t *)pBackupMenuBitmap, 2048);
+	myTFT.TFTdrawBitmap(0, 0, 128, 128, ST7735_WHITE, ST7735_GREEN, (uint8_t *)pArrowImage, 2048);
 	TFT_MILLISEC_DELAY(TEST_DELAY5);
 	myTFT.TFTfillScreen(ST7735_BLACK);
 }
