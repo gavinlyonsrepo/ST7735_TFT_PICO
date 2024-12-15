@@ -116,13 +116,19 @@ void Setup(void)
 void Test400(void)
 {
 	myTFT.TFTfillScreen(ST7735_GREEN);
+	// draw bitmap background
+	myTFT.TFTdrawBitmap24Data(0, 0, (uint8_t *)pFruitBowlImage, 128, 128);
+	TFT_MILLISEC_DELAY(TEST_DELAY5);
 
 	// Test 400-A test 16-bit color Sprite 
 	// Draw as sprite, without background , 32 X 32 .bakcground color = ST7375_LBLUE
-	myTFT.TFTdrawSpriteData(10, 10, (uint8_t *)pSpriteTest16, 32, 32, ST7735_LBLUE);
+	myTFT.TFTdrawSpriteData(0, 0, (uint8_t *)pSpriteTest16, 32, 32, ST7735_LBLUE);
 	TFT_MILLISEC_DELAY(TEST_DELAY5);
 
-	myTFT.TFTdrawSpriteData(60, 10, (uint8_t *)pSpriteTest16, 32, 32, ST7735_LBLUE);
+    myTFT.TFTdrawSpriteData(60, 10, (uint8_t *)pSpriteTest16, 32, 32, ST7735_LBLUE);
+	TFT_MILLISEC_DELAY(TEST_DELAY5);
+
+	myTFT.TFTdrawSpriteData(60, 60, (uint8_t *)pSpriteTest16, 32, 32, ST7735_LBLUE);
 	TFT_MILLISEC_DELAY(TEST_DELAY5);
 	myTFT.TFTfillScreen(ST7735_BLACK);
 }

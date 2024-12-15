@@ -27,8 +27,10 @@ void ST7735_TFT_graphics ::TFTdrawPixel(uint8_t x, uint8_t y, uint16_t color)
 	if ((x >= _widthTFT) || (y >= _heightTFT))
 		return;
 	TFTsetAddrWindow(x, y, x + 1, y + 1);
-	writeData(color >> 8);
-	writeData(color & 0xFF);
+	uint8_t TransmitBuffer[2] {(uint8_t)(color >> 8), (uint8_t)(color & 0xFF)};
+	spiWriteDataBuffer(TransmitBuffer, 2);
+	//writeData(color >> 8);
+	//writeData(color & 0xFF);
 }
 
 /*!
@@ -1430,25 +1432,23 @@ void ST7735_TFT_graphics::setTextColor(uint16_t c, uint16_t b)
 }
 
 /*!
-	@brief: Draws an 16 bit color bitmap to screen from a data array
+	@brief: Draws an 16 bit color sprite bitmap to screen from a data array with transparent background
 	@param x X coordinate
 	@param y Y coordinate
 	@param pBmp pointer to data array
 	@param w width of the bitmap in pixels
 	@param h height of the bitmap in pixels
 	@param backgroundColor the background color of sprite (16 bit 565) this will be made transparent
-	@note Experimental 
+	@note Experimental , does not use buffer or malloc just draw pixel
 	@return
 		-# 0=success
 		-# 1=invalid pointer object
 		-# 2=Co-ordinates out of bounds
-		-# 3=malloc memory allocation failure 
 */
 uint8_t ST7735_TFT_graphics::TFTdrawSpriteData(uint8_t x, uint8_t y, uint8_t *pBmp, uint8_t w, uint8_t h, uint16_t backgroundColor)
 {
 	uint8_t i, j;
-	uint32_t ptr = 0;
-	uint16_t colour = 0;
+	uint16_t colour;
 	// 1. Check for null pointer
 	if (pBmp == nullptr)
 	{
@@ -1466,36 +1466,18 @@ uint8_t ST7735_TFT_graphics::TFTdrawSpriteData(uint8_t x, uint8_t y, uint8_t *pB
 	if ((y + h - 1) >= _heightTFT)
 		h = _heightTFT - y;
 
-	// Create bitmap buffer
-	uint8_t *buffer = (uint8_t *)malloc(w * h * 2);
-	if (buffer == nullptr) // check malloc
+	for(j = 0; j < h; j++)
 	{
-		printf("Error TFTdrawSprite 3 :MALLOC could not assign memory\r\n");
-		return 3;
-	}
-	for (j = 0; j < h; j++)
-	{
-		for (i = 0; i < w; i++)
+		for(i = 0; i < w; i ++)
 		{
-			// Read a 16-bit colour from the bitmap data
 			colour = (pBmp[0] << 8) | pBmp[1];
-			if (colour != backgroundColor)
-			{
-				buffer[ptr++] = (*pBmp++);
-				buffer[ptr++] = (*pBmp++);
-			}else
-			{
-				ptr  += 2;
-				pBmp += 2;
+			pBmp += 2;
+			if (colour != backgroundColor){
+				TFTdrawPixel(x+i-1, y + j-1, colour);
 			}
-			
 		}
 	}
-	// Set window and write buffer
-	TFTsetAddrWindow(x, y, x + w - 1, y + h - 1);
-	spiWriteDataBuffer(buffer, h * w * sizeof(uint16_t));
-
-	free(buffer);
 	return 0;
 }
+
 //**************** EOF *****************

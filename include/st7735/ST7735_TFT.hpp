@@ -209,7 +209,7 @@ private:
 	void Bcmd(void);
 	void Rcmd2green(void);
 
-	const uint16_t _LibVersionNum = 171; /**< library version number eg 171 1.7.1*/
+	const uint16_t _LibVersionNum = 172; /**< library version number eg 171 1.7.1*/
 
 }; // end of class
 

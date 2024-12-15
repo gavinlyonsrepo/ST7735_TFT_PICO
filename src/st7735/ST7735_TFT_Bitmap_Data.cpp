@@ -5,7 +5,7 @@
               Data file to hold bitmap data. Test 12 , test 14. 15 16
   @note    Not part of core library only used for testing purposes
 
-  6 bitmaps in file 
+   bitmaps in file 
     -#  ArrowImage   : bi-colour 2048 bytes  (128x128)
     -#  smallImage   : bi-colour (20x20)  
     -#  motorImage   : 16 bit color 565,  32768 bytes (128x128)
