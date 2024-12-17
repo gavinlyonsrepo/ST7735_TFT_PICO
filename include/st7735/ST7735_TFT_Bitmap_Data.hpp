@@ -8,7 +8,7 @@
 
      bitmaps in file 
     -#  ArrowImage   : bi-colour 2048 bytes  (128x128)
-    -#  smallImage   : bi-colour (20x20)  
+    -#  SunTextImage : bi-colour (40x16)  
     -#  motorImage   : 16 bit color 565,  32768 bytes (128x128)
     -#  fruitbowl    : 24 bit color, 49152 bytes (128x128) 
     -#  SpriteTest16   : 16 bit color 565 2048 bytes (32x32) with background 0x7E5F or ST7735_LBLUE
