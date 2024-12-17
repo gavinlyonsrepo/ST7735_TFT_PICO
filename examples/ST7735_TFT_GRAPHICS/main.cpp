@@ -129,7 +129,7 @@ void Test201(void)
 void Test202(void)
 {
 	myTFT.TFTdrawRectWH(5, 5, 20, 20, ST7735_RED);
-	if(myTFT.TFTfillRectangle(45, 5, 20, 20, ST7735_YELLOW) != 0) //uses spiwrite
+	if(myTFT.TFTfillRectBuffer(45, 5, 20, 20, ST7735_YELLOW) != 0) //uses spiwrite
 	{
 		printf("Error Test202 1: Error in the TFTfillRectangle function\r\n");
 	}

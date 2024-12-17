@@ -26,17 +26,17 @@
 2. Inverse colour, rotate, sleep, idle  & vertical scroll modes supported.
 3. 12 fonts included
 4. Graphics + print class included.
-5. bi-color, 16 bit and 24 colour Bitmaps supported.
+5. Sprites, 1,16 and 24 bit colour Bitmaps supported.
 6. Hardware and software  SPI
 
+* Version:  1.7.2
 * Author: Gavin Lyons
-* Port of my Raspberry PI library version 1.5 at [github link.](https://github.com/gavinlyonsrepo/ST7735_TFT_RPI)
 * Developed on Toolchain:
 	1. Raspberry pi PICO RP2040
-	2. SDK(1.4.0) C++
-	3. compiler G++ for arm-none-eabi((15:10.3-2021.07-4) 
-	4. CMAKE(VERSION 3.12) , VScode(1.84.2)
-	5. Linux Mint 21.2
+	2. SDK(2.1.0) C++
+	3. compiler G++ for arm-none-eabi(13.2.1)
+	4. CMAKE(VERSION 3.18) , VScode(1.95.3)
+	5. Linux Mint 22.1
 
 
 ## Test
@@ -151,19 +151,21 @@ These  functions return a number in event of an error, such as wrong font chosen
 
 ### Bitmap
 
-There are 4 functions to support drawing bitmaps, 
+Functions to support drawing bitmaps, icons & sprites.
 
 | Num | Function Name | Colour support | bitmap size Max |  Note |
 | ------ | ------ | ------ | ------ | ------ |
 | 1 | TFTdrawIcon | bi-colour | (8 x (0-Max_y)) 128 bytes max  | Data vertically addressed |
 | 2 | TFTdrawBitmap | bi-colour | 2048 bytes  | Data horizontally  addressed |
 | 3 | TFTdrawBitmap16Data | 16 bit color 565  | 32768  | Data from array on PICO |
-| 4 | TFTdrawBitmap24Data  | 24 bit color  | 49152  | Data from array on PICO, Converted by software to 16-bit color  |
+| 4 | TFTdrawBitmap24Data  | 24 bit color  | 49152  | Data from array on PICO, Converted by software to 16-bit color | 
+| 5 | TFTdrawSpriteData  | 16 bit color  565 | 32768  | Data from array on PICO, Draws background color tranparent | 
+
 
 1. Bitmap size in kiloBytes = (screenWidth * screenHeight * bitsPerPixel)/(1024 * 8)
 2. Math in bitmap size column 2-5  assumes 128x128 pixel screen.
 3. The data array for 1 and 2 is created from image files using file data conversion tool [link](https://javl.github.io/image2cpp/)
-4. The data array for 3 and 4 is created from BMP files using file data conversion tool [link](https://notisrac.github.io/FileToCArray/)
+4. The data array for 3 - 5  is created from BMP files using file data conversion tool [link](https://notisrac.github.io/FileToCArray/)
 
 These functions will return error codes in event of an error, see  API docs for details.
 

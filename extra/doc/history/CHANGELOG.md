@@ -20,4 +20,5 @@
 	* Increased Fonts 7&8 to 14 characters from 11.
 	
 * Version 1.7.2 Dec 2024
-	* added Sprite test function as per github issue 5
+	* Added Sprite function as per github issue 5.
+	* Refactored TFTFillRectangle to TFTfillRectBuffer.

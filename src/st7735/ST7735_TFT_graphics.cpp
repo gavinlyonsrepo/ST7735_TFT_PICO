@@ -69,7 +69,7 @@ void ST7735_TFT_graphics ::TFTsetAddrWindow(uint8_t x0, uint8_t y0, uint8_t x1, 
 		-# 3 Malloc failure
 	@note  uses spiWriteBuffer method
 */
-uint8_t ST7735_TFT_graphics ::TFTfillRectangle(uint8_t x, uint8_t y, uint8_t w, uint8_t h, uint16_t color)
+uint8_t ST7735_TFT_graphics ::TFTfillRectBuffer(uint8_t x, uint8_t y, uint8_t w, uint8_t h, uint16_t color)
 {
 	uint8_t hi, lo;
 
@@ -115,7 +115,7 @@ uint8_t ST7735_TFT_graphics ::TFTfillRectangle(uint8_t x, uint8_t y, uint8_t w, 
 */
 void ST7735_TFT_graphics ::TFTfillScreen(uint16_t color)
 {
-	TFTfillRectangle(0, 0, _widthTFT, _heightTFT, color);
+	TFTfillRectBuffer(0, 0, _widthTFT, _heightTFT, color);
 }
 
 /*!
@@ -1436,10 +1436,10 @@ void ST7735_TFT_graphics::setTextColor(uint16_t c, uint16_t b)
 	@param x X coordinate
 	@param y Y coordinate
 	@param pBmp pointer to data array
-	@param w width of the bitmap in pixels
-	@param h height of the bitmap in pixels
+	@param w width of the sprite in pixels
+	@param h height of the sprite in pixels
 	@param backgroundColor the background color of sprite (16 bit 565) this will be made transparent
-	@note Experimental , does not use buffer or malloc just draw pixel
+	@note Experimental , does not use buffer or malloc, just draw pixel
 	@return
 		-# 0=success
 		-# 1=invalid pointer object
@@ -1452,13 +1452,13 @@ uint8_t ST7735_TFT_graphics::TFTdrawSpriteData(uint8_t x, uint8_t y, uint8_t *pB
 	// 1. Check for null pointer
 	if (pBmp == nullptr)
 	{
-		printf("Error TFTdrawSprite 1: Bitmap array is nullptr\r\n");
+		printf("Error TFTdrawSprite 1: Sprite array is nullptr\r\n");
 		return 1;
 	}
 	// Check bounds
 	if ((x >= _widthTFT) || (y >= _heightTFT))
 	{
-		printf("Error TFTdrawSprite 2: Out of screen bounds\r\n");
+		printf("Error TFTdrawSprite 2: Sprite out of screen bounds\r\n");
 		return 2;
 	}
 	if ((x + w - 1) >= _widthTFT)

@@ -68,7 +68,7 @@ public:
 	void TFTdrawFastHLine(uint8_t x, uint8_t y, uint8_t w, uint16_t color);
 
 	void TFTdrawRectWH(uint8_t x, uint8_t y, uint8_t w, uint8_t h, uint16_t color);
-	uint8_t TFTfillRectangle(uint8_t, uint8_t, uint8_t, uint8_t, uint16_t);
+	uint8_t TFTfillRectBuffer(uint8_t, uint8_t, uint8_t, uint8_t, uint16_t);
 	void TFTfillRect(uint8_t x, uint8_t y, uint8_t w, uint8_t h, uint16_t color);
 
 	void TFTdrawRoundRect(uint8_t x, uint8_t y, uint8_t w, uint8_t h, uint8_t r, uint16_t color);
