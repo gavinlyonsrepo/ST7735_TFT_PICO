@@ -1053,7 +1053,7 @@ uint8_t ST7735_TFT_graphics ::TFTdrawBitmap24Data(uint8_t x, uint8_t y, uint8_t 
 		-# 2=Co-ordinates out of bounds
 		-# 3=malloc memory allocation failure 
 */
-uint8_t ST7735_TFT_graphics ::TFTdrawBitmap16Data(uint8_t x, uint8_t y, uint8_t *pBmp, uint8_t w, uint8_t h)
+/* uint8_t ST7735_TFT_graphics ::TFTdrawBitmap16Data(uint8_t x, uint8_t y, uint8_t *pBmp, uint8_t w, uint8_t h)
 {
 	uint8_t i, j;
 	uint32_t ptr;
@@ -1098,7 +1098,7 @@ uint8_t ST7735_TFT_graphics ::TFTdrawBitmap16Data(uint8_t x, uint8_t y, uint8_t 
 
 	free(buffer);
 	return 0;
-}
+} */
 
 /*!
 	@brief writes a char (c) on the TFT
@@ -1479,5 +1479,51 @@ uint8_t ST7735_TFT_graphics::TFTdrawSpriteData(uint8_t x, uint8_t y, uint8_t *pB
 	}
 	return 0;
 }
+
+/*! 
+    @brief: Draws a 16-bit color bitmap to the screen from a data array 
+    @param x X coordinate 
+    @param y Y coordinate 
+    @param pBmp pointer to data array 
+    @param w width of the bitmap in pixels 
+    @param h height of the bitmap in pixels 
+    @return 
+        -# 0=success 
+        -# 1=invalid pointer object 
+        -# 2=Co-ordinates out of bounds 
+*/
+uint8_t ST7735_TFT_graphics::TFTdrawBitmap16Data(uint8_t x, uint8_t y, uint8_t *pBmp, uint8_t w, uint8_t h)
+{
+    uint8_t j = 0;
+
+    // 1. Check for null pointer
+    if (pBmp == nullptr)
+    {
+        printf("Error TFTdrawBitmap16 1: Bitmap array is nullptr\r\n");
+        return 1;
+    }
+
+    // Check bounds
+    if ((x >= _widthTFT) || (y >= _heightTFT))
+    {
+        printf("Error TFTdrawBitmap16 2: Out of screen bounds\r\n");
+        return 2;
+    }
+    if ((x + w - 1) >= _widthTFT)
+        w = _widthTFT - x;
+    if ((y + h - 1) >= _heightTFT)
+        h = _heightTFT - y;
+
+    // Process bitmap data row-by-row
+    for (j = 0; j < h; j++)
+    {
+        TFTsetAddrWindow(x, y + j, x + w - 1, y + j); // Set the window for the current row
+        spiWriteDataBuffer(pBmp, w * sizeof(uint16_t)); // Write one row of pixel data
+        pBmp += w * 2; // Move to the next row in the bitmap
+    }
+
+    return 0;
+}
+
 
 //**************** EOF *****************
