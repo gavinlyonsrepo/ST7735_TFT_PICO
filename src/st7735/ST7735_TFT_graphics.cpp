@@ -889,7 +889,24 @@ uint8_t ST7735_TFT_graphics ::TFTdrawIcon(uint8_t x, uint8_t y, uint8_t w, uint1
 	return 0;
 }
 
-
+/*!
+	@brief: Draws an bi-color bitmap to screen
+	@param x X coordinate
+	@param y Y coordinate
+	@param w width of the bitmap in pixels
+	@param h height of the bitmap in pixels
+	@param color bitmap foreground colors ,is bi-color
+	@param bgcolor bitmap background colors ,is bi-color
+	@param pBmp  an array of uint8_t containing bitmap data horizontally addressed.
+	@param sizeOfBitmap size of the bitmap
+	@return
+		-# 0=success
+		-# 1=invalid pointer object
+		-# 2=Co-ordinates out of bounds,
+		-# 4=bitmap wrong size
+	@note A horizontal Bitmap's w must be divisible by 8. For a bitmap with w=88 & h=48.
+		  Bitmap excepted size = (88/8) * 48 = 528 bytes.
+*/
 uint8_t ST7735_TFT_graphics::TFTdrawBitmap(int16_t x, int16_t y, int16_t w, int16_t h, uint16_t color, uint16_t bgcolor, uint8_t *pBmp, uint16_t sizeOfBitmap)
 {
 	int16_t byteWidth = (w + 7) / 8;
