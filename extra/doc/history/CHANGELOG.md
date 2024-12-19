@@ -21,4 +21,5 @@
 	
 * Version 1.7.2 Dec 2024
 	* Added Sprite function as per github issue 5.
+	* Replaced use of Malloc with row by row buffer writes. 
 	* Refactored TFTFillRectangle to TFTfillRectBuffer.

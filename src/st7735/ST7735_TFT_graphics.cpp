@@ -66,48 +66,44 @@ void ST7735_TFT_graphics ::TFTsetAddrWindow(uint8_t x0, uint8_t y0, uint8_t x1, 
 	@return
 		-# 0 for success
 		-# 2 out of screen bounds
-		-# 3 Malloc failure
 	@note  uses spiWriteBuffer method
 */
-uint8_t ST7735_TFT_graphics ::TFTfillRectBuffer(uint8_t x, uint8_t y, uint8_t w, uint8_t h, uint16_t color)
+uint8_t ST7735_TFT_graphics::TFTfillRectBuffer(uint8_t x, uint8_t y, uint8_t w, uint8_t h, uint16_t color)
 {
-	uint8_t hi, lo;
+    // Check bounds
+    if ((x >= _widthTFT) || (y >= _heightTFT))
+    {
+        printf("Error TFTfillRectangle 2: Out of screen bounds\r\n");
+        return 2;
+    }
+    if ((x + w - 1) >= _widthTFT)
+        w = _widthTFT - x;
+    if ((y + h - 1) >= _heightTFT)
+        h = _heightTFT - y;
 
-	// Check bounds
-	if ((x >= _widthTFT) || (y >= _heightTFT))
-	{
-		printf("Error TFTfillRectangle 2: Out of screen bounds\r\n");
-		return 2;
-	}
-	if ((x + w - 1) >= _widthTFT)
-		w = _widthTFT - x;
-	if ((y + h - 1) >= _heightTFT)
-		h = _heightTFT - y;
+    // Convert color to bytes
+    uint8_t hi = color >> 8;
+    uint8_t lo = color;
 
-	// Colour to bytes
-	hi = color >> 8;
-	lo = color;
-
-	// Create bitmap buffer
-	uint8_t *buffer = (uint8_t *)malloc(w * h * sizeof(uint16_t));
-	if (buffer == nullptr) // check malloc
-	{
-		printf("Error TFTfillRectangle 3: MALLOC could not assign memory\r\n");
-		return 3;
-	}
-	for (uint32_t i = 0; i < w * h * sizeof(uint16_t);)
-	{
-		buffer[i++] = hi;
-		buffer[i++] = lo;
-	}
-
-	// Set window and write buffer
-	TFTsetAddrWindow(x, y, x + w - 1, y + h - 1);
-	spiWriteDataBuffer(buffer, h * w * sizeof(uint16_t));
-
-	free(buffer);
-	return 0;
+    // Row buffer for one row of the rectangle
+    uint8_t rowBuffer[w * 2]; // Each pixel is 2 bytes (16-bit color)
+    // Fill the row buffer with the color
+    for (uint32_t i = 0; i < w; i++)
+    {
+        rowBuffer[2 * i] = hi;
+        rowBuffer[2 * i + 1] = lo;
+    }
+    // Draw the rectangle row by row
+    for (uint8_t j = 0; j < h; j++)
+    {
+        // Set the address window for the current row
+        TFTsetAddrWindow(x, y + j, x + w - 1, y + j);
+        // Write the row buffer to the display
+        spiWriteDataBuffer(rowBuffer, w * 2);
+    }
+    return 0;
 }
+
 
 /*!
 	@brief Fills the whole screen with a given color.
@@ -893,37 +889,17 @@ uint8_t ST7735_TFT_graphics ::TFTdrawIcon(uint8_t x, uint8_t y, uint8_t w, uint1
 	return 0;
 }
 
-/*!
-	@brief: Draws an bi-color bitmap to screen
-	@param x X coordinate
-	@param y Y coordinate
-	@param w width of the bitmap in pixels
-	@param h height of the bitmap in pixels
-	@param color bitmap foreground colors ,is bi-color
-	@param bgcolor bitmap background colors ,is bi-color
-	@param pBmp  an array of uint8_t containing bitmap data horizontally addressed.
-	@param sizeOfBitmap size of the bitmap
-	@return
-		-# 0=success
-		-# 1=invalid pointer object
-		-# 2=Co-ordinates out of bounds,
-		-# 3=malloc memory allocation failure 
-		-# 4=bitmap wrong size
-	@note A horizontal Bitmap's w must be divisible by 8. For a bitmap with w=88 & h=48.
-		  Bitmap excepted size = (88/8) * 48 = 528 bytes.
-*/
+
 uint8_t ST7735_TFT_graphics::TFTdrawBitmap(int16_t x, int16_t y, int16_t w, int16_t h, uint16_t color, uint16_t bgcolor, uint8_t *pBmp, uint16_t sizeOfBitmap)
 {
 	int16_t byteWidth = (w + 7) / 8;
 	uint8_t byte = 0;
 	uint16_t mycolor = 0;
-	uint32_t ptr;
 
-	// size of the bitmap
+	// Validate size of the bitmap
 	if (sizeOfBitmap != ((w / 8) * h))
 	{
-		printf("Error TFTdrawBitmap 4 : Horizontal Bitmap size is incorrect:  Check Size =  (w/8 * h): %u  %i  %i \n", sizeOfBitmap, w, h);
-		printf("Check size = ((w/8)*h) or Is bitmap width divisible evenly by eight or is all bitmap data there or too much \n");
+		printf("Error TFTdrawBitmap 4 : Horizontal Bitmap size is incorrect: Check Size =  (w/8 * h): %u  %i  %i \n", sizeOfBitmap, w, h);
 		return 4;
 	}
 	// Check for null pointer
@@ -932,7 +908,7 @@ uint8_t ST7735_TFT_graphics::TFTdrawBitmap(int16_t x, int16_t y, int16_t w, int1
 		printf("Error TFTdrawBitmap 1: Bitmap array is nullptr\r\n");
 		return 1;
 	}
-	// 2. Check bounds
+	// Check bounds
 	if ((x >= _widthTFT) || (y >= _heightTFT))
 	{
 		printf("Error TFTdrawBitmap 2: Out of screen bounds, check x & y\r\n");
@@ -943,33 +919,77 @@ uint8_t ST7735_TFT_graphics::TFTdrawBitmap(int16_t x, int16_t y, int16_t w, int1
 	if ((y + h - 1) >= _heightTFT)
 		h = _heightTFT - y;
 
-	// Create bitmap buffer
-	uint8_t *buffer = (uint8_t *)malloc(w * h * 2);
-	if (buffer == nullptr) // check malloc 4.
-	{
-		printf("Error TFTdrawBitmap 3: MALLOC could not assign memory \r\n");
-		return 3;
-	}
+	// Buffer for one row of pixels (16-bit per pixel split into bytes)
+    uint8_t rowBuffer[w * 2];
 
-	ptr = 0;
+	// Draw row by row
 	for (int16_t j = 0; j < h; j++)
 	{
+		// Process one row of pixels
 		for (int16_t i = 0; i < w; i++)
 		{
 			if (i & 7)
 				byte <<= 1;
 			else
-				byte = (pBmp[j * byteWidth + i / 8]);
+				byte = pBmp[j * byteWidth + i / 8];
 			mycolor = (byte & 0x80) ? color : bgcolor;
-			buffer[ptr++] = mycolor >> 8;
-			buffer[ptr++] = mycolor;
+			// Correct order: High byte first, low byte second
+            rowBuffer[2 * i] = mycolor >> 8;      // High byte
+            rowBuffer[2 * i + 1] = mycolor & 0xFF; // Low byte
 		}
-	}
-	// Set window and write buffer
-	TFTsetAddrWindow(x, y, x + w - 1, y + h - 1);
-	spiWriteDataBuffer(buffer, h * w * sizeof(uint16_t));
 
-	free(buffer);
+		// Set the address window for the current row
+		TFTsetAddrWindow(x, y + j, x + w - 1, y + j);
+
+		// Write the row to the display
+		spiWriteDataBuffer(rowBuffer, w * 2);
+	}
+
+	return 0;
+}
+
+/*! 
+	@brief: Draws a 16-bit color bitmap to the screen from a data array 
+	@param x X coordinate 
+	@param y Y coordinate 
+	@param pBmp pointer to data array 
+	@param w width of the bitmap in pixels 
+	@param h height of the bitmap in pixels 
+	@return 
+		-# 0=success 
+		-# 1=invalid pointer object 
+		-# 2=Co-ordinates out of bounds 
+*/
+uint8_t ST7735_TFT_graphics::TFTdrawBitmap16Data(uint8_t x, uint8_t y, uint8_t *pBmp, uint8_t w, uint8_t h)
+{
+	uint8_t j = 0;
+
+	// 1. Check for null pointer
+	if (pBmp == nullptr)
+	{
+		printf("Error TFTdrawBitmap16 1: Bitmap array is nullptr\r\n");
+		return 1;
+	}
+
+	// Check bounds
+	if ((x >= _widthTFT) || (y >= _heightTFT))
+	{
+		printf("Error TFTdrawBitmap16 2: Out of screen bounds\r\n");
+		return 2;
+	}
+	if ((x + w - 1) >= _widthTFT)
+		w = _widthTFT - x;
+	if ((y + h - 1) >= _heightTFT)
+		h = _heightTFT - y;
+
+	// Process bitmap data row-by-row
+	for (j = 0; j < h; j++)
+	{
+		TFTsetAddrWindow(x, y + j, x + w - 1, y + j); // Set the window for the current row
+		spiWriteDataBuffer(pBmp, w * sizeof(uint16_t)); // Write one row of pixel data
+		pBmp += w * 2; // Move to the next row in the bitmap
+	}
+
 	return 0;
 }
 
@@ -984,121 +1004,56 @@ uint8_t ST7735_TFT_graphics::TFTdrawBitmap(int16_t x, int16_t y, int16_t w, int1
 		-# 0=success
 		-# 1=invalid pointer object
 		-# 2=Co-ordinates out of bounds,
-		-# 3=malloc memory allocation failure 
 	@note 24 bit color converted to 16 bit color
 */
-uint8_t ST7735_TFT_graphics ::TFTdrawBitmap24Data(uint8_t x, uint8_t y, uint8_t *pBmp, uint8_t w, uint8_t h)
+uint8_t ST7735_TFT_graphics::TFTdrawBitmap24Data(uint8_t x, uint8_t y, uint8_t *pBmp, uint8_t w, uint8_t h)
 {
-	uint8_t i, j;
-	uint32_t ptr;
-	uint16_t color, red, green, blue = 0;
-	// 1. Check for null pointer
-	if (pBmp == nullptr)
-	{
-		printf("Error TFTdrawBitmap24 1: Bitmap array is nullptr\r\n");
-		return 1;
-	}
-	// Check bounds
-	if ((x >= _widthTFT) || (y >= _heightTFT))
-	{
-		printf("Error TFTdrawBitmap24 2: Out of screen bounds\r\n");
-		return 2;
-	}
-	if ((x + w - 1) >= _widthTFT)
-		w = _widthTFT - x;
-	if ((y + h - 1) >= _heightTFT)
-		h = _heightTFT - y;
+    uint8_t i, j;
+    uint16_t color, red, green, blue;
 
-	// Create bitmap buffer
-	uint8_t *buffer = (uint8_t *)malloc(w * h * 2);
-	if (buffer == nullptr) // check malloc
-	{
-		printf("Error TFTdrawBitmap24 3: MALLOC could not assign memory \r\n");
-		return 3;
-	}
-	ptr = 0;
-	for (j = 0; j < h; j++)
-	{
-		for (i = 0; i < w; i++)
-		{
-			// RRRR RRRR GGGG GGGG BBBB BBBB => 565 => RRRRR GGGGGG BBBBB
-			red = *pBmp++;
-			green = *pBmp++;
-			blue = *pBmp++;
-			// color = Color565(red , green, blue);
-			color = ((red & 0xF8) << 8) | ((green & 0xFC) << 3) | (blue >> 3);
-			buffer[ptr++] = color >> 8;		// upper byte
-			buffer[ptr++] = color & 0x00FF; // lower byte
-		}
-	}
+    // 1. Check for null pointer
+    if (pBmp == nullptr)
+    {
+        printf("Error TFTdrawBitmap24 1: Bitmap array is nullptr\r\n");
+        return 1;
+    }
 
-	// Set window and write buffer
-	TFTsetAddrWindow(x, y, x + w - 1, y + h - 1);
-	spiWriteDataBuffer(buffer, h * w * sizeof(uint16_t));
+    // Check bounds
+    if ((x >= _widthTFT) || (y >= _heightTFT))
+    {
+        printf("Error TFTdrawBitmap24 2: Out of screen bounds\r\n");
+        return 2;
+    }
+    if ((x + w - 1) >= _widthTFT)
+        w = _widthTFT - x;
+    if ((y + h - 1) >= _heightTFT)
+        h = _heightTFT - y;
 
-	free(buffer);
-	return 0;
+    // Buffer for one row of pixels (16-bit per pixel split into bytes)
+    uint8_t rowBuffer[w * 2];
+
+    // Draw the bitmap row by row
+    for (j = 0; j < h; j++)
+    {
+        for (i = 0; i < w; i++)
+        {
+            // Extract RGB values from 24-bit color data
+            red = *pBmp++;
+            green = *pBmp++;
+            blue = *pBmp++;
+            // Convert to 16-bit RGB565 format
+            color = ((red & 0xF8) << 8) | ((green & 0xFC) << 3) | (blue >> 3);
+            // Store high and low bytes of the color in the row buffer
+            rowBuffer[2 * i] = color >> 8;      // High byte
+            rowBuffer[2 * i + 1] = color & 0xFF; // Low byte
+        }
+        // Set the address window for the current row
+        TFTsetAddrWindow(x, y + j, x + w - 1, y + j);
+        // Write the row to the display
+        spiWriteDataBuffer(rowBuffer, w * 2);
+    }
+    return 0;
 }
-
-/*!
-	@brief: Draws an 16 bit color bitmap to screen from a data array
-	@param x X coordinate
-	@param y Y coordinate
-	@param pBmp pointer to data array
-	@param w width of the bitmap in pixels
-	@param h height of the bitmap in pixels
-	@return
-		-# 0=success
-		-# 1=invalid pointer object
-		-# 2=Co-ordinates out of bounds
-		-# 3=malloc memory allocation failure 
-*/
-/* uint8_t ST7735_TFT_graphics ::TFTdrawBitmap16Data(uint8_t x, uint8_t y, uint8_t *pBmp, uint8_t w, uint8_t h)
-{
-	uint8_t i, j;
-	uint32_t ptr;
-
-	// 1. Check for null pointer
-	if (pBmp == nullptr)
-	{
-		printf("Error TFTdrawBitmap16 1: Bitmap array is nullptr\r\n");
-		return 1;
-	}
-	// Check bounds
-	if ((x >= _widthTFT) || (y >= _heightTFT))
-	{
-		printf("Error TFTdrawBitmap16 2: Out of screen bounds\r\n");
-		return 2;
-	}
-	if ((x + w - 1) >= _widthTFT)
-		w = _widthTFT - x;
-	if ((y + h - 1) >= _heightTFT)
-		h = _heightTFT - y;
-
-	// Create bitmap buffer
-	uint8_t *buffer = (uint8_t *)malloc(w * h * 2);
-	if (buffer == nullptr) // check malloc
-	{
-		printf("Error TFTdrawBitmap16 3 :MALLOC could not assign memory\r\n");
-		return 3;
-	}
-	ptr = 0;
-
-	for (j = 0; j < h; j++)
-	{
-		for (i = 0; i < w; i++)
-		{
-			buffer[ptr++] = (*pBmp++);
-			buffer[ptr++] = (*pBmp++);
-		}
-	}
-	// Set window and write buffer
-	TFTsetAddrWindow(x, y, x + w - 1, y + h - 1);
-	spiWriteDataBuffer(buffer, h * w * sizeof(uint16_t));
-
-	free(buffer);
-	return 0;
-} */
 
 /*!
 	@brief writes a char (c) on the TFT
@@ -1480,50 +1435,6 @@ uint8_t ST7735_TFT_graphics::TFTdrawSpriteData(uint8_t x, uint8_t y, uint8_t *pB
 	return 0;
 }
 
-/*! 
-    @brief: Draws a 16-bit color bitmap to the screen from a data array 
-    @param x X coordinate 
-    @param y Y coordinate 
-    @param pBmp pointer to data array 
-    @param w width of the bitmap in pixels 
-    @param h height of the bitmap in pixels 
-    @return 
-        -# 0=success 
-        -# 1=invalid pointer object 
-        -# 2=Co-ordinates out of bounds 
-*/
-uint8_t ST7735_TFT_graphics::TFTdrawBitmap16Data(uint8_t x, uint8_t y, uint8_t *pBmp, uint8_t w, uint8_t h)
-{
-    uint8_t j = 0;
-
-    // 1. Check for null pointer
-    if (pBmp == nullptr)
-    {
-        printf("Error TFTdrawBitmap16 1: Bitmap array is nullptr\r\n");
-        return 1;
-    }
-
-    // Check bounds
-    if ((x >= _widthTFT) || (y >= _heightTFT))
-    {
-        printf("Error TFTdrawBitmap16 2: Out of screen bounds\r\n");
-        return 2;
-    }
-    if ((x + w - 1) >= _widthTFT)
-        w = _widthTFT - x;
-    if ((y + h - 1) >= _heightTFT)
-        h = _heightTFT - y;
-
-    // Process bitmap data row-by-row
-    for (j = 0; j < h; j++)
-    {
-        TFTsetAddrWindow(x, y + j, x + w - 1, y + j); // Set the window for the current row
-        spiWriteDataBuffer(pBmp, w * sizeof(uint16_t)); // Write one row of pixel data
-        pBmp += w * 2; // Move to the next row in the bitmap
-    }
-
-    return 0;
-}
 
 
 //**************** EOF *****************

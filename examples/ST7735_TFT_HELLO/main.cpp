@@ -17,10 +17,6 @@
 #include "st7735/ST7735_TFT.hpp"
 
 // Section :: Defines   
-//  Test timing related defines 
-#define TEST_DELAY1 1000 // mS
-#define TEST_DELAY2 2000 // mS
-#define TEST_DELAY5 5000 // mS
 
 // Section :: Globals 
 ST7735_TFT myTFT;
@@ -49,7 +45,7 @@ int main(void)
 void Setup(void)
 {
 	stdio_init_all(); // optional for error messages , Initialize chosen serial port, default 38400 baud
-	TFT_MILLISEC_DELAY(TEST_DELAY1);
+	TFT_MILLISEC_DELAY(1000);
 	printf("TFT :: Start\r\n");
 	
 //*************** USER OPTION 0 SPI_SPEED + TYPE ***********
@@ -99,10 +95,9 @@ void Test0(void) {
 	myTFT.TFTFontNum(myTFT.TFTFont_Default);
 	myTFT.TFTdrawText(15, 15, teststr1, ST7735_WHITE, ST7735_BLACK, 2);
 	myTFT.TFTdrawText(15, 35, teststr2, ST7735_WHITE, ST7735_BLACK, 2);
-	TFT_MILLISEC_DELAY(TEST_DELAY5);
-	TFT_MILLISEC_DELAY(TEST_DELAY2);
+	TFT_MILLISEC_DELAY(5000);
 	myTFT.TFTfillScreen(ST7735_BLACK);
-	TFT_MILLISEC_DELAY(TEST_DELAY1);
+	TFT_MILLISEC_DELAY(1000);
 }
 
 /*!

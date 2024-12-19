@@ -4,7 +4,8 @@
 **Dec 2024 V1.72**
 1. 701 Bitmap + FPS Test :: HW SPI  8MHZ :: 22 fps
 2. 701 Bitmap + FPS Test :: HW SPI  32MHZ :: 71 fps
-2. 701 Bitmap + FPS Test :: SW SPI   ::  9 fps
+3. 701 Bitmap + FPS Test :: SW SPI   ::  9 fps
+4. 702 Functions + FPS Test :: HW SPI  8MHZ :: 26 fps 
 
 **JAN 2024 v1.7.1**
 

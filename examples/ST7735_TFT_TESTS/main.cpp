@@ -439,7 +439,7 @@ void Test107(void)
 	DisplayReset();
 
 	// Error checking
-	printf("=== START Error checking. ===\r\n");
+	printf("=== START Error checking, 14 errors expected ===\r\n");
 	//wrong font
 	myTFT.TFTdrawText(105, 5, teststr0, ST7735_WHITE, ST7735_BLACK, 1); //throw error
 	myTFT.TFTFontNum(myTFT.TFTFont_Wide);
