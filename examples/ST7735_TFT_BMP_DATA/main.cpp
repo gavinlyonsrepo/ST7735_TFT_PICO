@@ -6,13 +6,14 @@
 	@note  See USER OPTIONS 0-3 in SETUP function
 
 	@test
-		-# Test 400 Sprite 
-		-# Test 401 "clock demo" , icons, , font 7
-		-# Test 402 bi-color small image
-		-# Test 403 bi-color full screen image 128x128
-		-# Test 404 16 bit color image from a data array
-		-# Test 405 24 bit color image data from a data array
-		-# Test 701 FPS bitmap results to serial port
+		-# Test 300 Sprite 
+		-# Test 301 "clock demo" , icons, , font 7
+		-# Test 302 bi-color small image
+		-# Test 303 bi-color full screen image 128x128
+		-# Test 304 16 bit color image from a data array
+		-# Test 305 24 bit color image data from a data array
+		-# Test 601 FPS bitmap results to serial port
+		-# Test 802 Error checking bitmap functions, results to serial port
 
 */
 
@@ -21,6 +22,7 @@
 #include "hardware/spi.h"
 #include "st7735/ST7735_TFT.hpp"
 #include "st7735/ST7735_TFT_Bitmap_Data.hpp"
+#include <vector> // for error checking test
 
 // Section :: Defines
 //  Test timing related defines
@@ -35,13 +37,14 @@ ST7735_TFT myTFT;
 //  Section ::  Function Headers
 
 void Setup(void);	// setup + user options
-void Test400(void); // sprite
-void Test401(void); // "clock demo" , icons, , font 7
-void Test402(void); // bi-color small image
-void Test403(void); // bi-color full screen image 128x128
-void Test404(void); // 16 bit color image from a data array
-void Test405(void); // 24 bit color image data from a data array
-void Test701(void); // FPS test optional , results to serial port
+void Test300(void); // sprite
+void Test301(void); // "clock demo" , icons, , font 7
+void Test302(void); // bi-color small image
+void Test303(void); // bi-color full screen image 128x128
+void Test304(void); // 16 bit color image from a data array
+void Test305(void); // 24 bit color image data from a data array
+void Test601(void); // FPS test optional , results to serial port
+void Test802(void); // bitmap error checking, results to serial port 
 void EndTests(void);
 
 //  Section ::  MAIN
@@ -49,13 +52,14 @@ void EndTests(void);
 int main(void)
 {
 	Setup();
-	Test400();
-	Test401();
-	Test402();
-	Test403();
-	Test404();
-	Test405();
-	Test701();
+	Test300();
+	Test301();
+	Test302();
+	Test303();
+	Test304();
+	Test305();
+	Test802();
+	Test601();
 	EndTests();
 }
 // *** End OF MAIN **
@@ -113,9 +117,9 @@ void Setup(void)
 /*!
 	@brief  "sprite demo" 32 x 32 with LBLUE background
 */
-void Test400(void)
+void Test300(void)
 {
-	// Test 400-A test 16-bit color Sprite 
+	// Test 300-A test 16-bit color Sprite 
 	// Draw as sprite, without background , 32 X 32 .bakcground color = ST7375_LBLUE
 	// Green bakcground screen
 	myTFT.TFTfillScreen(ST7735_GREEN);
@@ -123,7 +127,7 @@ void Test400(void)
 	myTFT.TFTdrawSpriteData(5, 5, (uint8_t *)pSpriteTest16, 32, 32, ST7735_LBLUE);
 	TFT_MILLISEC_DELAY(TEST_DELAY5);
 
-	// Test 400-B test 16-bit color Sprite 
+	// Test 300-B test 16-bit color Sprite 
 	// Draw as sprite, without background , 32 X 32 .bakcground color = ST7375_LBLUE
 	// Bitmap background screen
 	myTFT.TFTdrawBitmap24Data(0, 0, (uint8_t *)pFruitBowlImage, 128, 128);
@@ -138,7 +142,7 @@ void Test400(void)
 /*!
 	@brief  "clock demo" , icons, , font 7
 */
-void Test401(void)
+void Test301(void)
 {
 	myTFT.TFTfillScreen(ST7735_BLACK);
 
@@ -152,20 +156,6 @@ void Test401(void)
 	uint8_t Sec = 45;
 	unsigned long previousMillis = 0; // will store last time display was updated
 	const long interval = 1000;		  //   interval at which to update display (milliseconds)
-
-	// All icons data vertically addressed
-	// power icon, 12x8
-	const unsigned char powerIcon[12] = {0xff, 0xe7, 0xc3, 0x99, 0xa5, 0xad, 0xad, 0xa5, 0x99, 0xc3, 0xe7, 0xff};
-	// lighting symbol, 12x8
-	const unsigned char speedIcon[12] = {0xff, 0xff, 0xf7, 0xb3, 0xd1, 0xc0, 0xe0, 0xf4, 0xf6, 0xfe, 0xff, 0xff};
-	// Mobile icon  16x8px
-	const unsigned char SignalIcon[16] = {0x03, 0x05, 0x09, 0xff, 0x09, 0x05, 0xf3, 0x00, 0xf8, 0x00, 0xfc, 0x00, 0xfe, 0x00, 0xff, 0x00};
-	// Message icon  16x8px
-	const unsigned char MsgIcon[16] = {0x00, 0x00, 0x00, 0xff, 0x85, 0x89, 0x91, 0x91, 0x91, 0x91, 0x89, 0x85, 0xff, 0x00, 0x00, 0x00};
-	// Alarm icon  8x8px
-	const unsigned char AlarmIcon[8] = {0x83, 0xbd, 0x42, 0x4a, 0x52, 0x52, 0xbd, 0x83};
-	// Battery Icon  16x8px
-	const unsigned char BatIcon[16] = {0x00, 0x00, 0x7e, 0x42, 0x81, 0xbd, 0xbd, 0x81, 0xbd, 0xbd, 0x81, 0xbd, 0xbd, 0x81, 0xff, 0x00};
 
 	// TOP icons box
 	myTFT.TFTdrawIcon(2, 2, 16, ST7735_BLACK, ST7735_WHITE, SignalIcon);
@@ -227,16 +217,16 @@ void Test401(void)
 	TFT_MILLISEC_DELAY(TEST_DELAY2);
 	myTFT.TFTfillScreen(ST7735_BLACK);
 	myTFT.TFTFontNum(myTFT.TFTFont_Default);
-} // end of test 401
+} // end of Test 301
 
 /*!
-	@brief  test 402 bi-color small image 20x24
+	@brief  Test 302 bi-color small image 20x24
 */
-void Test402(void)
+void Test302(void)
 {
 
 	myTFT.TFTfillScreen(ST7735_BLACK);
-	char teststr1[] = "Test 402";
+	char teststr1[] = "Test 302";
 	myTFT.TFTdrawText(5, 5, teststr1, ST7735_WHITE, ST7735_BLACK, 1);
 	myTFT.TFTdrawBitmap(80, 20, 40, 16, ST7735_CYAN, ST7735_BLACK, (uint8_t *)pSunTextImage,80);
 	myTFT.TFTdrawBitmap(20, 40, 40, 16, ST7735_RED, ST7735_BLACK, (uint8_t *)pSunTextImage,80);
@@ -246,11 +236,11 @@ void Test402(void)
 }
 
 /*!
-	@brief  Test403 bi-color full screen image 128x128
+	@brief  Test303 bi-color full screen image 128x128
 */
-void Test403(void)
+void Test303(void)
 {
-	char teststr1[] = "Test 403";
+	char teststr1[] = "Test 303";
 	myTFT.TFTdrawText(5, 5, teststr1, ST7735_WHITE, ST7735_BLACK, 1);
 	TFT_MILLISEC_DELAY(TEST_DELAY2);
 
@@ -260,11 +250,11 @@ void Test403(void)
 }
 
 /*!
-	@brief  Test404 16 bit color image from a data array
+	@brief  Test304 16 bit color image from a data array
 */
-void Test404(void)
+void Test304(void)
 {
-	char teststr1[] = "Test 404";
+	char teststr1[] = "Test 304";
 	myTFT.TFTdrawText(5, 5, teststr1, ST7735_WHITE, ST7735_BLACK, 1);
 	TFT_MILLISEC_DELAY(TEST_DELAY5);
 
@@ -274,11 +264,11 @@ void Test404(void)
 }
 
 /*!
-	@brief  Test405 24 bit color image data from a data array
+	@brief  Test305 24 bit color image data from a data array
 */
-void Test405(void)
+void Test305(void)
 {
-	char teststr1[] = "Test 405";
+	char teststr1[] = "Test 305";
 	myTFT.TFTdrawText(5, 5, teststr1, ST7735_WHITE, ST7735_BLACK, 1);
 	TFT_MILLISEC_DELAY(TEST_DELAY5);
 
@@ -288,9 +278,9 @@ void Test405(void)
 }
 
 /*!
-	@brief  Test701 frame rate per second FPS ,results to serial port
+	@brief  Test601 frame rate per second FPS ,results to serial port
 */
-void Test701(void)
+void Test601(void)
 {
 	// Values to count frame rate per second
 	long previousMillis = 0;
@@ -301,7 +291,7 @@ void Test701(void)
 	uint16_t seconds = 0;
 	uint16_t fps = 0;
 
-	char teststr1[] = "Test 701 FPS, Output Results to USB Serial port";
+	char teststr1[] = "Test 601 FPS, Output Results to USB Serial port";
 	myTFT.TFTdrawText(5, 5, teststr1, ST7735_WHITE, ST7735_BLACK, 1);
 	TFT_MILLISEC_DELAY(TEST_DELAY5);
 	myTFT.setTextColor(ST7735_YELLOW, ST7735_RED);
@@ -344,6 +334,90 @@ void Test701(void)
 	myTFT.print(fps);
 	TFT_MILLISEC_DELAY(TEST_DELAY5);
 	myTFT.TFTfillScreen(ST7735_BLACK);
+}
+
+/*!
+	@brief  Bitmap error checking test
+*/
+void Test802(void)
+{
+	// === Setup tests ===
+	// Define the expected return values
+	std::vector<uint8_t> expectedErrors = 
+	{
+		Display_Success, 
+		Display_BitmapScreenBounds, Display_BitmapScreenBounds, Display_BitmapNullptr, Display_IconScreenWidth, //icon
+		Display_BitmapScreenBounds, Display_BitmapScreenBounds, Display_BitmapNullptr, //sprite
+		Display_BitmapScreenBounds, Display_BitmapScreenBounds, Display_BitmapNullptr, Display_BitmapHorizontalSize, //1-bit bitmap
+		Display_BitmapScreenBounds, Display_BitmapScreenBounds, Display_BitmapNullptr, //16-bit bitmap
+		Display_BitmapScreenBounds, Display_BitmapScreenBounds, Display_BitmapNullptr  //24-bit bitmap
+	};
+	// Vector to store return values
+	std::vector<uint8_t> returnValues; 
+	// test variables
+	char testString5[] = "Error Check Test 802, results to usb";
+	bool errorFlag = false;
+
+	// === Tests===
+	printf("=== START Error checking. Expecting errors ===\r\n");
+	// Perform function calls and store return values
+
+	// Print message + sanity check for success
+	myTFT.TFTFontNum(myTFT.TFTFont_Default);
+	returnValues.push_back(myTFT.TFTdrawText(5, 55, testString5, ST7735_RED, ST7735_BLACK, 2)); 
+	TFT_MILLISEC_DELAY(TEST_DELAY5);
+	myTFT.TFTfillScreen(ST7735_BLACK);
+	//TFTdrawIcon
+	returnValues.push_back(myTFT.TFTdrawIcon(180, 40, 16, ST7735_BLACK, ST7735_WHITE, SignalIcon));
+	returnValues.push_back(myTFT.TFTdrawIcon(180, 180, 16, ST7735_BLACK, ST7735_WHITE, SignalIcon));
+	returnValues.push_back(myTFT.TFTdrawIcon(40, 40, 16, ST7735_BLACK, ST7735_WHITE, nullptr));
+	returnValues.push_back(myTFT.TFTdrawIcon(40, 40, 180, ST7735_BLACK, ST7735_WHITE, SignalIcon));
+	//TFTdrawSpriteData
+	returnValues.push_back(myTFT.TFTdrawSpriteData(180, 50, (uint8_t *)pSpriteTest16, 32, 32, ST7735_LBLUE));
+	returnValues.push_back(myTFT.TFTdrawSpriteData(40, 180, (uint8_t *)pSpriteTest16, 32, 32, ST7735_LBLUE));
+	returnValues.push_back(myTFT.TFTdrawSpriteData(40, 180, nullptr, 32, 32, ST7735_LBLUE));
+	//TFTdrawBitmap
+	returnValues.push_back(myTFT.TFTdrawBitmap(180, 65, 128, 128, ST7735_WHITE, ST7735_GREEN, (uint8_t *)pArrowImage, 2048));
+	returnValues.push_back(myTFT.TFTdrawBitmap(50, 180, 128, 128, ST7735_WHITE, ST7735_GREEN, (uint8_t *)pArrowImage, 2048));
+	returnValues.push_back(myTFT.TFTdrawBitmap(50, 65, 128, 128, ST7735_WHITE, ST7735_GREEN, nullptr, 2048));
+	returnValues.push_back(myTFT.TFTdrawBitmap(20, 20, 70, 128, ST7735_WHITE, ST7735_GREEN, (uint8_t *)pArrowImage, 2048));
+	//TFTdrawBitmap16Data
+	returnValues.push_back(myTFT.TFTdrawBitmap16Data(180, 50, (uint8_t *)pSpriteTest16, 32, 32));
+	returnValues.push_back(myTFT.TFTdrawBitmap16Data(40, 180, (uint8_t *)pSpriteTest16, 32, 32));
+	returnValues.push_back(myTFT.TFTdrawBitmap16Data(40, 180, nullptr, 32, 32));
+	//TFTdrawBitmap24Data
+	returnValues.push_back(myTFT.TFTdrawBitmap24Data(180, 50, (uint8_t *)pSpriteTest16, 32, 32));
+	returnValues.push_back(myTFT.TFTdrawBitmap24Data(40, 180, (uint8_t *)pSpriteTest16, 32, 32));
+	returnValues.push_back(myTFT.TFTdrawBitmap24Data(40, 180, nullptr, 32, 32));
+	
+	//== SUMMARY SECTION===
+	printf("\nError Checking Summary.\n");
+	// Check return values against expected errors
+	for (size_t i = 0; i < returnValues.size(); ++i) {
+		if (i >= expectedErrors.size() || returnValues[i] != expectedErrors[i]) {
+			errorFlag = true;
+			printf("Unexpected error code: %d at test case %zu (expected: %d)\n", 
+				returnValues[i], i + 1, (i < expectedErrors.size() ? expectedErrors[i] : -1));
+		}
+	}
+
+	// Print all expectedErrors for summary
+	for (uint8_t value : expectedErrors ) 
+	{
+		printf("%d ", value);
+	}
+	printf("\n");
+	// Print all returnValues for summary
+	for (uint8_t value : returnValues) 
+	{
+		printf("%d ", value);
+	}
+	if (errorFlag == true ){
+		printf("\nError Checking has FAILED.\n");
+	}else{
+		printf("\nError Checking has PASSED.\n");
+	}
+	printf("\n=== STOP Error checking. ===\r\n");
 }
 
 /*!

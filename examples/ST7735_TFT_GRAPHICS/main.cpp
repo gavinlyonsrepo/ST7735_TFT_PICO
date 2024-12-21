@@ -6,11 +6,11 @@
 	@note  See USER OPTIONS 0-3 in SETUP function
 
 	@test
-		-# Test201  pixels and lines
-		-# Test202  rectangles
-		-# Test203  Circle
-		-# Test204  Triangles
-		-# Test205  More shapes, media buttons graphic.
+		-# Test901  pixels and lines
+		-# Test902  rectangles
+		-# Test903  Circle
+		-# Test904  Triangles
+		-# Test905  More shapes, media buttons graphic.
 */
 
 // Section ::  libraries
@@ -31,11 +31,11 @@ ST7735_TFT myTFT;
 //  Section ::  Function Headers
 
 void Setup(void);	// setup + user options
-void Test201(void);	// pixels and lines
-void Test202(void);	// rectangles
-void Test203(void);	// Circle
-void Test204(void);	// Triangles
-void Test205(void);	// More shapes, media buttons graphic.
+void Test901(void);	// pixels and lines
+void Test902(void);	// rectangles
+void Test903(void);	// Circle
+void Test904(void);	// Triangles
+void Test905(void);	// More shapes, media buttons graphic.
 void EndTests(void);
 
 //  Section ::  MAIN loop
@@ -43,11 +43,11 @@ void EndTests(void);
 int main(void)
 {
 	Setup();
-	Test201();
-	Test202();
-	Test203();
-	Test204();
-	Test205();
+	Test901();
+	Test902();
+	Test903();
+	Test904();
+	Test905();
 	EndTests();
 	return 0;
 }
@@ -107,7 +107,7 @@ void Setup(void)
 /*!
 	@brief   pixels and lines
 */
-void Test201(void)
+void Test901(void)
 {
 	TFT_MILLISEC_DELAY(TEST_DELAY1);
 	myTFT.TFTfillScreen(ST7735_BLACK);
@@ -126,12 +126,12 @@ void Test201(void)
 /*!
 	@brief  rectangles
 */
-void Test202(void)
+void Test902(void)
 {
 	myTFT.TFTdrawRectWH(5, 5, 20, 20, ST7735_RED);
 	if(myTFT.TFTfillRectBuffer(45, 5, 20, 20, ST7735_YELLOW) != 0) //uses spiwrite
 	{
-		printf("Error Test202 1: Error in the TFTfillRectangle function\r\n");
+		printf("Error Test902 1: Error in the TFTfillRectangle function\r\n");
 	}
 	myTFT.TFTfillRect(85, 5, 20, 20, ST7735_GREEN);
 	myTFT.TFTdrawRoundRect(15, 60, 50, 50, 5, ST7735_CYAN);
@@ -144,7 +144,7 @@ void Test202(void)
 /*!
 	@brief  circles
 */
-void Test203(void)
+void Test903(void)
 {
 	myTFT.TFTdrawCircle(40, 20, 15, ST7735_GREEN);
 	myTFT.TFTfillCircle(80, 20, 15, ST7735_YELLOW);
@@ -153,7 +153,7 @@ void Test203(void)
 /*!
 	@brief  triangles
 */
-void Test204(void)
+void Test904(void)
 {
 	myTFT.TFTdrawTriangle(5, 80, 50, 40, 95, 80, ST7735_CYAN);
 	myTFT.TFTfillTriangle(55, 120, 100, 90, 127, 120, ST7735_RED);
@@ -165,7 +165,7 @@ void Test204(void)
 /*!
 	@brief  More shapes, media buttons graphic.
 */
-void Test205()
+void Test905()
 {
 	char teststr1[] = "Press Play";
 	// Draw play button

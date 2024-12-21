@@ -64,44 +64,44 @@ void ST7735_TFT_graphics ::TFTsetAddrWindow(uint8_t x0, uint8_t y0, uint8_t x1, 
 	@param h height of the rectangle
 	@param color color to fill  rectangle 565 16-bit
 	@return
-		-# 0 for success
-		-# 2 out of screen bounds
+		-# Display_Success for success
+		-# Display_ShapeScreenBounds out of screen bounds
 	@note  uses spiWriteBuffer method
 */
-uint8_t ST7735_TFT_graphics::TFTfillRectBuffer(uint8_t x, uint8_t y, uint8_t w, uint8_t h, uint16_t color)
+Display_Return_Codes_e  ST7735_TFT_graphics::TFTfillRectBuffer(uint8_t x, uint8_t y, uint8_t w, uint8_t h, uint16_t color)
 {
-    // Check bounds
-    if ((x >= _widthTFT) || (y >= _heightTFT))
-    {
-        printf("Error TFTfillRectangle 2: Out of screen bounds\r\n");
-        return 2;
-    }
-    if ((x + w - 1) >= _widthTFT)
-        w = _widthTFT - x;
-    if ((y + h - 1) >= _heightTFT)
-        h = _heightTFT - y;
+	// Check bounds
+	if ((x >= _widthTFT) || (y >= _heightTFT))
+	{
+		printf("Error TFTfillRectangle 2: Out of screen bounds\r\n");
+		return Display_ShapeScreenBounds;
+	}
+	if ((x + w - 1) >= _widthTFT)
+		w = _widthTFT - x;
+	if ((y + h - 1) >= _heightTFT)
+		h = _heightTFT - y;
 
-    // Convert color to bytes
-    uint8_t hi = color >> 8;
-    uint8_t lo = color;
+	// Convert color to bytes
+	uint8_t hi = color >> 8;
+	uint8_t lo = color;
 
-    // Row buffer for one row of the rectangle
-    uint8_t rowBuffer[w * 2]; // Each pixel is 2 bytes (16-bit color)
-    // Fill the row buffer with the color
-    for (uint32_t i = 0; i < w; i++)
-    {
-        rowBuffer[2 * i] = hi;
-        rowBuffer[2 * i + 1] = lo;
-    }
-    // Draw the rectangle row by row
-    for (uint8_t j = 0; j < h; j++)
-    {
-        // Set the address window for the current row
-        TFTsetAddrWindow(x, y + j, x + w - 1, y + j);
-        // Write the row buffer to the display
-        spiWriteDataBuffer(rowBuffer, w * 2);
-    }
-    return 0;
+	// Row buffer for one row of the rectangle
+	uint8_t rowBuffer[w * 2]; // Each pixel is 2 bytes (16-bit color)
+	// Fill the row buffer with the color
+	for (uint32_t i = 0; i < w; i++)
+	{
+		rowBuffer[2 * i] = hi;
+		rowBuffer[2 * i + 1] = lo;
+	}
+	// Draw the rectangle row by row
+	for (uint8_t j = 0; j < h; j++)
+	{
+		// Set the address window for the current row
+		TFTsetAddrWindow(x, y + j, x + w - 1, y + j);
+		// Write the row buffer to the display
+		spiWriteDataBuffer(rowBuffer, w * 2);
+	}
+	return Display_Success;
 }
 
 
@@ -522,21 +522,20 @@ void ST7735_TFT_graphics ::TFTfillTriangle(int16_t x0, int16_t y0, int16_t x1, i
 	@param bg 565 16-bit background color
 	@param size 1-15
 	@return
-		-# 0 = Success!
-		-# 2 = Wrong text size (1-15)
-		-# 3 = X  Y Co-ordinates out of bounds.
-		-# 4 = ASCII character not in fonts range.
-		-# 5 = Wrong font This Function for font #1-6 only.
+		-# Display_Success 
+		-# Display_WrongFont = Wrong font This Function for font #1-6 only.
+		-# Display_CharScreenBounds = X  Y Co-ordinates out of bounds.
+		-# Display_CharFontASCIIRange = ASCII character not in fonts range.
 	@note Function Overloaded 2 off , the other drawChar method is for fonts > 6
 */
-uint8_t ST7735_TFT_graphics ::TFTdrawChar(uint8_t x, uint8_t y, uint8_t character, uint16_t color, uint16_t bg, uint8_t size)
+Display_Return_Codes_e ST7735_TFT_graphics ::TFTdrawChar(uint8_t x, uint8_t y, uint8_t character, uint16_t color, uint16_t bg, uint8_t size)
 {
 
 	int8_t i, j;
 	uint8_t line;
 	// 0. Check size
 	if (size == 0 || size >= 15)
-		return 2;
+		size = 1;
 	// 1. Check for screen out of bounds
 	if ((x >= _widthTFT) ||								  // Clip right
 		(y >= _heightTFT) ||							  // Clip bottom
@@ -544,14 +543,14 @@ uint8_t ST7735_TFT_graphics ::TFTdrawChar(uint8_t x, uint8_t y, uint8_t characte
 		((y + _CurrentFontheight * size - 1) < 0))		  // Clip top
 	{
 		printf("Error TFTdrawChar 3: Co-ordinates out of bounds\r\n");
-		return 3;
+		return Display_CharScreenBounds;
 	}
 
 	// 2. Check for character out of font range bounds
 	if (character < _CurrentFontoffset || character >= (_CurrentFontLength + _CurrentFontoffset))
 	{
-		printf("Error TFTdrawChar 4: Character = %u , Out of Font bounds %u <-> %u\r\n", character, _CurrentFontoffset, _CurrentFontLength + _CurrentFontoffset);
-		return 4;
+		printf("Error TFTdrawChar 4: Character = %u , Out of Font bounds %u <-> %u\r\n", character, _CurrentFontoffset,  (unsigned int)(_CurrentFontLength + _CurrentFontoffset));
+		return  Display_CharFontASCIIRange;
 	}
 
 	for (i = 0; i < (_CurrentFontWidth + 1); i++)
@@ -585,7 +584,7 @@ uint8_t ST7735_TFT_graphics ::TFTdrawChar(uint8_t x, uint8_t y, uint8_t characte
 				break;
 			default:
 				printf("Error TFTdrawChar 5: Wrong font number set must be 1-6 : %u \r\n", _FontNumber);
-				return 5;
+				return Display_WrongFont;
 				break;
 			}
 		}
@@ -607,7 +606,7 @@ uint8_t ST7735_TFT_graphics ::TFTdrawChar(uint8_t x, uint8_t y, uint8_t characte
 			}
 		}
 	}
-	return 0;
+	return Display_Success;
 }
 
 /*!
@@ -627,37 +626,38 @@ void ST7735_TFT_graphics ::TFTsetTextWrap(bool w)
 	@param color 565 16-bit
 	@param bg background color
 	@param size 1-x
-	@return 
-		-# 0=success
-		-# 2=wrong font
-		-# 3=Invalid pointer object
-		-# 4=Co-ordinates out of bounds
-		-# 5=drawChar method error upstream
+	@return
+		-# Display_Success=success
+		-# Display_WrongFont=wrong font
+		-# Display_CharScreenBounds=Co-ordinates out of bounds
+		-# Display_CharArrayNullptr=Invalid pointer object
+		-# if TFTdrawChar method error upstream it return that error code.
 	@note for font #1-6 only
 */
-uint8_t ST7735_TFT_graphics ::TFTdrawText(uint8_t x, uint8_t y, char *pText, uint16_t color, uint16_t bg, uint8_t size)
+Display_Return_Codes_e ST7735_TFT_graphics ::TFTdrawText(uint8_t x, uint8_t y, char *pText, uint16_t color, uint16_t bg, uint8_t size)
 {
 
 	// Check if correct font
 	if (_FontNumber >= TFTFont_Bignum)
 	{
 		printf("Error TFTdrawText 2: Wrong font number selected, must be 1-6\r\n");
-		return 2;
+		return Display_WrongFont;
 	}
 	// Check for null pointer
 	if (pText == nullptr)
 	{
 		printf("Error TFTdrawText 3: String array is not valid pointer object\r\n");
-		return 3;
+		return Display_CharArrayNullptr;
 	}
 	// Out of screen bounds
 	if ((x >= _widthTFT) || (y >= _heightTFT))
 	{
 		printf("Error TFTdrawText 4: Out of screen bounds\r\n");
-		return 4;
+		return Display_CharScreenBounds;
 	}
 	uint8_t cursorX = x;
 	uint8_t cursorY = y;
+	Display_Return_Codes_e  errorCode;
 	while (*pText != '\0')
 	{
 		if (_wrap && ((cursorX + size * _CurrentFontWidth) > _widthTFT))
@@ -667,10 +667,11 @@ uint8_t ST7735_TFT_graphics ::TFTdrawText(uint8_t x, uint8_t y, char *pText, uin
 			if (cursorY > _heightTFT)
 				cursorY = _heightTFT;
 		}
-		if (TFTdrawChar(cursorX, cursorY, *pText, color, bg, size) != 0)
+		errorCode = TFTdrawChar(cursorX, cursorY, *pText, color, bg, size);
+		if ( errorCode != Display_Success)
 		{
 			printf("Error TFTdrawText 5: Method TFTdrawChar failed\r\n");
-			return 5;
+			return errorCode;
 		}
 		cursorX = cursorX + size * (_CurrentFontWidth + 1);
 
@@ -678,7 +679,7 @@ uint8_t ST7735_TFT_graphics ::TFTdrawText(uint8_t x, uint8_t y, char *pText, uin
 			cursorX = _widthTFT;
 		pText++;
 	}
-	return 0;
+	return Display_Success;
 }
 
 /*!
@@ -843,30 +844,30 @@ void ST7735_TFT_graphics ::TFTFontNum(TFT_Font_Type_e FontNumber)
 	@param backcolor icon background colors ,is bi-color
 	@param character  An array of unsigned chars containing icon data vertically addressed.
 	@return
-		-# 0=success.
-		-# 2=Co-ordinates out of bounds.
-		-# 3=invalid pointer object.
-		-# 4=Icon width is greater than screen width
+		-# Display_Success=success.
+		-# Display_BitmapScreenBounds=Co-ordinates out of bounds.
+		-# Display_BitmapNullptr=invalid pointer object.
+		-# Display_IconScreenWidth=Icon width is greater than screen width
 */
-uint8_t ST7735_TFT_graphics ::TFTdrawIcon(uint8_t x, uint8_t y, uint8_t w, uint16_t color, uint16_t backcolor, const unsigned char character[])
+Display_Return_Codes_e ST7735_TFT_graphics ::TFTdrawIcon(uint8_t x, uint8_t y, uint8_t w, uint16_t color, uint16_t backcolor, const unsigned char character[])
 {
 	// Out of screen bounds
 	if ((x >= _widthTFT) || (y >= _heightTFT))
 	{
 		printf("Error TFTdrawIcon 2: Out of screen bounds\r\n");
-		return 2;
+		return Display_BitmapScreenBounds;
 	}
 	// Check for null pointer
 	if (character == nullptr)
 	{
-		printf("Error TFTdrawIcon 3: Character array is not valid pointer object\r\n");
-		return 3;
+		printf("Error TFTdrawIcon 3: Icon array is not valid pointer object\r\n");
+		return Display_BitmapNullptr;
 	}
 	// Check w value
 	if (w >= _widthTFT)
 	{
 		printf("Error TFTdrawIcon 4: Icon is greater than Screen width\r\n");
-		return 4;
+		return Display_IconScreenWidth;
 	}
 
 	uint8_t value;
@@ -886,7 +887,7 @@ uint8_t ST7735_TFT_graphics ::TFTdrawIcon(uint8_t x, uint8_t y, uint8_t w, uint1
 			value = 0;
 		}
 	}
-	return 0;
+	return Display_Success;
 }
 
 /*!
@@ -900,14 +901,14 @@ uint8_t ST7735_TFT_graphics ::TFTdrawIcon(uint8_t x, uint8_t y, uint8_t w, uint1
 	@param pBmp  an array of uint8_t containing bitmap data horizontally addressed.
 	@param sizeOfBitmap size of the bitmap
 	@return
-		-# 0=success
-		-# 1=invalid pointer object
-		-# 2=Co-ordinates out of bounds,
-		-# 4=bitmap wrong size
+		-# Display_Success=success
+		-# Display_BitmapNullptr=invalid pointer object
+		-# Display_BitmapScreenBounds=Co-ordinates out of bounds,
+		-# Display_BitmapHorizontalSize=bitmap wrong size
 	@note A horizontal Bitmap's w must be divisible by 8. For a bitmap with w=88 & h=48.
 		  Bitmap excepted size = (88/8) * 48 = 528 bytes.
 */
-uint8_t ST7735_TFT_graphics::TFTdrawBitmap(int16_t x, int16_t y, int16_t w, int16_t h, uint16_t color, uint16_t bgcolor, uint8_t *pBmp, uint16_t sizeOfBitmap)
+Display_Return_Codes_e ST7735_TFT_graphics::TFTdrawBitmap(int16_t x, int16_t y, int16_t w, int16_t h, uint16_t color, uint16_t bgcolor, uint8_t *pBmp, uint16_t sizeOfBitmap)
 {
 	int16_t byteWidth = (w + 7) / 8;
 	uint8_t byte = 0;
@@ -917,19 +918,19 @@ uint8_t ST7735_TFT_graphics::TFTdrawBitmap(int16_t x, int16_t y, int16_t w, int1
 	if (sizeOfBitmap != ((w / 8) * h))
 	{
 		printf("Error TFTdrawBitmap 4 : Horizontal Bitmap size is incorrect: Check Size =  (w/8 * h): %u  %i  %i \n", sizeOfBitmap, w, h);
-		return 4;
+		return Display_BitmapHorizontalSize;
 	}
 	// Check for null pointer
 	if (pBmp == nullptr)
 	{
 		printf("Error TFTdrawBitmap 1: Bitmap array is nullptr\r\n");
-		return 1;
+		return Display_BitmapNullptr;
 	}
 	// Check bounds
 	if ((x >= _widthTFT) || (y >= _heightTFT))
 	{
 		printf("Error TFTdrawBitmap 2: Out of screen bounds, check x & y\r\n");
-		return 2;
+		return Display_BitmapScreenBounds;
 	}
 	if ((x + w - 1) >= _widthTFT)
 		w = _widthTFT - x;
@@ -937,7 +938,7 @@ uint8_t ST7735_TFT_graphics::TFTdrawBitmap(int16_t x, int16_t y, int16_t w, int1
 		h = _heightTFT - y;
 
 	// Buffer for one row of pixels (16-bit per pixel split into bytes)
-    uint8_t rowBuffer[w * 2];
+	uint8_t rowBuffer[w * 2];
 
 	// Draw row by row
 	for (int16_t j = 0; j < h; j++)
@@ -951,8 +952,8 @@ uint8_t ST7735_TFT_graphics::TFTdrawBitmap(int16_t x, int16_t y, int16_t w, int1
 				byte = pBmp[j * byteWidth + i / 8];
 			mycolor = (byte & 0x80) ? color : bgcolor;
 			// Correct order: High byte first, low byte second
-            rowBuffer[2 * i] = mycolor >> 8;      // High byte
-            rowBuffer[2 * i + 1] = mycolor & 0xFF; // Low byte
+			rowBuffer[2 * i] = mycolor >> 8;      // High byte
+			rowBuffer[2 * i + 1] = mycolor & 0xFF; // Low byte
 		}
 
 		// Set the address window for the current row
@@ -962,7 +963,7 @@ uint8_t ST7735_TFT_graphics::TFTdrawBitmap(int16_t x, int16_t y, int16_t w, int1
 		spiWriteDataBuffer(rowBuffer, w * 2);
 	}
 
-	return 0;
+	return Display_Success;
 }
 
 /*! 
@@ -972,12 +973,12 @@ uint8_t ST7735_TFT_graphics::TFTdrawBitmap(int16_t x, int16_t y, int16_t w, int1
 	@param pBmp pointer to data array 
 	@param w width of the bitmap in pixels 
 	@param h height of the bitmap in pixels 
-	@return 
-		-# 0=success 
-		-# 1=invalid pointer object 
-		-# 2=Co-ordinates out of bounds 
+	@return
+		-# Display_Success=success
+		-# Display_BitmapNullptr=invalid pointer object
+		-# Display_BitmapScreenBounds=Co-ordinates out of bounds
 */
-uint8_t ST7735_TFT_graphics::TFTdrawBitmap16Data(uint8_t x, uint8_t y, uint8_t *pBmp, uint8_t w, uint8_t h)
+Display_Return_Codes_e ST7735_TFT_graphics::TFTdrawBitmap16Data(uint8_t x, uint8_t y, uint8_t *pBmp, uint8_t w, uint8_t h)
 {
 	uint8_t j = 0;
 
@@ -985,14 +986,14 @@ uint8_t ST7735_TFT_graphics::TFTdrawBitmap16Data(uint8_t x, uint8_t y, uint8_t *
 	if (pBmp == nullptr)
 	{
 		printf("Error TFTdrawBitmap16 1: Bitmap array is nullptr\r\n");
-		return 1;
+		return Display_BitmapNullptr;
 	}
 
 	// Check bounds
 	if ((x >= _widthTFT) || (y >= _heightTFT))
 	{
 		printf("Error TFTdrawBitmap16 2: Out of screen bounds\r\n");
-		return 2;
+		return Display_BitmapScreenBounds;
 	}
 	if ((x + w - 1) >= _widthTFT)
 		w = _widthTFT - x;
@@ -1007,7 +1008,7 @@ uint8_t ST7735_TFT_graphics::TFTdrawBitmap16Data(uint8_t x, uint8_t y, uint8_t *
 		pBmp += w * 2; // Move to the next row in the bitmap
 	}
 
-	return 0;
+	return Display_Success;
 }
 
 /*!
@@ -1018,58 +1019,58 @@ uint8_t ST7735_TFT_graphics::TFTdrawBitmap16Data(uint8_t x, uint8_t y, uint8_t *
 	@param w width of the bitmap in pixels
 	@param h height of the bitmap in pixels
 	@return
-		-# 0=success
-		-# 1=invalid pointer object
-		-# 2=Co-ordinates out of bounds,
+		-# Display_Success=success
+		-# Display_BitmapNullptr=invalid pointer object
+		-# Display_BitmapScreenBounds=Co-ordinates out of bounds,
 	@note 24 bit color converted to 16 bit color
 */
-uint8_t ST7735_TFT_graphics::TFTdrawBitmap24Data(uint8_t x, uint8_t y, uint8_t *pBmp, uint8_t w, uint8_t h)
+Display_Return_Codes_e  ST7735_TFT_graphics::TFTdrawBitmap24Data(uint8_t x, uint8_t y, uint8_t *pBmp, uint8_t w, uint8_t h)
 {
-    uint8_t i, j;
-    uint16_t color, red, green, blue;
+	uint8_t i, j;
+	uint16_t color, red, green, blue;
 
-    // 1. Check for null pointer
-    if (pBmp == nullptr)
-    {
-        printf("Error TFTdrawBitmap24 1: Bitmap array is nullptr\r\n");
-        return 1;
-    }
+	// 1. Check for null pointer
+	if (pBmp == nullptr)
+	{
+		printf("Error TFTdrawBitmap24 1: Bitmap array is nullptr\r\n");
+		return Display_BitmapNullptr;
+	}
 
-    // Check bounds
-    if ((x >= _widthTFT) || (y >= _heightTFT))
-    {
-        printf("Error TFTdrawBitmap24 2: Out of screen bounds\r\n");
-        return 2;
-    }
-    if ((x + w - 1) >= _widthTFT)
-        w = _widthTFT - x;
-    if ((y + h - 1) >= _heightTFT)
-        h = _heightTFT - y;
+	// Check bounds
+	if ((x >= _widthTFT) || (y >= _heightTFT))
+	{
+		printf("Error TFTdrawBitmap24 2: Out of screen bounds\r\n");
+		return Display_BitmapScreenBounds;
+	}
+	if ((x + w - 1) >= _widthTFT)
+		w = _widthTFT - x;
+	if ((y + h - 1) >= _heightTFT)
+		h = _heightTFT - y;
 
-    // Buffer for one row of pixels (16-bit per pixel split into bytes)
-    uint8_t rowBuffer[w * 2];
+	// Buffer for one row of pixels (16-bit per pixel split into bytes)
+	uint8_t rowBuffer[w * 2];
 
-    // Draw the bitmap row by row
-    for (j = 0; j < h; j++)
-    {
-        for (i = 0; i < w; i++)
-        {
-            // Extract RGB values from 24-bit color data
-            red = *pBmp++;
-            green = *pBmp++;
-            blue = *pBmp++;
-            // Convert to 16-bit RGB565 format
-            color = ((red & 0xF8) << 8) | ((green & 0xFC) << 3) | (blue >> 3);
-            // Store high and low bytes of the color in the row buffer
-            rowBuffer[2 * i] = color >> 8;      // High byte
-            rowBuffer[2 * i + 1] = color & 0xFF; // Low byte
-        }
-        // Set the address window for the current row
-        TFTsetAddrWindow(x, y + j, x + w - 1, y + j);
-        // Write the row to the display
-        spiWriteDataBuffer(rowBuffer, w * 2);
-    }
-    return 0;
+	// Draw the bitmap row by row
+	for (j = 0; j < h; j++)
+	{
+		for (i = 0; i < w; i++)
+		{
+			// Extract RGB values from 24-bit color data
+			red = *pBmp++;
+			green = *pBmp++;
+			blue = *pBmp++;
+			// Convert to 16-bit RGB565 format
+			color = ((red & 0xF8) << 8) | ((green & 0xFC) << 3) | (blue >> 3);
+			// Store high and low bytes of the color in the row buffer
+			rowBuffer[2 * i] = color >> 8;      // High byte
+			rowBuffer[2 * i + 1] = color & 0xFF; // Low byte
+		}
+		// Set the address window for the current row
+		TFTsetAddrWindow(x, y + j, x + w - 1, y + j);
+		// Write the row to the display
+		spiWriteDataBuffer(rowBuffer, w * 2);
+	}
+	return Display_Success;
 }
 
 /*!
@@ -1079,15 +1080,15 @@ uint8_t ST7735_TFT_graphics::TFTdrawBitmap24Data(uint8_t x, uint8_t y, uint8_t *
 	@param character The ASCII character
 	@param color 565 16-bit
 	@param bg background color
-	@return 
-		-# 0=success
-		-# 3=Co-ordinates out of bounds,
-		-# 4=ASCII character not in fonts range, 
-		-# 5=wrong font
-		-# 6=Font selected but not enabled in _font.hpp
+	@return
+		-# Display_Success=success
+		-# Display_WrongFont =wrong font
+		-# Display_CharScreenBounds=Co-ordinates out of bounds,
+		-# Display_CharFontASCIIRange=ASCII character not in fonts range,
+		-# Display_FontNotEnabled=Font selected but not enabled in _font.hpp
 	@note for font 7-12 only
 */
-uint8_t ST7735_TFT_graphics ::TFTdrawChar(uint8_t x, uint8_t y, uint8_t character, uint16_t color, uint16_t bg)
+Display_Return_Codes_e ST7735_TFT_graphics ::TFTdrawChar(uint8_t x, uint8_t y, uint8_t character, uint16_t color, uint16_t bg)
 {
 	uint8_t FontSizeMod = 0;
 	uint8_t i, j;
@@ -1100,14 +1101,14 @@ uint8_t ST7735_TFT_graphics ::TFTdrawChar(uint8_t x, uint8_t y, uint8_t characte
 		((y + _CurrentFontheight) < 0))		 // Clip top
 	{
 		printf("Error TFTdrawChar 3B: Co-ordinates out of bounds\r\n");
-		return 3;
+		return Display_CharScreenBounds;
 	}
 
 	// 2. Check for character out of font range bounds
 	if (character < _CurrentFontoffset || character >= (_CurrentFontLength + _CurrentFontoffset))
 	{
-		printf("Error TFTdrawChar 4B: Character = %u. Out of Font bounds : %u <> %u\r\n", character, _CurrentFontoffset, _CurrentFontLength + _CurrentFontoffset);
-		return 4;
+		printf("Error TFTdrawChar 4B: Character = %u. Out of Font bounds : %u <> %u\r\n", character, _CurrentFontoffset, (unsigned int)(_CurrentFontLength + _CurrentFontoffset));
+		return Display_CharFontASCIIRange;
 	}
 
 	// 3. Check for correct font and set FontSizeMod for fonts 7-12
@@ -1125,7 +1126,7 @@ uint8_t ST7735_TFT_graphics ::TFTdrawChar(uint8_t x, uint8_t y, uint8_t characte
 		break;
 	default:
 		printf("Error TFTdrawChar 5B: Wrong font selected, Font must be > 7 : %u\r\n", _FontNumber);
-		return 5;
+		return Display_WrongFont;
 		break;
 	}
 
@@ -1161,7 +1162,7 @@ uint8_t ST7735_TFT_graphics ::TFTdrawChar(uint8_t x, uint8_t y, uint8_t characte
 #endif
 		default:
 			printf("Error TFTdrawChar 6B: Is the font you selected enabled in _font.hpp? : %u\r\n", _FontNumber);
-			return 6;
+			return Display_FontNotEnabled;
 			break;
 		}
 
@@ -1186,7 +1187,7 @@ uint8_t ST7735_TFT_graphics ::TFTdrawChar(uint8_t x, uint8_t y, uint8_t characte
 			}
 		}
 	}
-	return 0;
+	return Display_Success;
 }
 
 /*!
@@ -1196,34 +1197,35 @@ uint8_t ST7735_TFT_graphics ::TFTdrawChar(uint8_t x, uint8_t y, uint8_t characte
 	@param pText pointer to string of ASCII character's
 	@param color 565 16-bit
 	@param bg background color
-	@return 
-		-# 0=success 
-		-# 2=wrong font
-		-# 3=Invalid pointer object
-		-# 4=Co-ordinates out of bounds
-		-# 5=drawChar method error
+	@return
+		-# Display_Success=success
+		-# Display_WrongFont =wrong font
+		-# Display_CharScreenBounds=Co-ordinates out of bounds
+		-# Display_FontPtrNullptr=Invalid pointer object
+		-# if TFTdrawChar method error upstream it return that error code.
 	@note for font 7-12 only
 */
-uint8_t ST7735_TFT_graphics ::TFTdrawText(uint8_t x, uint8_t y, char *pText, uint16_t color, uint16_t bg)
+Display_Return_Codes_e ST7735_TFT_graphics ::TFTdrawText(uint8_t x, uint8_t y, char *pText, uint16_t color, uint16_t bg)
 {
 	// Check for correct font
 	if (_FontNumber < TFTFont_Bignum)
 	{
 		printf("Error TFTdrawText 2B: Wrong font selected, must be 7 to 12 \r\n");
-		return 2;
+		return Display_WrongFont;
 	}
 	// Check for null pointer
 	if (pText == nullptr)
 	{
 		printf("Error TFTdrawText 3B: String array is not valid pointer object\r\n");
-		return 3;
+		return Display_CharArrayNullptr;
 	}
 	// Out of screen bounds
 	if ((x >= _widthTFT) || (y >= _heightTFT))
 	{
 		printf("Error TFTdrawText 4B: Out of screen bounds\r\n");
-		return 4;
+		return Display_CharScreenBounds;
 	}
+	Display_Return_Codes_e  errorCode;
 	while (*pText != '\0')
 	{
 		if (x > (_widthTFT - _CurrentFontWidth))
@@ -1235,15 +1237,16 @@ uint8_t ST7735_TFT_graphics ::TFTdrawText(uint8_t x, uint8_t y, char *pText, uin
 				y = x = 0;
 			}
 		}
-		if (TFTdrawChar(x, y, *pText, color, bg) != 0)
+		errorCode = TFTdrawChar(x, y, *pText, color, bg);
+		if (errorCode != Display_Success)
 		{
 			printf("Error TFTdrawText 5B: TFTdrawChar method failed\r\n");
-			return 5;
+			return errorCode;
 		}
 		x += _CurrentFontWidth;
 		pText++;
 	}
-	return 0;
+	return Display_Success;
 }
 
 /*!
@@ -1413,11 +1416,11 @@ void ST7735_TFT_graphics::setTextColor(uint16_t c, uint16_t b)
 	@param backgroundColor the background color of sprite (16 bit 565) this will be made transparent
 	@note Experimental , does not use buffer or malloc, just draw pixel
 	@return
-		-# 0=success
-		-# 1=invalid pointer object
-		-# 2=Co-ordinates out of bounds
+		-# Display_Success=success
+		-# Display_BitmapNullptr=invalid pointer object
+		-# Display_BitmapScreenBounds=Co-ordinates out of bounds
 */
-uint8_t ST7735_TFT_graphics::TFTdrawSpriteData(uint8_t x, uint8_t y, uint8_t *pBmp, uint8_t w, uint8_t h, uint16_t backgroundColor)
+Display_Return_Codes_e  ST7735_TFT_graphics::TFTdrawSpriteData(uint8_t x, uint8_t y, uint8_t *pBmp, uint8_t w, uint8_t h, uint16_t backgroundColor)
 {
 	uint8_t i, j;
 	uint16_t colour;
@@ -1425,13 +1428,13 @@ uint8_t ST7735_TFT_graphics::TFTdrawSpriteData(uint8_t x, uint8_t y, uint8_t *pB
 	if (pBmp == nullptr)
 	{
 		printf("Error TFTdrawSprite 1: Sprite array is nullptr\r\n");
-		return 1;
+		return Display_BitmapNullptr;
 	}
 	// Check bounds
 	if ((x >= _widthTFT) || (y >= _heightTFT))
 	{
 		printf("Error TFTdrawSprite 2: Sprite out of screen bounds\r\n");
-		return 2;
+		return Display_BitmapScreenBounds;
 	}
 	if ((x + w - 1) >= _widthTFT)
 		w = _widthTFT - x;
@@ -1449,7 +1452,7 @@ uint8_t ST7735_TFT_graphics::TFTdrawSpriteData(uint8_t x, uint8_t y, uint8_t *pB
 			}
 		}
 	}
-	return 0;
+	return Display_Success;
 }
 
 

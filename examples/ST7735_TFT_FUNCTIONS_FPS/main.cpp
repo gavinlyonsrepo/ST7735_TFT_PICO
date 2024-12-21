@@ -7,11 +7,11 @@
 	@note  See USER OPTIONS 0-3 in SETUP function
 
 	@test
-		-# Test301  Color
-		-# Test302  scroll
-		-# Test303  Rotate
-		-# Test304 change modes test -> Invert, display on/off and Sleep.
-		-# Test702 FPS frame rate per second test 
+		-# Test501  Color
+		-# Test502  scroll
+		-# Test503  Rotate
+		-# Test504 change modes test -> Invert, display on/off and Sleep.
+		-# Test602 FPS frame rate per second test 
 */
 
 // Section ::  libraries
@@ -32,11 +32,11 @@ ST7735_TFT myTFT;
 //  Section ::  Function Headers
 
 void Setup(void);	// setup + user options
-void Test301(void);	// test colors
-void Test302(void);	// scroll
-void Test303(void);	// Rotate
-void Test304(void);	// change modes test -> Invert, display on/off and Sleep.
-void Test702(void); // FPS, frame rate per second
+void Test501(void);	// test colors
+void Test502(void);	// scroll
+void Test503(void);	// Rotate
+void Test504(void);	// change modes test -> Invert, display on/off and Sleep.
+void Test602(void); // FPS, frame rate per second
 void EndTests(void);
 
 //  Section ::  MAIN loop
@@ -44,11 +44,11 @@ void EndTests(void);
 int main(void)
 {
 	Setup();
-	Test301();
-	Test302();
-	Test303();
-	Test304();
-	Test702();
+	Test501();
+	Test502();
+	Test503();
+	Test504();
+	Test602();
 	EndTests();
 	return 0;
 }
@@ -104,10 +104,10 @@ void Setup(void)
 	//**********************************************************
 }
 
-void Test301(void)
+void Test501(void)
 {
 	myTFT.TFTfillScreen(ST7735_BLACK);
-	printf("Test 301: Color Test:: Red,green,blue,yellow,white, black background\r\n");
+	printf("Test 501: Color Test:: Red,green,blue,yellow,white, black background\r\n");
 	myTFT.TFTfillRoundRect(8, 10, 24, 60, 8, ST7735_RED);
 	myTFT.TFTfillRoundRect(32, 10, 24, 60, 8, ST7735_GREEN);
 	myTFT.TFTfillRoundRect(56, 10, 24, 60, 8, ST7735_BLUE);
@@ -121,7 +121,7 @@ void Test301(void)
 /*!
 	@brief  Vertical Scroll test
 */
-void Test302(void)
+void Test502(void)
 {
 	const uint8_t LINES = 10, LINE_SIZE = 10, LINE_OFFSET = 3, TOP_FIXED = 0, BOTTOM_FIXED = 0;
 	char teststr1[] = "Scroll test";
@@ -151,7 +151,7 @@ void Test302(void)
 /*!
 	@brief  Rotate
 */
-void Test303()
+void Test503()
 {
 	char teststr0[] = "Rotate 0";	// normal
 	char teststr1[] = "Rotate 90";	// 90
@@ -186,9 +186,9 @@ void Test303()
 /*!
 	@brief  change modes test -> Invert, display on/off and Sleep.
 */
-void Test304()
+void Test504()
 {
-	printf("Test 304: Mode Tests\r\n");
+	printf("Test 504: Mode Tests\r\n");
 	char teststr1[] = "Modes Test";
 	myTFT.TFTfillRoundRect(8, 10, 24, 60, 8, ST7735_RED);
 	myTFT.TFTfillRoundRect(32, 10, 24, 60, 8, ST7735_GREEN);
@@ -200,22 +200,22 @@ void Test304()
 	myTFT.TFTchangeMode(myTFT.TFT_Normal_mode);
 	TFT_MILLISEC_DELAY(TEST_DELAY5);
 	myTFT.TFTchangeMode(myTFT.TFT_Invert_mode);
-	printf("Test 304-2: Mode Invert\r\n");
+	printf("Test 504-2: Mode Invert\r\n");
 	TFT_MILLISEC_DELAY(TEST_DELAY5);
 	myTFT.TFTchangeMode(myTFT.TFT_Normal_mode);
-	printf("Test 304-3: Mode Normal\r\n");
+	printf("Test 504-3: Mode Normal\r\n");
 	TFT_MILLISEC_DELAY(TEST_DELAY5);
 	myTFT.TFTchangeMode(myTFT.TFT_Display_off_mode);
-	printf("Test 304-4: Mode Display off\r\n");
+	printf("Test 504-4: Mode Display off\r\n");
 	TFT_MILLISEC_DELAY(TEST_DELAY5);
 	myTFT.TFTchangeMode(myTFT.TFT_Display_on_mode);
-	printf("Test 304-5: Mode Display on\r\n");
+	printf("Test 504-5: Mode Display on\r\n");
 	TFT_MILLISEC_DELAY(TEST_DELAY5);
 	myTFT.TFTchangeMode(myTFT.TFT_Sleep_mode);
-	printf("Test 304-6: Mode Sleep on\r\n");
+	printf("Test 504-6: Mode Sleep on\r\n");
 	TFT_MILLISEC_DELAY(TEST_DELAY5);
 	myTFT.TFTchangeMode(myTFT.TFT_Normal_mode);
-	printf("Test 304-7 Mode Normal\r\n");
+	printf("Test 504-7 Mode Normal\r\n");
 	TFT_MILLISEC_DELAY(TEST_DELAY2);
 	myTFT.TFTfillScreen(ST7735_BLACK);
 }
@@ -224,7 +224,7 @@ void Test304()
 /*!
 	@brief   Frame rate per second test, FPS test. Optionally specify -> set bool bTestFPS
 */
-void Test702(void)
+void Test602(void)
 {
 	myTFT.TFTFontNum(myTFT.TFTFont_Default);
 	// Values to count frame rate per second
@@ -249,8 +249,8 @@ void Test702(void)
 			previousMillis = currentMillis;
 			seconds++;
 			shapeColor = rand() % 60000;
-			if (count >= 2500)
-				return; // end if count gets to 2500
+			if (count >= 1500)
+				return; // end if count gets to 1500
 		}
 		currentFramerate++;
 		count++;

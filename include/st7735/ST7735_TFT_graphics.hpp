@@ -25,6 +25,30 @@
 		b = t;          \
 	}
 
+/*! Enum to define a standard return code for most functions that return failures*/
+enum Display_Return_Codes_e : uint8_t
+{
+	Display_Success = 0,                 /**< Success, Function ran without defined Error*/
+	Display_Reserved = 1,                /**< Reserved */
+	Display_WrongFont = 2,               /**< Wrong Font selected*/
+	Display_CharScreenBounds = 3,        /**< Text Character is out of Screen bounds, Check x and y*/
+	Display_CharFontASCIIRange = 4,      /**< Text Character is outside of chosen Fonts ASCII range, Check the selected Fonts ASCII range.*/
+	Display_CharArrayNullptr = 5,        /**< Text Character Array is an invalid pointer object*/
+	Display_FontPtrNullptr = 6,          /**< Pointer to the font is an invalid pointer object*/
+	Display_FontNotEnabled = 7,          /**< Is the font you selected enabled in _font.hpp? */
+	Display_BitmapNullptr = 8,           /**< The Bitmap data array is an invalid pointer object*/
+	Display_BitmapScreenBounds = 9,      /**< The Bitmap starting point is outside screen bounds, check x and y*/
+	Display_BitmapLargerThanScreen = 10, /**< The Bitmap is larger than screen, check  w and h*/
+	Display_BitmapVerticalSize = 11,     /**< A vertical Bitmap's height must be divisible by 8.*/
+	Display_BitmapHorizontalSize = 12,   /**< A horizontal Bitmap's width must be divisible by 8*/
+	Display_BitmapSize = 13,             /**< Size of the Bitmap is incorrect: BitmapSize(vertical)!=(w*(h/8),BitmapSize(horizontal)!=(w/8)*h*/
+	Display_BufferSize = 14,             /**< Size of the Buffer is incorrect: BufferSize(vertical)!=(w*(h/8)*/
+	Display_BufferNullptr = 15,          /**< The Buffer data array is an invalid pointer object*/
+	Display_ShapeScreenBounds = 16,		 /**< Shape is outside screen bounds, check x and y */
+	Display_IconScreenWidth = 17,        /**< Icon is greater than screen width , check width w value */
+	Display_GenericError = 18            /**< Generic Error */
+};
+
 // Section: Classes
 
 /*!
@@ -68,7 +92,7 @@ public:
 	void TFTdrawFastHLine(uint8_t x, uint8_t y, uint8_t w, uint16_t color);
 
 	void TFTdrawRectWH(uint8_t x, uint8_t y, uint8_t w, uint8_t h, uint16_t color);
-	uint8_t TFTfillRectBuffer(uint8_t, uint8_t, uint8_t, uint8_t, uint16_t);
+	Display_Return_Codes_e TFTfillRectBuffer(uint8_t, uint8_t, uint8_t, uint8_t, uint16_t);
 	void TFTfillRect(uint8_t x, uint8_t y, uint8_t w, uint8_t h, uint16_t color);
 
 	void TFTdrawRoundRect(uint8_t x, uint8_t y, uint8_t w, uint8_t h, uint8_t r, uint16_t color);
@@ -83,20 +107,20 @@ public:
 	// Text
 	void TFTsetTextWrap(bool w);
 	void TFTFontNum(TFT_Font_Type_e FontNumber);
-	uint8_t TFTdrawChar(uint8_t x, uint8_t y, uint8_t c, uint16_t color, uint16_t bg, uint8_t size);
-	uint8_t TFTdrawText(uint8_t x, uint8_t y, char *_text, uint16_t color, uint16_t bg, uint8_t size);
-	uint8_t TFTdrawChar(uint8_t x, uint8_t y, uint8_t c, uint16_t color, uint16_t bg);
-	uint8_t TFTdrawText(uint8_t x, uint8_t y, char *pText, uint16_t color, uint16_t bg);
+	Display_Return_Codes_e TFTdrawChar(uint8_t x, uint8_t y, uint8_t c, uint16_t color, uint16_t bg, uint8_t size);
+	Display_Return_Codes_e TFTdrawText(uint8_t x, uint8_t y, char *_text, uint16_t color, uint16_t bg, uint8_t size);
+	Display_Return_Codes_e TFTdrawChar(uint8_t x, uint8_t y, uint8_t c, uint16_t color, uint16_t bg);
+	Display_Return_Codes_e TFTdrawText(uint8_t x, uint8_t y, char *pText, uint16_t color, uint16_t bg);
 	void setTextColor(uint16_t c);
 	void setTextColor(uint16_t c, uint16_t bg);
 	void setTextSize(uint8_t s);
 
 	// Bitmap & Icon
-	uint8_t TFTdrawIcon(uint8_t x, uint8_t y, uint8_t w, uint16_t color, uint16_t bgcolor, const unsigned char character[]);
-	uint8_t TFTdrawBitmap(int16_t x, int16_t y, int16_t w, int16_t h, uint16_t color, uint16_t bgcolor, uint8_t *pBmp, uint16_t sizeOfBitmap);
-	uint8_t TFTdrawBitmap24Data(uint8_t x, uint8_t y, uint8_t *pBmp, uint8_t w, uint8_t h);
-	uint8_t TFTdrawBitmap16Data(uint8_t x, uint8_t y, uint8_t *pBmp, uint8_t w, uint8_t h);
-	uint8_t TFTdrawSpriteData(uint8_t x, uint8_t y, uint8_t *pBmp, uint8_t w, uint8_t h, uint16_t backgroundColor);
+	Display_Return_Codes_e TFTdrawIcon(uint8_t x, uint8_t y, uint8_t w, uint16_t color, uint16_t bgcolor, const unsigned char character[]);
+	Display_Return_Codes_e TFTdrawBitmap(int16_t x, int16_t y, int16_t w, int16_t h, uint16_t color, uint16_t bgcolor, uint8_t *pBmp, uint16_t sizeOfBitmap);
+	Display_Return_Codes_e TFTdrawBitmap24Data(uint8_t x, uint8_t y, uint8_t *pBmp, uint8_t w, uint8_t h);
+	Display_Return_Codes_e TFTdrawBitmap16Data(uint8_t x, uint8_t y, uint8_t *pBmp, uint8_t w, uint8_t h);
+	Display_Return_Codes_e TFTdrawSpriteData(uint8_t x, uint8_t y, uint8_t *pBmp, uint8_t w, uint8_t h, uint16_t backgroundColor);
 
 protected:
 	void pushColor(uint16_t color);

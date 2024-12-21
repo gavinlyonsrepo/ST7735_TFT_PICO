@@ -11,13 +11,14 @@
 		-# _font.hpp file _TFT_OPTIONAL_FONT_11 for font 11
 		-# _font.hpp file _TFT_OPTIONAL_FONT_12 for font 12
 	@test
-	-# Test 101 print out fonts 1-12
-	-# Test 102 defined 16-bit Colors, text
-	-# Test 103 print entire ASCII font 0 to 254, default font
-	-# Test 104 font sizes + character draw using draw functions
-	-# Test 105 print method all fonts
-	-# Test 106 Misc print class tests (string object, println invert, wrap, base nums etc)
-	-# Test 107 Misc draw functions (Invert, wrap, Error checks etc)
+	-# Test 701 print out fonts 1-12
+	-# Test 702 defined 16-bit Colors, text
+	-# Test 703 print entire ASCII font 0 to 254, default font
+	-# Test 704 font sizes + character draw using draw functions
+	-# Test 705 print method all fonts
+	-# Test 706 Misc print class tests (string object, println invert, wrap, base nums etc)
+	-# Test 707 Misc draw functions (Invert, wrap)
+	-# Test 808 Error check text functions (results to serial port, 38400 baud)
 */
 
 
@@ -26,6 +27,7 @@
 #include "pico/stdlib.h"
 #include "hardware/spi.h"
 #include "st7735/ST7735_TFT.hpp"
+#include <vector> // for error checking test
 
 // Section :: Defines
 //  Test timing related defines
@@ -39,13 +41,14 @@ ST7735_TFT myTFT;
 //  Section ::  Function Headers
 
 void Setup(void);
-void Test101(void);
-void Test102(void);
-void Test103(void);
-void Test104(void);
-void Test105(void);
-void Test106(void);
-void Test107(void);
+void Test701(void);
+void Test702(void);
+void Test703(void);
+void Test704(void);
+void Test705(void);
+void Test706(void);
+void Test707(void);
+void Test808(void);
 void EndTests(void);
 void DisplayReset(void);
 
@@ -54,14 +57,14 @@ void DisplayReset(void);
 int main(void)
 {
 	Setup();
-	Test101();
-	Test102();
-	Test103();
-	Test104();
-	Test105();
-	Test106();
-	Test107();
-
+	Test701();
+	Test702();
+	Test703();
+	Test704();
+	Test705();
+	Test706();
+	Test707();
+	Test808();
 	EndTests();
 	return 0;
 }
@@ -119,11 +122,11 @@ void Setup(void)
 
 
 /*! 
-	@brief Test 101: Print out fonts 1-12 with drawtext 
+	@brief Test 701: Print out fonts 1-12 with drawtext 
 */
-void Test101(void) {
+void Test701(void) {
 
-	printf("Test 101: Print out fonts 1-12 with drawtext\r\n");
+	printf("Test 701: Print out fonts 1-12 with drawtext\r\n");
 	char teststr1[] = "Default 1";
 	char teststr2[] = "THICK 2";
 	char teststr3[] = "Seven 3";
@@ -170,10 +173,10 @@ void Test101(void) {
 }
 
 /*!
-	@brief Test 102: Some of the Defined 16-bit Colors for text
+	@brief Test 702: Some of the Defined 16-bit Colors for text
 */
-void Test102(void) {
-	printf("Test 102: Some of the Defined 16-bit Colors for text\r\n");
+void Test702(void) {
+	printf("Test 702: Some of the Defined 16-bit Colors for text\r\n");
 	myTFT.TFTFontNum(myTFT.TFTFont_Default);
 	char teststr1[] = "WHITE";
 	char teststr2[] = "BLUE";
@@ -205,10 +208,10 @@ void Test102(void) {
 }
 
 /*!
-	@brief Test 103: Print entire ASCII font 0 to 254, default font
+	@brief Test 703: Print entire ASCII font 0 to 254, default font
 */
-void Test103(void) {
-	printf("Test 103: Print entire ASCII font 0 to 254, default font\r\n");
+void Test703(void) {
+	printf("Test 703: Print entire ASCII font 0 to 254, default font\r\n");
 	uint8_t row = 5;
 	uint8_t col = 5;
 	for (char i = 0; i < 126; i++) {
@@ -238,10 +241,10 @@ void Test103(void) {
 
 
 /*!
-	@brief Test 104: font sizes (2-5) + character draw using draw functions
+	@brief Test 704: font sizes (2-5) + character draw using draw functions
 */
-void Test104(void) {
-	printf("Test 104: font sizes (2-5) + character draw using draw functions\r\n");
+void Test704(void) {
+	printf("Test 704: font sizes (2-5) + character draw using draw functions\r\n");
 	myTFT.TFTFontNum(myTFT.TFTFont_Default);
 	char teststr1[] = "TEST";
 	myTFT.TFTdrawText(0, 5, teststr1, ST7735_WHITE, ST7735_BLACK, 2);
@@ -254,11 +257,11 @@ void Test104(void) {
 }
 
 /*!
-	@brief Test 105: Print class methods
+	@brief Test 705: Print class methods
 */
-void Test105(void)
+void Test705(void)
 {
-	printf("Test 105: Print class methods\r\n");
+	printf("Test 705: Print class methods\r\n");
 
 	// Test Fonts 1-6
 
@@ -323,12 +326,12 @@ void Test105(void)
 
 	DisplayReset();
 
-	myTFT.TFTsetCursor(5,5); // Test 11 Mia
+	myTFT.TFTsetCursor(5,5); // Test 71 Mia
 	myTFT.TFTFontNum(myTFT.TFTFont_Mia);
 	myTFT.println("Mia Font");
 	myTFT.print(1141.23);
 
-	myTFT.TFTsetCursor(10,50); // Test 12 Dedica
+	myTFT.TFTsetCursor(10,50); // Test 72 Dedica
 	myTFT.TFTFontNum(myTFT.TFTFont_Dedica);
 	myTFT.println("Dedica Font");
 	myTFT.print(1241.23);
@@ -338,11 +341,11 @@ void Test105(void)
 }
 
 /*!
-	@brief Test 106: Misc print class(string object, println invert, wrap, base nums
+	@brief Test 706: Misc print class(string object, println invert, wrap, base nums
 */
-void Test106(void)
+void Test706(void)
 {
-	printf("Test 106: Misc print class(string object, println invert, wrap, base nums etc)\r\n");
+	printf("Test 706: Misc print class(string object, println invert, wrap, base nums etc)\r\n");
 	//Inverted print fonts 1-6
 	myTFT.setTextColor(ST7735_RED, ST7735_YELLOW);
 
@@ -420,11 +423,11 @@ void Test106(void)
 }
 
 /*!
-	@brief Test 107: Misc draw functions tests invert, wrap, Error checks
+	@brief Test 707: Misc draw functions tests invert, wrap
 */
-void Test107(void)
+void Test707(void)
 {
-	printf("Test 107: Misc draw functions tests invert, wrap, Error checks etc\r\n");
+	printf("Test 707: Misc functions tests invert, wrap\r\n");
 
 	//wrap
 	char teststr0[] = "123456789";
@@ -437,42 +440,6 @@ void Test107(void)
 	myTFT.TFTFontNum(myTFT.TFTFont_Bignum);
 	myTFT.TFTdrawText(80, 10, teststr0, ST7735_WHITE, ST7735_BLACK);
 	DisplayReset();
-
-	// Error checking
-	printf("=== START Error checking, 14 errors expected ===\r\n");
-	//wrong font
-	myTFT.TFTdrawText(105, 5, teststr0, ST7735_WHITE, ST7735_BLACK, 1); //throw error
-	myTFT.TFTFontNum(myTFT.TFTFont_Wide);
-	myTFT.TFTdrawText(80, 5, teststr0, ST7735_WHITE, ST7735_BLACK);  //throw error
-
-	DisplayReset();
-
-	// character out of font bounds
-	// wide & thick lower case + ]
-	char testlowercase[] = "ABC]ab";
-	char testNonNumExtend[] = "-./12:;,A";
-	myTFT.TFTdrawText(5,  5, testlowercase, ST7735_WHITE, ST7735_BLACK, 2); //throw wide font error
-	myTFT.TFTFontNum(myTFT.TFTFont_Thick);
-	myTFT.TFTdrawText(5, 25, testlowercase, ST7735_WHITE, ST7735_BLACK, 2); //throw thick font error
-
-	// Numeric extened bounds ; , A errors
-	myTFT.TFTFontNum(myTFT.TFTFont_Bignum);
-	myTFT.TFTdrawText(5, 45, testNonNumExtend, ST7735_WHITE, ST7735_BLACK); //throw bignum font error
-	myTFT.TFTFontNum(myTFT.TFTFont_Mednum);
-	myTFT.TFTdrawText(5, 75, testNonNumExtend, ST7735_WHITE, ST7735_BLACK); //throw mednum font error
-	DisplayReset();
-
-	// screen out of bounds
-	myTFT.TFTFontNum(myTFT.TFTFont_Default);
-	myTFT.TFTdrawChar(0, 130, 'e', ST7735_WHITE, ST7735_BLACK, 1); //throw error
-	myTFT.TFTdrawChar(130, 0, 'f', ST7735_WHITE, ST7735_BLACK, 1); //throw error
-	DisplayReset();
-
-	myTFT.TFTFontNum(myTFT.TFTFont_ArialBold);
-	myTFT.TFTdrawChar(0, 130, 'A', ST7735_WHITE, ST7735_BLACK); //throw error
-	myTFT.TFTdrawChar(130, 0, 'B', ST7735_WHITE, ST7735_BLACK); //throw error
-	DisplayReset();
-	printf("=== STOP Error checking. ===\r\n");
 
 	//invert + Numeric fonts 1-6 sprintf
 	int myInt=931;
@@ -516,6 +483,118 @@ void Test107(void)
 	myTFT.TFTdrawText(2, 90, teststr4, ST7735_GREEN, ST7735_RED);
 
 	DisplayReset();
+}
+
+/*!
+	@brief Test 808: Error checking 
+*/
+void Test808(void) {
+	// === Setup tests ===
+	// Define the expected return values
+	std::vector<uint8_t> expectedErrors = 
+	{
+		Display_Success, 
+		Display_WrongFont, Display_WrongFont, Display_WrongFont, Display_WrongFont, 
+		Display_CharFontASCIIRange, Display_CharFontASCIIRange, 
+		Display_CharFontASCIIRange, Display_CharFontASCIIRange, 
+		Display_CharFontASCIIRange, Display_CharFontASCIIRange, 
+		Display_CharFontASCIIRange, Display_CharFontASCIIRange, 
+		Display_CharScreenBounds, Display_CharScreenBounds, Display_CharScreenBounds, 
+		Display_CharScreenBounds, Display_CharScreenBounds ,Display_CharScreenBounds, 
+		Display_CharArrayNullptr, Display_CharArrayNullptr, 
+		Display_Success
+	};
+	// Vector to store return values
+	std::vector<uint8_t> returnValues; 
+	// test varibles
+	char testString0[] = "123456789";
+	char testLowerCase[] = "ABC]ab";
+	char testNonNumExtend[] = "-./12:;,A";
+	char testString5[] = "Error Check: Results to Serial port";
+	bool errorFlag = false;
+
+	// === Tests===
+	printf("=== START Error checking. Expecting errors ===\r\n");
+	// Perform function calls and store return values
+	myTFT.TFTFontNum(myTFT.TFTFont_Default);
+	returnValues.push_back(myTFT.TFTdrawText(5, 55, testString5, ST7735_RED, ST7735_BLACK, 2)); 
+	DisplayReset();
+
+	// wrong font
+	myTFT.TFTFontNum(myTFT.TFTFont_Bignum);
+	returnValues.push_back(myTFT.TFTdrawText(105, 55, testString0, ST7735_WHITE, ST7735_BLACK, 1));
+	returnValues.push_back(myTFT.TFTdrawChar(105, 55, '1', ST7735_WHITE, ST7735_BLACK, 1));
+	myTFT.TFTFontNum(myTFT.TFTFont_Default);
+	returnValues.push_back(myTFT.TFTdrawText(80, 55, testString0, ST7735_WHITE, ST7735_BLACK));
+	returnValues.push_back(myTFT.TFTdrawChar(105, 55, '1', ST7735_WHITE, ST7735_BLACK));
+	DisplayReset();
+
+	// character out of font range
+	// wide & thick lower case + ]
+	myTFT.TFTFontNum(myTFT.TFTFont_Wide);
+	returnValues.push_back(myTFT.TFTdrawChar(5, 5, '[', ST7735_WHITE, ST7735_BLACK, 2));
+	returnValues.push_back(myTFT.TFTdrawText(5, 5, testLowerCase, ST7735_WHITE, ST7735_BLACK, 2));
+	myTFT.TFTFontNum(myTFT.TFTFont_Thick);
+	returnValues.push_back(myTFT.TFTdrawChar(5, 5, '[', ST7735_WHITE, ST7735_BLACK, 2));
+	returnValues.push_back(myTFT.TFTdrawText(5, 25, testLowerCase, ST7735_WHITE, ST7735_BLACK, 2));
+	myTFT.TFTFontNum(myTFT.TFTFont_Bignum);
+	returnValues.push_back(myTFT.TFTdrawChar(5, 5, ',', ST7735_WHITE, ST7735_BLACK));
+	returnValues.push_back(myTFT.TFTdrawText(5, 45, testNonNumExtend, ST7735_WHITE, ST7735_BLACK));
+	myTFT.TFTFontNum(myTFT.TFTFont_Mednum);
+	returnValues.push_back(myTFT.TFTdrawChar(5, 5, ';', ST7735_WHITE, ST7735_BLACK));
+	returnValues.push_back(myTFT.TFTdrawText(5, 75, testNonNumExtend, ST7735_WHITE, ST7735_BLACK));
+	DisplayReset();
+
+	// screen out of bounds
+	myTFT.TFTFontNum(myTFT.TFTFont_Default);
+	returnValues.push_back(myTFT.TFTdrawChar(0, 170, 'e', ST7735_WHITE, ST7735_BLACK, 1));
+	returnValues.push_back(myTFT.TFTdrawChar(170, 0, 'f', ST7735_WHITE, ST7735_BLACK, 1));
+	returnValues.push_back(myTFT.TFTdrawText(170, 75, testNonNumExtend, ST7735_WHITE, ST7735_BLACK, 1));
+	myTFT.TFTFontNum(myTFT.TFTFont_ArialBold);
+	returnValues.push_back(myTFT.TFTdrawChar(0, 170, 'A', ST7735_WHITE, ST7735_BLACK));
+	returnValues.push_back(myTFT.TFTdrawChar(170, 0, 'B', ST7735_WHITE, ST7735_BLACK));
+	returnValues.push_back(myTFT.TFTdrawText(170, 75, testString0, ST7735_WHITE, ST7735_BLACK));
+	DisplayReset();
+
+	// nullptr 
+	myTFT.TFTFontNum(myTFT.TFTFont_Default);
+	returnValues.push_back(myTFT.TFTdrawText(40, 75, nullptr, ST7735_WHITE, ST7735_BLACK, 1));
+	myTFT.TFTFontNum(myTFT.TFTFont_ArialBold);
+	returnValues.push_back(myTFT.TFTdrawText(40, 75, nullptr, ST7735_WHITE, ST7735_BLACK));
+	DisplayReset();
+
+	// font disabled 11 _TFT_OPTIONAL_FONT_11  returns ZERO by default, 6 if setup
+	myTFT.TFTFontNum(myTFT.TFTFont_Mia);
+	returnValues.push_back(myTFT.TFTdrawText(40, 75, testString0, ST7735_WHITE, ST7735_BLACK));
+	
+	//== SUMMARY SECTION===
+	printf("\nError Checking Summary.\n");
+	// Check return values against expected errors
+	for (size_t i = 0; i < returnValues.size(); ++i) {
+		if (i >= expectedErrors.size() || returnValues[i] != expectedErrors[i]) {
+			errorFlag = true;
+			printf("Unexpected error code: %d at test case %zu (expected: %d)\n", 
+				returnValues[i], i + 1, (i < expectedErrors.size() ? expectedErrors[i] : -1));
+		}
+	}
+
+	// Print all expectedErrors for summary
+	for (uint8_t value : expectedErrors ) 
+	{
+		printf("%d ", value);
+	}
+	printf("\n");
+	// Print all returnValues for summary
+	for (uint8_t value : returnValues) 
+	{
+		printf("%d ", value);
+	}
+	if (errorFlag == true ){
+		printf("\nError Checking has FAILED.\n");
+	}else{
+		printf("\nError Checking has PASSED.\n");
+	}
+	printf("\n=== STOP Error checking. ===\r\n");
 }
 
 void DisplayReset(void)

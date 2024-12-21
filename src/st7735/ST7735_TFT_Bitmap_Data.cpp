@@ -2,7 +2,7 @@
   @file     ST7735_TFT_Bitmap_Data.cpp
   @author   Gavin Lyons
   @brief    Source file for ST7735_TFT_PICO bitmap data
-              Data file to hold bitmap data. Test 12 , test 14. 15 16
+              Data file to hold bitmap data.
   @note    Not part of core library only used for testing purposes
 
    bitmaps in file 
